@@ -9,17 +9,22 @@ public class Settings {
 	private String m_sectorFile;
 	private String m_airblockFile;
 	private int m_level;
+	private int nbTokensPerFlight;
 	
 	public Settings(){
-		m_players=new ArrayList<Player>();
-		m_airspaceFile="";
-		m_sectorFile="";
-		m_airblockFile="";
-		m_level=0;
+		this.m_players=new ArrayList<Player>();
+		this.m_airspaceFile="";
+		this.m_sectorFile="";
+		this.m_airblockFile="";
+		this.m_level=0;
 	}
 	
 	public void addPlayer(Player player){
 		m_players.add(player);
+	}
+	
+	public ArrayList<Player> getPlayersList(){
+		return this.m_players;
 	}
 	
 	public void setAirspaceFile(String airspaceFile){
@@ -56,5 +61,20 @@ public class Settings {
 		mySettings+="The chosen files are "+m_airspaceFile+", "+m_sectorFile+" and "+m_airblockFile+"\n";
 		mySettings+="The chosen level is "+m_level+"\n";	
 		return mySettings;
+	}
+
+	public boolean checkIfReady() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public void solveProblems() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int getnbTokensPerFlight() {
+		// TODO Auto-generated method stub
+		return this.nbTokensPerFlight;
 	}
 }
