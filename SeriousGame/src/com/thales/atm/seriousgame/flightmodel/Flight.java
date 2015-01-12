@@ -1,6 +1,11 @@
 package com.thales.atm.seriousgame.flightmodel;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
 import javax.jws.WebService;
 
@@ -11,23 +16,26 @@ public class Flight {
 	  private String actualTakeOffTime;
 	  private String actualTimeOfArrival;
 	  private String icaoRoute;
-	  private List<String> pointProfile;
-	  private List<String> airspaceProfile;
+	  private TreeMap<Date,String> pointProfile;
+	  //private List<String> pointProfile;
+	  //private List<String> airspaceProfile;
+	  //position
+	  //priority
 	  
 	  public Flight (){
-		  pointProfile=new ArrayList<String>();
-		  airspaceProfile=new ArrayList<String>();		  
+		  pointProfile=new TreeMap<Date,String>();
+		  //airspaceProfile=new ArrayList<String>();		  
 	  }
 	  
 	  //Methods
 	  		//Get and Set
-	  public List<String> getPointProfile() {
+	  public TreeMap<Date,String> getPointProfile() {
 		  return pointProfile;
 	  }
 	  
-	  public List<String> getAirspaceProfile() {
+	  /*public List<String> getAirspaceProfile() {
 		  return airspaceProfile;
-	  }
+	  }*/
 	  
 	  public String getFlightId() {
 	    return flightId;
@@ -62,11 +70,11 @@ public class Flight {
 	  
 	  		//Others
 	 
-
+	  
 	  @Override
 	  public String toString() {
 	    return "flight [flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
-	        + actualTakeOffTime + ", timeOfArrival=" + actualTimeOfArrival + ", icaoRoute=" + icaoRoute +", pointProfile=" + pointProfile +", airspaceProfile=" +airspaceProfile+"]";
+	        + actualTakeOffTime + ", pointProfile=" +  new PrintingMap<Date, String>(pointProfile) +"]";
 	  }
 }
 

@@ -3,7 +3,10 @@ package com.thales.atm.seriousgame.flightparser;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 //import java.util.Iterator;
 import java.util.List;
 
@@ -28,10 +31,14 @@ public class FlightPlanParser {
 	static final String TIMEOFARRIVAL = "actualTimeOfArrival";
 	static final String ICAO = "icaoRoute";
 	static final String POINT = "pointId";
-	static final String AIRSPACE = "airspaceId";
+	static final String TIMEPOINT = "timeOver";
+	static final String AIRSPACE = "occupancyDuration";
+	
+	Date current_datepoint=null;
 	
 	  public List<Flight> parseFlightPlan(String FlightPlanFile) {
 	    List<Flight> flights = new ArrayList<Flight>();
+	   
 	    try {
 	      // First, create a new XMLInputFactory
 	      XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -67,18 +74,11 @@ public class FlightPlanParser {
 	          }
 
 	          if (event.asStartElement().getName().getLocalPart()
-	              .equals(TAKEOFFTIME)) {
+	              .equals(TAKEOFFTIME) || event.asStartElement().getName().getLocalPart()
+	              .equals("estimatedTakeOffTime")) {
 	            event = eventReader.nextEvent();	 	          
 	            flight.setActualTakeOffTime(event.asCharacters().getData());
 	            continue;
-	          }
-	          else {
-		          if (event.asStartElement().getName().getLocalPart()
-			              .equals("estimatedTakeOffTime")) {
-			            event = eventReader.nextEvent();	 	          
-			            flight.setActualTakeOffTime(event.asCharacters().getData());
-			            continue;
-			          }
 	          }
 
 	          if (event.asStartElement().getName().getLocalPart()
@@ -94,25 +94,34 @@ public class FlightPlanParser {
 		            flight.setIcaoRoute(event.asCharacters().getData());
 		            continue;
 		      }
-	          
-	          if (event.asStartElement().getName().getLocalPart()
-		              .equals(POINT)) {
-		            event = eventReader.nextEvent();
-		            flight.getPointProfile().add(event.asCharacters().getData());
-		            continue;
-		      }
-	          
-	          if (event.asStartElement().getName().getLocalPart()
+		        	  
+		      if (event.asStartElement().getName().getLocalPart()
+				       .equals(TIMEPOINT)) {
+				     event = eventReader.nextEvent();
+				     current_datepoint = stringToDate (event.asCharacters().getData());
+				     continue;
+				            
+		       }
+		       if (event.asStartElement().getName().getLocalPart()
+				        .equals(POINT)) {
+		           	  event = eventReader.nextEvent();
+		           	  flight.getPointProfile().put(current_datepoint, event.asCharacters().getData());
+				      continue;
+		       }
+		      //| event.asStartElement().getName().getLocalPart()
+		       // .equals("aerodrome")           
+	         /* if (event.asStartElement().getName().getLocalPart()
 		              .equals(AIRSPACE)) {
 		            event = eventReader.nextEvent();
 		            flight.getAirspaceProfile().add(event.asCharacters().getData());
 		            continue;
-		      }
+		      }*/
 	          
 	        }
 	        // If we reach the end of an flight element, we add it to the list
+	        
 	        if (event.isEndElement()) {
-	          EndElement endElement = event.asEndElement();
+	        	EndElement endElement = event.asEndElement();
 	          if (endElement.getName().getLocalPart() == (FLIGHT)) {
 	        	  flights.add(flight);
 	          }
@@ -126,5 +135,18 @@ public class FlightPlanParser {
 	    }
 	    return flights;
 	  }	  
+	  
+	//String to Date and time
+	  public Date stringToDate (String stringdate) {
+		  
+		  try {
+		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		  Date d = sdf.parse(stringdate);
+		  return d;
+		  } catch (ParseException e) {
+				e.printStackTrace();
+				return null;
+		  }		  
+	  }
 	        	  
 }
