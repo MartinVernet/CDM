@@ -265,6 +265,11 @@ public class map {
 		System.out.println("Done");
 		return airSpaceDictionary;
 	  }
+
+	public ArrayList<AirSpace> checkOccupation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 		
 }
