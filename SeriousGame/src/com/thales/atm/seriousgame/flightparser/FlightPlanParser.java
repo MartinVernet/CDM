@@ -24,6 +24,7 @@ import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
 @WebService
+//This class parse the Flight Plan xml file
 public class FlightPlanParser {
 	
 	static final String FLIGHT = "flight"; 

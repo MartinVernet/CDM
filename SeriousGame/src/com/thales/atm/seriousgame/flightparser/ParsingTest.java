@@ -3,6 +3,7 @@ import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
 import java.util.List;
 
+//Print parsing result for testing purpose
 public class ParsingTest {
 
 	public static void main(String args[]) {

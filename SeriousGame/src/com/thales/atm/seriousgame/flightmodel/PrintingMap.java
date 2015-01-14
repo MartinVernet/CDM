@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+//Print map for testing purpose
 public class PrintingMap<K, V> {
     private Map<K, V> map;
 

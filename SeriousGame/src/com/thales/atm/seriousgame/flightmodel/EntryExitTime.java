@@ -2,6 +2,7 @@ package com.thales.atm.seriousgame.flightmodel;
 
 import java.util.Date;
 
+//This class is use to record the entry and exit time in AirSpace
 public class EntryExitTime {
 
 	private Date entryTime;

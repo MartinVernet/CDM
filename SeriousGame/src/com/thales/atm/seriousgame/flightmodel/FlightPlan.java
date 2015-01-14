@@ -11,6 +11,7 @@ import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import javax.jws.WebService;
 
 @WebService
+//This class is use to map the xml file
 public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
@@ -58,7 +59,7 @@ public class FlightPlan {
 	  }
 	  
 	  		//Others
-	  
+	  //Override compare function to compare EntryExitTime type
 	  Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
 	      @Override public int compare(EntryExitTime t1, EntryExitTime t2) {
 	    	  // Same entry time
@@ -78,10 +79,10 @@ public class FlightPlan {
 	      }           
 	  };
 	  
-	  //Print for testing
+	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "flight [flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
+	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
 	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<EntryExitTime, String>(airspaceProfile) +"]";
 	  }
 }
