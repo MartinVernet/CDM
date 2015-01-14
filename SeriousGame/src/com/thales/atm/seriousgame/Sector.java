@@ -14,6 +14,8 @@ public class Sector {
 	ArrayList<AirBlock> m_airBlocks;
 	int m_capacity;
 	int m_occupation;
+	private String m_fatherId;
+	
 	public Sector(String name, ArrayList<AirBlock> airb)
 	{
 		this.m_name=name;
@@ -23,6 +25,12 @@ public class Sector {
 	{
 		this.m_name="test";
 		this.m_airBlocks=null;
+	}
+	public String getFatherId() {
+		return m_fatherId;
+	}
+	public void setFatherId(String m_fatherId) {
+		this.m_fatherId = m_fatherId;
 	}
 	
 	//creation du dictionnaire des airblocks;

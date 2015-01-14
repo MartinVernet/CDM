@@ -10,6 +10,7 @@ public class AirBlock {
 	ArrayList<Point> m_Coords;
 	double m_altitudeMin=0;
 	double m_altitudeMax=0;
+	private String m_fatherId;
 
 	
 	public AirBlock(String name, ArrayList<Point> coords)
@@ -58,6 +59,12 @@ public class AirBlock {
 	public void SetAltMax(double altMax)
 	{
 		this.m_altitudeMax=altMax;
+	}
+	public String getFatherId() {
+		return m_fatherId;
+	}
+	public void setFatherId(String m_fatherId) {
+		this.m_fatherId = m_fatherId;
 	}
 	
 }

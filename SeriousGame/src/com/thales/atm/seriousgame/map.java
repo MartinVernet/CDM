@@ -155,6 +155,7 @@ public class map {
 					if(obj[0].equals("A"))
 					{
 						AirBlock airb=new AirBlock(airBlockDic.get(obj[1]).m_name,airBlockDic.get(obj[1]).m_Coords);
+						airb.setFatherId(name1);
 						airb.SetAltMin(Double.parseDouble(obj[3]));
 						airb.SetAltMax(Double.parseDouble(obj[4]));
 						airBlockList.add(airb);
@@ -229,6 +230,7 @@ public class map {
 					if(obj[0].equals("S"))
 					{
 						Sector sect=sectorDic.get((obj[1]));
+						sect.setFatherId(name1);
 						SectorList.add(sect);
 						
 					}
