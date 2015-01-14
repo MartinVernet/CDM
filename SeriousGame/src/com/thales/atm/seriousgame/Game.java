@@ -22,20 +22,21 @@ public class Game {
 	private int m_turn;
 	private Map<Integer,AOC> AOCplayers;
 	private Map<Integer,FMP> FMPplayers;
+	private Map<String,AirSpace> AirSpaceMap;
 	private Date currentDate;
-	//private Airspace airspace;
 	
 	public Game(Settings settings){
 		this.m_settings=settings;
 		this.m_turn=0;
 		this.AOCplayers=new HashMap<Integer, AOC>();
 		this.FMPplayers=new HashMap<Integer, FMP>();
-		
+		this.AirSpaceMap=new HashMap<String, AirSpace>();
 	}
 	
 	public void setSettings(Settings settings){
 		m_settings=settings;
 	}
+	
 	
 	public void getFinalMapsOfPlayers(){
 		
@@ -51,6 +52,7 @@ public class Game {
 	}
 	
 	
+	
 	/**
     Crée les airspaces, sectors et airblocks à partir des fichiers donnés dans les settings.
 	*/
@@ -63,7 +65,7 @@ public class Game {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		//Players creation
-		String addNewPlayer="Y"; 
+		String addNewPlayer="Y";
 		int i=1;
 		while (addNewPlayer=="Y"){
 			System.out.println("Player "+i);
@@ -78,7 +80,10 @@ public class Game {
 					m_settings.addPlayer(P);
 				}
 				if(type=="FMP"){
-					FMP P = new FMP(name,i);
+					String airspaceID="";
+					System.out.println("Airspace name ?");
+					airspaceID=br.readLine();
+					FMP P = new FMP(name,i,this.AirSpaceMap.get(airspaceID));
 					m_settings.addPlayer(P);
 				}
 			i+=1;
@@ -109,6 +114,10 @@ public class Game {
 		System.out.println(m_settings.returnSettingsInfos());
 	}
 	
+	
+	
+	
+	
 	/**
 	 * Lance le jeu, une fois que les settings ont étés définis
 	 */
@@ -130,6 +139,11 @@ public class Game {
 		}
 	}
 	
+	
+	
+	
+	
+	
 	/**
 	Vérifie si une condition d'arrêt du jeu est remplie.
 	@return True si le jeu se termine, False sinon
@@ -139,6 +153,10 @@ public class Game {
 		return false;
 	}
 
+	
+	
+	
+	
 	public void startNewTurn(){
 		
 		this.allocateFlights();
@@ -153,15 +171,25 @@ public class Game {
 	}
 	
 	
+	
+	
+	
 	/**
 	 * Alloue un budget de jetons par AOC, en fonction d'un nombre de jeton par vol, défini dans les settings.
 	*/
 	private void allocateTokens() {
+		
 		for ( int key : AOCplayers.keySet() ){
+			
 			AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			
 		}
+		
 	}
 
+	
+	
+	
 	
 	/**
 	A chaque nouveau tours, cherche les nouveaux vols qui arrivent sur le plateau et les alloue aux AOC correspondants pour qu'ils misent des jetons dessus.
@@ -171,30 +199,40 @@ public class Game {
 	}
 
 	
+	
+	
+	
 	private void getDashboards() {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	
+	
+	
+	
 	/**
 	 Le temps est mis en pause et chaque AOC peut miser ses jetons sur ses vols.
 	 */
 	private void startAOCTurn() {
-		// TODO Auto-generated method stub
-		
 		for ( int key : AOCplayers.keySet() ){
 			AOCplayers.get(key).play();
 		}
 		
 	}
 	
+	
+	
+	
 	/**
 	 Après le tour des AOC, le temps avance et à chaque besoin de régulation, les FMP interviennent sur leurs secteurs.
 	 */
 	private void startFMPTurn() {
-			
+		
 		
 	}
+	
+	
 	
 	/**
 	 Fait avancer le temps d'un pas préalablement défini dans les Settings du jeu.
@@ -204,8 +242,11 @@ public class Game {
 	}
 	
 	
-
-
 	
+	
+	
+	private Map<String,AirSpace> getAirSpaceMap(){
+		return this.AirSpaceMap;
+	}
 	
 }

@@ -5,18 +5,18 @@ import java.util.HashMap;
 public class AOC extends Player {
 	
 	private int m_budget;
-	private HashMap<Integer,Flight> m_flights;
+	private HashMap<String,Flight> m_flights;
 	
 	public AOC(){
 		super();
-		this.m_budget=0;
-		this.m_flights=new HashMap<Integer,Flight>();
+		m_budget=0;
+		m_flights=new HashMap<String,Flight>();
 	}
 	
 	public AOC(String name, int i) {
 		
 		super(name,i);
-		this.m_budget=0;
+		m_budget=0;
 	}
 
 	public void play(HashMap<Integer,Integer> flightPriorities){
@@ -36,6 +36,10 @@ public class AOC extends Player {
 	
 	public void setBudget(int budget){
 		this.m_budget=budget;
+	}
+	
+	public void addFlight(Flight flight){
+		this.m_flights.put(flight.getFlightID(),flight);
 	}
 
 }

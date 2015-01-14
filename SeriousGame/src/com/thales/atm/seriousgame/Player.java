@@ -11,11 +11,13 @@ public abstract class Player {
 		this.m_id=nbInstances;
 	}
 	
+	
 	public Player(String name,int id){
 		this.m_name=name;
 		this.m_id=id;
 		nbInstances++;
 	}
+	
 	
 	public String getInfos(){
 		return "Name: "+m_name+" ; "+"ID: "+m_id;

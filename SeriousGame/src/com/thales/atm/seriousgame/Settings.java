@@ -10,6 +10,8 @@ public class Settings {
 	private String m_airblockFile;
 	private int m_level;
 	private int nbTokensPerFlight;
+	private int m_anticipation;//déclenche une alerte m_anticipation tour avant regulation
+	private int m_delta;
 	
 	public Settings(){
 		this.m_players=new ArrayList<Player>();
@@ -77,4 +79,22 @@ public class Settings {
 		// TODO Auto-generated method stub
 		return this.nbTokensPerFlight;
 	}
+
+	public int getAnticipation() {
+		return m_anticipation;
+	}
+
+	public void setAnticipation(int m_anticipation) {
+		this.m_anticipation = m_anticipation;
+	}
+
+	public int getDelta() {
+		return m_delta;
+	}
+
+	public void setDelta(int m_delta) {
+		this.m_delta = m_delta;
+	}
+	
+	
 }
