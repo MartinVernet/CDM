@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import javax.jws.WebService;
 
 @WebService
 public class AirBlock {
+
 	private String m_name;
 	private ArrayList<Point> m_Coords;
 	private double m_altitudeMin=0;
 	private double m_altitudeMax=0;
 	private HashMap<String,Flight> m_occupation;
 	private int m_capacity;
+	private String m_fatherId;
 	
 	public AirBlock(String name, ArrayList<Point> coords)
 	{
@@ -62,6 +65,7 @@ public class AirBlock {
 	{
 		this.m_altitudeMax=altMax;
 	}
+
 	
 	public void addFlight(Flight flight){
 		this.m_occupation.put(flight.getFlightID(), flight);
@@ -85,6 +89,15 @@ public class AirBlock {
 	
 	public void setCapacity(int capacity){
 		this.m_capacity=capacity;
+	}
+	
+
+
+	public String getFatherId() {
+		return m_fatherId;
+	}
+	public void setFatherId(String m_fatherId) {
+		this.m_fatherId = m_fatherId;
 	}
 	
 

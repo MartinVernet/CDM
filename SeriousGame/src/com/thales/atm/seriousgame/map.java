@@ -89,7 +89,9 @@ public class map {
 				AirBlock lastAirb= new  AirBlock(name1,points);
 				airblocksDictionary.put(name1,lastAirb);
 				for (int i=0; i<7; i++)
+
 				System.out.println(airblocksDictionary.get("999UK").GetCoord().get(i).GetX());
+
 			
 	 
 		} catch (FileNotFoundException e) {
@@ -154,9 +156,12 @@ public class map {
 				
 					if(obj[0].equals("A"))
 					{
-						AirBlock airb=airBlockDic.get((obj[1]));
+
+						AirBlock airb=new AirBlock(airBlockDic.get(obj[1]).m_name,airBlockDic.get(obj[1]).m_Coords);
+						airb.setFatherId(name1);
 						airb.SetAltMin(Double.parseDouble(obj[3]));
-						airb.SetAltMin(Double.parseDouble(obj[4]));
+						airb.SetAltMax(Double.parseDouble(obj[4]));
+
 						airBlockList.add(airb);
 						
 					}
@@ -181,7 +186,7 @@ public class map {
 				}
 			}
 		}
-	 
+
 		System.out.println("Done");
 		return SectorDictionary;
 	  }
@@ -229,6 +234,9 @@ public class map {
 					if(obj[0].equals("S"))
 					{
 						Sector sect=sectorDic.get((obj[1]));
+
+						sect.setFatherId(name1);
+
 						SectorList.add(sect);
 						
 					}
