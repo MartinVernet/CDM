@@ -23,7 +23,9 @@ public class Game {
 	private Map<Integer,AOC> AOCplayers;
 	private Map<Integer,FMP> FMPplayers;
 	private Map<String,AirSpace> AirSpaceMap;
+	private Map<String,Integer> AirspaceToFMP;
 	private Date currentDate;
+	private map m_board;
 	
 	public Game(Settings settings){
 		this.m_settings=settings;
@@ -57,7 +59,7 @@ public class Game {
     Crée les airspaces, sectors et airblocks à partir des fichiers donnés dans les settings.
 	*/
 	public void loadAirspace(){
-		
+		this.m_board = new map(this.m_settings.getAirBlockFile(),this.m_settings.getSectorFile(),this.m_settings.getAirspaceFile());
 	}
 	
 	public void initiateNewGame() throws IOException{
@@ -228,7 +230,15 @@ public class Game {
 	 Après le tour des AOC, le temps avance et à chaque besoin de régulation, les FMP interviennent sur leurs secteurs.
 	 */
 	private void startFMPTurn() {
-		
+		while (this.endOfTurn()==false){
+			ArrayList<AirSpace> toBeRegulated = m_board.checkOccupation();
+			for (int i=0;i<toBeRegulated.size();i++){
+				String airspaceID=toBeRegulated.get(i).getName();
+				int IdFMP=this.AirspaceToFMP.get(airspaceID);
+				//To be continued
+			}
+			this.forwardDate();
+		}
 		
 	}
 	
@@ -241,7 +251,9 @@ public class Game {
 		
 	}
 	
-	
+	private boolean endOfTurn(){
+		return false;
+	}
 	
 	
 	

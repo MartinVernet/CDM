@@ -12,6 +12,7 @@ public class Settings {
 	private int nbTokensPerFlight;
 	private int m_anticipation;//déclenche une alerte m_anticipation tour avant regulation
 	private int m_delta;
+	private int m_turnLength;
 	
 	public Settings(){
 		this.m_players=new ArrayList<Player>();
@@ -19,6 +20,18 @@ public class Settings {
 		this.m_sectorFile="";
 		this.m_airblockFile="";
 		this.m_level=0;
+	}
+	
+	public String getAirspaceFile(){
+		return this.m_airspaceFile;
+	}
+	
+	public String getSectorFile(){
+		return this.m_sectorFile;
+	}
+	
+	public String getAirBlockFile(){
+		return this.m_airblockFile;
 	}
 	
 	public void addPlayer(Player player){
@@ -92,8 +105,16 @@ public class Settings {
 		return m_delta;
 	}
 
-	public void setDelta(int m_delta) {
-		this.m_delta = m_delta;
+	public void setDelta(int delta) {
+		this.m_delta = delta;
+	}
+
+	public int getTurnLength() {
+		return m_turnLength;
+	}
+
+	public void setTurnLength(int turnLength) {
+		this.m_turnLength = turnLength;
 	}
 	
 	
