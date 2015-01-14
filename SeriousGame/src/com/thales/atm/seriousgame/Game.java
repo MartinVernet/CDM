@@ -231,19 +231,50 @@ public class Game {
 	 */
 	private void startFMPTurn() {
 		while (this.endOfTurn()==false){
-			ArrayList<AirSpace> toBeRegulated = m_board.checkOccupation();
-			for (int i=0;i<toBeRegulated.size();i++){
-				String airspaceID=toBeRegulated.get(i).getName();
-				int IdFMP=this.AirspaceToFMP.get(airspaceID);
-				//To be continued
+			this.refreshMap();//forward fligths
+			this.m_board.getFullAirblocks();
+			this.regulation();
 			}
 			this.forwardDate();
 		}
-		
+	
+	/**
+	 Vérifie si il y a des régulations à faire.
+	 */
+	private void regulation() {
+		// TODO Auto-generated method stub
+		for ( int key : FMPplayers.keySet() ){
+			for (AirSpace airspace : FMPplayers.get(key).getAirspaces()){
+				for (Sector sector : airspace.m_sector){
+					for (AirBlock airblock : sector.m_airBlocks){
+						
+					}
+				}
+			}
+		}
+		/**
+		ArrayList<AirSpace> toBeRegulated = m_board.checkOccupation();
+		if (toBeRegulated.size()!=0){
+			for (int i=0;i<toBeRegulated.size();i++){
+				String airspaceID=toBeRegulated.get(i).getName();
+				int IdFMP=this.AirspaceToFMP.get(airspaceID);
+		}
+		}
+		*/
 	}
-	
-	
-	
+
+	/**
+	 Fait avancer les avions sur la carte.
+	 */
+	private void refreshMap() {
+		// TODO Auto-generated method stub
+		for ( int AOCid : AOCplayers.keySet() ){
+			for ( String Flightid : AOCplayers.get(AOCid).getFlights().keySet() ){
+				AOCplayers.get(AOCid).getFlights().get(Flightid).move(this.currentDate, m_settings.getDelta());;
+			}
+		}
+	}
+
 	/**
 	 Fait avancer le temps d'un pas préalablement défini dans les Settings du jeu.
 	 */

@@ -41,5 +41,8 @@ public class AOC extends Player {
 	public void addFlight(Flight flight){
 		this.m_flights.put(flight.getFlightID(),flight);
 	}
-
+	
+	public HashMap<String,Flight> getFlights(){
+		return this.m_flights;
+	}
 }

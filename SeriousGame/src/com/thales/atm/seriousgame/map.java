@@ -14,6 +14,7 @@ public class map {
 	HashMap <String,AirBlock> m_airBlockDictionary;
 	HashMap <String,Sector> m_sectorDictionary;
 	HashMap <String,AirSpace> m_airSpaceDictionary;
+	
 
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
@@ -157,7 +158,7 @@ public class map {
 					if(obj[0].equals("A"))
 					{
 
-						AirBlock airb=new AirBlock(airBlockDic.get(obj[1]).m_name,airBlockDic.get(obj[1]).m_Coords);
+						AirBlock airb=new AirBlock(airBlockDic.get(obj[1]).GetName(),airBlockDic.get(obj[1]).GetCoord());
 						airb.setFatherId(name1);
 						airb.SetAltMin(Double.parseDouble(obj[3]));
 						airb.SetAltMax(Double.parseDouble(obj[4]));
@@ -270,8 +271,15 @@ public class map {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	public boolean checkIfRegulationNeeded() {
+		// TODO Auto-generated method stub
 		
+		return true;
+	}
+
+	
+
 }
 
 
