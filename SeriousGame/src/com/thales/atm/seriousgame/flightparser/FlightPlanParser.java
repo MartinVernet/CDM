@@ -16,7 +16,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 //import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.EndElement;
+//import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -38,10 +38,12 @@ public class FlightPlanParser {
 	static final String EXITAS = "lastExitTime";
 
 	Date current_datepoint=null;
+	String current_point=null;
 	Date current_entrydate=null;
 	Date current_exitdate=null;
 	EntryExitTime current_entryexit=null;
 	String current_airspace=null;
+	String current_airspacetype=null;
 	
 	  public List<FlightPlan> parseFlightPlan(String FlightPlanFile) {
 	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
@@ -52,6 +54,8 @@ public class FlightPlanParser {
 	      // Setup a new eventReader
 	      InputStream in = new FileInputStream(FlightPlanFile);
 	      XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
+	      //XMLEventReader eventReader2 = inputFactory.createXMLEventReader(in);
+	      
 	      // read the XML document
 	      FlightPlan flight = null;
 
@@ -65,14 +69,13 @@ public class FlightPlanParser {
 	        	  flight = new FlightPlan();
 	          }
 
-	          if (event.isStartElement()) {
-	            if (event.asStartElement().getName().getLocalPart()
+	          if (event.asStartElement().getName().getLocalPart()
 	                .equals(FLIGHTID)) {
-	              event = eventReader.nextEvent();
-	              flight.setFlightId(event.asCharacters().getData());
-	              continue;
-	            }
+	            event = eventReader.nextEvent();
+	            flight.setFlightId(event.asCharacters().getData());
+	            continue;
 	          }
+	        
 	          if (event.asStartElement().getName().getLocalPart()
 	              .equals(AIRCRAFTTYPE)) {
 	            event = eventReader.nextEvent();
@@ -88,7 +91,7 @@ public class FlightPlanParser {
 	            continue;
 	          }
 
- 	  
+   
 		      if (event.asStartElement().getName().getLocalPart()
 				       .equals(TIMEPOINT)) {
 				     event = eventReader.nextEvent();
@@ -100,15 +103,24 @@ public class FlightPlanParser {
 				        .equals(POINT) || event.asStartElement().getName().getLocalPart()
 				        .equals("aerodrome")) {
 		           	  event = eventReader.nextEvent();
-		           	  flight.getPointProfile().put(current_datepoint, event.asCharacters().getData());
+		           	  current_point = event.asCharacters().getData();
+		           	  //flight.getPointProfile().put(current_datepoint, event.asCharacters().getData());
 				      continue;
 		       }
-		       
+
+		       		       
 		       if (event.asStartElement().getName().getLocalPart()
 				        .equals(AIRSPACE)) {
 		           	  event = eventReader.nextEvent();
 		           	  current_airspace = event.asCharacters().getData();
 				      continue;
+		       }
+		       
+		       if (event.asStartElement().getName().getLocalPart()
+				        .equals("airspaceType")) {
+		           	  event = eventReader.nextEvent();
+		           	  current_airspacetype=event.asCharacters().getData();	
+		           	  continue;
 		       }
            
 	           if (event.asStartElement().getName().getLocalPart()
@@ -123,20 +135,35 @@ public class FlightPlanParser {
 		             event = eventReader.nextEvent();
 		             current_exitdate = stringToDate (event.asCharacters().getData());
 		             current_entryexit = new EntryExitTime(current_entrydate, current_exitdate);
-		             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
-		             continue;
+		             /*if(current_airspacetype.equals("ES"))
+		           	  {
+				             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
+		           		     continue;
+		           	  }
+		           	  else*/
+		           		  continue;
 		       }
-	          
-
+		       
+	           
 	          
 	        }
-	        // If we reach the end of an flight element, we add it to the list
+	        // If we reach the end of an End element, we add it to the list
 	        
 	        if (event.isEndElement()) {
-	        	EndElement endElement = event.asEndElement();
-	          if (endElement.getName().getLocalPart() == (FLIGHT)) {
+	        	//EndElement endElement = event.asEndElement();
+	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmPointProfile")) {
+		           	flight.getPointProfile().put(current_datepoint, current_point);
+
+	        	}
+	        	if (event.asEndElement().getName().getLocalPart() == ("airspaceType")) {
+	        		if(current_airspacetype.equals("ES"))
+		           	  {
+				             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
+		           	  }
+		        }
+	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT)) {
 	        	  flights.add(flight);
-	          }
+	            }
 	        }
 
 	      }

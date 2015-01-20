@@ -17,13 +17,13 @@ public class FlightPlan {
 	  private String aircraftType;
 	  private String actualTakeOffTime;
 	  private Map<Date,String> pointProfile;
-	  private Map<EntryExitTime,String> airspaceProfile;
+	  private Map<EntryExitTime,String> airspaceProfileES;
 	  //position
 	  //priority
 	  
 	  public FlightPlan (){
 		  pointProfile=new TreeMap<Date,String>();
-		  airspaceProfile=new TreeMap<EntryExitTime,String>(secondDateComparator);	  
+		  airspaceProfileES=new TreeMap<EntryExitTime,String>(secondDateComparator);	  
 	  }
 	  
 	  //Methods
@@ -33,7 +33,7 @@ public class FlightPlan {
 	  }
 	  
 	  public Map<EntryExitTime,String> getAirspaceProfile() {
-		  return airspaceProfile;
+		  return airspaceProfileES;
 	  }
 	  
 	  public String getFlightId() {
@@ -83,7 +83,8 @@ public class FlightPlan {
 	  @Override
 	  public String toString() {
 	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
-	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<EntryExitTime, String>(airspaceProfile) +"]";
+	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<Date, String>(pointProfile) +"]";
 	  }
+	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 }
 
