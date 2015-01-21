@@ -45,10 +45,10 @@ public class FlightPlanParser {
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
-	  public List<FlightPlan> parseFlightPlan(String FlightPlanFile) {
+	public List<FlightPlan> parseFlightPlan(String FlightPlanFile) {
 	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
-	    try {
+	   try {
 	      // First, create a new XMLInputFactory
 	      XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 	      // Setup a new eventReader
@@ -104,7 +104,6 @@ public class FlightPlanParser {
 				        .equals("aerodrome")) {
 		           	  event = eventReader.nextEvent();
 		           	  current_point = event.asCharacters().getData();
-		           	  //flight.getPointProfile().put(current_datepoint, event.asCharacters().getData());
 				      continue;
 		       }
 
@@ -135,13 +134,7 @@ public class FlightPlanParser {
 		             event = eventReader.nextEvent();
 		             current_exitdate = stringToDate (event.asCharacters().getData());
 		             current_entryexit = new EntryExitTime(current_entrydate, current_exitdate);
-		             /*if(current_airspacetype.equals("ES"))
-		           	  {
-				             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
-		           		     continue;
-		           	  }
-		           	  else*/
-		           		  continue;
+		           	 continue;
 		       }
 		       
 	           
@@ -180,7 +173,6 @@ public class FlightPlanParser {
 		  
 		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE);
 		  sdf.setLenient(false);
-		  
 		  try {		  
 		  Date d = sdf.parse(stringdate);		  
 		  return d;
