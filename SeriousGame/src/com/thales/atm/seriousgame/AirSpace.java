@@ -13,17 +13,18 @@ import javax.jws.WebService;
 public class AirSpace {
 	
 	private String m_name;
-	ArrayList<Sector> m_sector;
+	//ArrayList<Sector> m_sector;
+	ArrayList<String> m_sectorId;
 
-	public AirSpace(String name, ArrayList<Sector> sect)
+	public AirSpace(String name, ArrayList<String> sect)
 	{
 		this.setName(name);
-		this.m_sector=sect;
+		this.m_sectorId=sect;
 	}
 	public AirSpace()
 	{
 			this.setName("test");
-			this.m_sector=null;
+			this.m_sectorId=null;
 	}
 	public String getName() {
 		return m_name;
