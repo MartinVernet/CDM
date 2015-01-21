@@ -11,20 +11,21 @@ import javax.jws.WebService;
 
 @WebService
 public class map {
-	HashMap <String,AirBlock> m_airBlockDictionary;
+	//HashMap <String,AirBlock> m_airBlockDictionary;
 	HashMap <String,Sector> m_sectorDictionary;
 	HashMap <String,AirSpace> m_airSpaceDictionary;
+	HashMap <String,AirBlock> m_airBlockWithAltDic;
 
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
-		m_airBlockDictionary=InitAirBlock(AirbFile);
-		m_sectorDictionary=InitSector(m_airBlockDictionary,SectorFile);
+		HashMap <String,AirBlock> airBlockDictionaryTemp=InitAirBlock(AirbFile);
+		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
 	{
-		return m_airBlockDictionary;
+		return m_airBlockWithAltDic;
 	}
 	
 	public HashMap <String,Sector> getSectorDictionary()
@@ -116,9 +117,12 @@ public class map {
 	//init sector
 	HashMap <String ,Sector> InitSector(HashMap<String ,AirBlock> airBlockDic, String SectorFile)
 	{
-		// First read the airblocks file and fill the airblock dictionnary
+		
 		HashMap <String ,Sector> SectorDictionary = new HashMap <String ,Sector>();
-		ArrayList<AirBlock> airBlockList=new ArrayList<AirBlock>();
+		m_airBlockWithAltDic=new HashMap<String, AirBlock>();
+		//ArrayList<AirBlock> airBlockList=new ArrayList<AirBlock>();
+		ArrayList<String> airBlockListId=new ArrayList<String>();
+		
 		
 		
 		String csvFile = SectorFile;// "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl";
@@ -142,32 +146,35 @@ public class map {
 					{
 						if(name1!="")
 						{
-						ArrayList<AirBlock> l=new ArrayList<AirBlock>();
-						for (int i=0; i<airBlockList.size(); i++)
+						ArrayList<String> l=new ArrayList<String>();
+						for (int i=0; i<airBlockListId.size(); i++)
 						{
-							l.add(airBlockList.get(i));
+							l.add(airBlockListId.get(i));
 						}
 						Sector sect=new Sector(name1,l);
+						
 						SectorDictionary.put(name1,sect);
 						}
 						name1=obj[1];
-						airBlockList.clear();
+						airBlockListId.clear();
 					}
 				
 					if(obj[0].equals("A"))
 					{
 
-						AirBlock airb=new AirBlock(airBlockDic.get(obj[1]).m_name,airBlockDic.get(obj[1]).m_Coords);
+						String nameWithAlt=airBlockDic.get(obj[1]).GetName()+"_"+obj[3]+"_"+obj[4] ; 
+						AirBlock airb=new AirBlock(nameWithAlt,airBlockDic.get(obj[1]).GetCoord());
 						airb.setFatherId(name1);
 						airb.SetAltMin(Double.parseDouble(obj[3]));
 						airb.SetAltMax(Double.parseDouble(obj[4]));
-
-						airBlockList.add(airb);
+						m_airBlockWithAltDic.put(nameWithAlt, airb);
+						//airBlockList.add(airb);
+						airBlockListId.add(nameWithAlt);
 						
 					}
 				
 				}
-				Sector lastSect= new  Sector(name1,airBlockList);
+				Sector lastSect= new  Sector(name1,airBlockListId);
 				SectorDictionary.put(name1,lastSect);
 				for (int i=0; i<7; i++)
 				System.out.println(SectorDictionary.get("BIRDNO"));
@@ -195,7 +202,8 @@ public class map {
 	{
 		// First read the airblocks file and fill the airblock dictionnary
 		HashMap <String ,AirSpace> airSpaceDictionary = new HashMap <String ,AirSpace>();
-		ArrayList<Sector> SectorList=new ArrayList<Sector>();
+		//ArrayList<Sector> SectorList=new ArrayList<Sector>();
+		ArrayList<String> SectorListId=new ArrayList<String>();
 		
 		
 		String csvFile =AirSPaceFile;// "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc";
@@ -219,16 +227,17 @@ public class map {
 					{
 						if(name1!="")
 						{
-						ArrayList<Sector> l=new ArrayList<Sector>();
-						for (int i=0; i<SectorList.size(); i++)
+						ArrayList<String> l=new ArrayList<String>();
+						for (int i=0; i<SectorListId.size(); i++)
 						{
-							l.add(SectorList.get(i));
+							l.add(SectorListId.get(i));
 						}
 						AirSpace airSp=new AirSpace(name1,l);
+						//AirSpace airSp=new AirSpace(name1,SectorListId);
 						airSpaceDictionary.put(name1,airSp);
 						}
 						name1=obj[1];
-						SectorList.clear();
+						SectorListId.clear();
 					}
 				
 					if(obj[0].equals("S"))
@@ -237,12 +246,12 @@ public class map {
 
 						sect.setFatherId(name1);
 
-						SectorList.add(sect);
+						SectorListId.add(sect.m_name);
 						
 					}
 				
 				}
-				AirSpace lastAirSp= new  AirSpace(name1,SectorList);
+				AirSpace lastAirSp= new  AirSpace(name1,SectorListId);
 				airSpaceDictionary.put(name1,lastAirSp);
 				for (int i=0; i<7; i++)
 				System.out.println(airSpaceDictionary.get("BIRDNO"));
