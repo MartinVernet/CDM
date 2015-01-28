@@ -51,6 +51,7 @@ public class Flight {
 			this.m_currentAirblock.removeFlight(this);
 			this.m_currentAirblock=getAirblockFromPoint(this.m_currentPoint);
 			this.m_currentAirblock.addFlight(this);
+			
 		}
 	}
 

@@ -15,9 +15,11 @@ public class Sector {
 	ArrayList<String> m_airBlocksId;
 	int m_capacity;
 	int m_occupation;
-	ArrayList<String> listOfFullAirb;
+	Set<String> listOfFullAirb; //Attention not multiThread Safe
 
 	private String m_fatherId;
+	
+	private AirSpace m_father;
 	
 
 	/*public Sector(String name, ArrayList<AirBlock> airb)
@@ -29,6 +31,7 @@ public class Sector {
 	{
 		this.m_name=name;
 		this.m_airBlocksId=airb;
+		this.listOfFullAirb =new HashSet<String>();
 	}
 	public Sector()
 	{
@@ -42,6 +45,25 @@ public class Sector {
 	public void setFatherId(String m_fatherId) {
 		this.m_fatherId = m_fatherId;
 	}
+	public AirSpace getFather() {
+		return m_father;
+	}
+	public void setFather(AirSpace m_father) {
+		this.m_father = m_father;
+	}
 
+	public void addFullAirb(String airbId)
+	{
+		//verifier s'il n'est pas deja dedans
+		//listOfFullAirb.add(airbId);
+		m_father.addFullAirb(airbId);
+	}
+	
+	public void removeFull(String airbId)
+	{
+		//a optimiser
+		m_father.removeFull(airbId);
+		//listOfFullAirb.remove(airbId);
+	}
 		
 }

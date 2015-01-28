@@ -21,6 +21,7 @@ public class map {
 		HashMap <String,AirBlock> airBlockDictionaryTemp=InitAirBlock(AirbFile);
 		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
+		setFather();
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
@@ -280,7 +281,22 @@ public class map {
 		return null;
 	}
 	
+	public void setFather()
+	{
+		for(String key : m_sectorDictionary.keySet())
+		{
+			Sector sector=m_sectorDictionary.get(key);
+			sector.setFather(m_airSpaceDictionary.get(sector.getFatherId()));
+		}
 		
+		for(String key : m_airBlockWithAltDic.keySet())
+		{
+			AirBlock airb=m_airBlockWithAltDic.get(key);
+			airb.setFather(m_sectorDictionary.get(airb.getFatherId()));
+		}
+	}
+	
+	
 }
 
 

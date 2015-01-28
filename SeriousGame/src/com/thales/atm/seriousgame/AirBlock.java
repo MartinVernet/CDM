@@ -17,6 +17,7 @@ public class AirBlock {
 	private HashMap<String,Flight> m_occupation;
 	private int m_capacity;
 	private String m_fatherId;
+	private Sector m_father;
 	
 	public AirBlock(String name, ArrayList<Point> coords)
 	{
@@ -69,6 +70,10 @@ public class AirBlock {
 	
 	public void addFlight(Flight flight){
 		this.m_occupation.put(flight.getFlightID(), flight);
+		if (this.m_occupation.size()==this.m_capacity)
+		{
+			m_father.addFullAirb(this.m_name);
+		}
 	}
 	
 	public void removeFlight(Flight flight){
@@ -98,6 +103,12 @@ public class AirBlock {
 	}
 	public void setFatherId(String m_fatherId) {
 		this.m_fatherId = m_fatherId;
+	}
+	public Sector getFather() {
+		return m_father;
+	}
+	public void setFather(Sector m_father) {
+		this.m_father = m_father;
 	}
 	
 
