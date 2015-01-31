@@ -18,6 +18,7 @@ public class AirBlock {
 	private int m_capacity;
 	private String m_fatherId;
 	private Sector m_father;
+	private ArrayList<String> neighbors;
 	
 	public AirBlock(String name, ArrayList<Point> coords)
 	{
@@ -109,6 +110,20 @@ public class AirBlock {
 	}
 	public void setFather(Sector m_father) {
 		this.m_father = m_father;
+	}
+	
+	/**
+	 * @return the neighbors
+	 */
+	public ArrayList<String> getNeighbors() {
+		return neighbors;
+	}
+	
+	/**
+	 * @param neighbors the neighbors to set
+	 */
+	public void setNeighbors(ArrayList<String> neighbors) {
+		this.neighbors = neighbors;
 	}
 	
 

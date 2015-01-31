@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 
+
+
 @WebService
 
 public class Game {
@@ -68,16 +70,26 @@ public class Game {
 		//Files selection
 		//System.out.println("Airspace File ? ");
 		//String airspaceFile = br.readLine();
-		m_settings.setAirspaceFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
+		m_settings.setAirspaceFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airspace.spc");
 				
 		//System.out.println("Sector File ? ");
 		//String sectorFile = br.readLine();
-		m_settings.setSectorFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl");
+		m_settings.setSectorFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Sector.gsl");
 				
 		//System.out.println("Airblock File ? ");
 		//String airblockFile = br.readLine();
-		m_settings.setAirblockFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar");
-		this.loadAirspace();		
+		m_settings.setAirblockFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airblock.gar");
+		this.loadAirspace();
+		for (String sectorID: m_board.m_sectorDictionary.get("BIRDNO").getNeighbors())
+		{
+			System.out.println("#####################");
+			System.out.println(sectorID);
+			System.out.println("*******");
+			for (String sectorID2: m_board.m_sectorDictionary.get(sectorID).getNeighbors())
+			{
+				System.out.println(sectorID2);
+			}
+		}
 				
 		//Players creation
 		String addNewPlayer="Y";

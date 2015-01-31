@@ -1,11 +1,15 @@
 package com.thales.atm.seriousgame;
 
 import java.io.BufferedReader;
+
+import com.vividsolutions.jts.geom.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.jws.WebService;
 
@@ -22,6 +26,7 @@ public class map {
 		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
 		setFather();
+		setSectorNeighbors();
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
@@ -294,6 +299,85 @@ public class map {
 			AirBlock airb=m_airBlockWithAltDic.get(key);
 			airb.setFather(m_sectorDictionary.get(airb.getFatherId()));
 		}
+	}
+	
+	private void setAirblockNeighbors()
+	{
+		Map<String,Polygon> AirBpolys=new HashMap<String,Polygon>();
+		for (String idAirB : m_airBlockWithAltDic.keySet())
+		{
+			Coordinate currentCoord[] = new Coordinate[m_airBlockWithAltDic.get(idAirB).GetCoord().size()];
+			
+			GeometryFactory GF = new GeometryFactory();
+			for (int i=0;i<m_airBlockWithAltDic.get(idAirB).GetCoord().size();i++){
+				double x=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetX();
+				double y=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetY();
+				
+				currentCoord[i]=new Coordinate(x,y);
+				
+
+			}
+			AirBpolys.put(idAirB,GF.createPolygon(currentCoord));
+		}
+		//To be optimised (on peut parcourir moins) 
+		for (String idAirB1 : m_airBlockWithAltDic.keySet()){
+			for (String idAirB2 : m_airBlockWithAltDic.keySet()){
+				if (!(idAirB1.equals(idAirB2)) && AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2))){
+					double zmin1 = m_airBlockWithAltDic.get(idAirB1).GetAltMin();
+					double zmin2 = m_airBlockWithAltDic.get(idAirB2).GetAltMin();
+					double zmax1 = m_airBlockWithAltDic.get(idAirB1).GetAltMax();
+					double zmax2 = m_airBlockWithAltDic.get(idAirB2).GetAltMax();
+					if(!(zmin2>zmax1 || zmax2<zmin1))
+					{
+						m_airBlockWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void setSectorNeighbors()
+	{
+		Map<String,Polygon> AirBpolys=new HashMap<String,Polygon>();
+		for (String idAirB : m_airBlockWithAltDic.keySet())
+		{
+			Coordinate currentCoord[] = new Coordinate[m_airBlockWithAltDic.get(idAirB).GetCoord().size()];
+			
+			GeometryFactory GF = new GeometryFactory();
+			for (int i=0;i<m_airBlockWithAltDic.get(idAirB).GetCoord().size();i++){
+				double x=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetX();
+				double y=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetY();
+				
+				currentCoord[i]=new Coordinate(x,y);
+				
+
+			}
+			AirBpolys.put(idAirB,GF.createPolygon(currentCoord));
+		}
+		//To be optimised (on peut parcourir moins) 
+		for (String idAirB1 : m_airBlockWithAltDic.keySet()){
+			for (String idAirB2 : m_airBlockWithAltDic.keySet()){
+				if (!(idAirB1.equals(idAirB2)) && AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2))){
+					double zmin1 = m_airBlockWithAltDic.get(idAirB1).GetAltMin();
+					double zmin2 = m_airBlockWithAltDic.get(idAirB2).GetAltMin();
+					double zmax1 = m_airBlockWithAltDic.get(idAirB1).GetAltMax();
+					double zmax2 = m_airBlockWithAltDic.get(idAirB2).GetAltMax();
+					if(!(zmin2>zmax1 || zmax2<zmin1))
+					{
+						String idFather1 = m_airBlockWithAltDic.get(idAirB1).getFatherId();
+						String idFather2 = m_airBlockWithAltDic.get(idAirB2).getFatherId();
+						if(!idFather1.equals(idFather2))
+						{
+							m_sectorDictionary.get(idFather1).getNeighbors().add(idFather2);
+							//m_airBlckWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
+
+						}
+					}
+				}
+			}
+		}
+		
 	}
 	
 	
