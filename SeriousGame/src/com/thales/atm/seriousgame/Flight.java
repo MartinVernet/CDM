@@ -4,26 +4,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 
+import com.thales.atm.seriousgame.flightmodel.FlightPlan;
+
 public class Flight {
 	
 	private String m_flightID;
-	private TreeMap<Date,String> m_flightplan;
-	private String m_currentPoint;
-	private AirBlock m_currentAirblock;
+	private FlightPlan m_flightplan;
+	private Sector currentSector;
 	private int m_priority;
 	
-	public Flight(String ID, TreeMap<Date,String> flightplan){
+	public Flight(String ID, FlightPlan flightplan){
 		this.m_flightID=ID;
 		this.m_flightplan=flightplan;
 	}
 	
-	public void refreshCoordinates(Date date){
-		
-	}
-	
-	public void getCoordinates(){
-		
-	}
 	
 	public String getFlightID(){
 		return this.m_flightID;
@@ -42,22 +36,22 @@ public class Flight {
 	    cal.setTime(currentDate);
 	    cal.add(Calendar.MINUTE, nbMinutes); 
 	    Date newDate=cal.getTime();
-	    this.m_currentPoint=m_flightplan.get(m_flightplan.floorKey(newDate));
-	    refreshAirblocksOccupation();
+	    refreshSectorsOccupation(newDate);
 	}
 
-	public void refreshAirblocksOccupation() {
-		if (this.m_currentAirblock!=getAirblockFromPoint(this.m_currentPoint)){
-			this.m_currentAirblock.removeFlight(this);
-			this.m_currentAirblock=getAirblockFromPoint(this.m_currentPoint);
-			this.m_currentAirblock.addFlight(this);
-			
+	public void refreshSectorsOccupation(Date newDate) {
+		Sector newSector =	getSectorFromDate(newDate);
+		if(currentSector != newSector)
+		{
+			currentSector.removeFlight(this);
+			currentSector=newSector;
+			currentSector.addFlight(this);
 		}
 	}
 
-	public AirBlock getAirblockFromPoint(String pointID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Sector getSectorFromDate(Date date) {
+		// recupere le secteur dans lequel est l'avion dans le plan de vol
+		return m_flightplan.getSectorFromDate(date);
 	}
 	
 	

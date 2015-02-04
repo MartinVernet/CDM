@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.thales.atm.seriousgame.Player;
+import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
 public class FMP extends Player {
 	
@@ -27,9 +28,9 @@ public class FMP extends Player {
 	public void play(map board ){
 		for ( AirSpace airSpace : m_airSpaces )
 		{
-			for(String airb : airSpace.listOfFullAirb)
+			for(String sector : airSpace.listOfFullSector)
 			{
-				board.m_airSpaceDictionary.get(airb);//action mettre dans boite au lettre , regulation a faire sur ce airblock
+				board.m_airSpaceDictionary.get(sector);//action mettre dans boite au lettre , regulation a faire sur ce airblock
 			}
 		}
 	}

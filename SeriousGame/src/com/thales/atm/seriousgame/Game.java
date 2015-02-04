@@ -70,17 +70,17 @@ public class Game {
 		//Files selection
 		//System.out.println("Airspace File ? ");
 		//String airspaceFile = br.readLine();
-		m_settings.setAirspaceFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airspace.spc");
+		m_settings.setAirspaceFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
 				
 		//System.out.println("Sector File ? ");
 		//String sectorFile = br.readLine();
-		m_settings.setSectorFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Sector.gsl");
+		m_settings.setSectorFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl");
 				
 		//System.out.println("Airblock File ? ");
 		//String airblockFile = br.readLine();
-		m_settings.setAirblockFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airblock.gar");
+		m_settings.setAirblockFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar");
 		this.loadAirspace();
-		for (String sectorID: m_board.m_sectorDictionary.get("BIRDNO").getNeighbors())
+		/*for (String sectorID: m_board.m_sectorDictionary.get("BIRDNO").getNeighbors())
 		{
 			System.out.println("#####################");
 			System.out.println(sectorID);
@@ -90,7 +90,25 @@ public class Game {
 				System.out.println(sectorID2);
 			}
 		}
-				
+		*/		
+		ArrayList<String> chosenAirSpace =new ArrayList<String>();
+		chosenAirSpace.add("GCCCCTA");
+		chosenAirSpace.add("GMMMCTA");
+		chosenAirSpace.add("GOOOCTA");
+		
+		this.m_board.reduceMap(chosenAirSpace);
+		for(String airsSpaceID:m_board.m_airSpaceDictionary.keySet())
+		{
+			
+			System.out.println(airsSpaceID);
+		}
+		System.out.println("#####################");
+		for(String sectorID:m_board.m_sectorDictionary.keySet())
+		{
+			System.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
+		}
+		
+		
 		//Players creation
 		String addNewPlayer="Y";
 		int i=1;
@@ -162,6 +180,7 @@ public class Game {
 		
 		this.getFinalMapsOfPlayers();
 		//this.loadAirspace();
+		//this.m_board.reduceMap(null);//replace null by  selected airSpace from IHM
 		
 		//Main loop of the game
 		while (this.isFinished()==false){

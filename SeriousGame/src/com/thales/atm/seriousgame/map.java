@@ -19,14 +19,14 @@ public class map {
 	HashMap <String,Sector> m_sectorDictionary;
 	HashMap <String,AirSpace> m_airSpaceDictionary;
 	HashMap <String,AirBlock> m_airBlockWithAltDic;
-
+	
+	
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
 		HashMap <String,AirBlock> airBlockDictionaryTemp=InitAirBlock(AirbFile);
 		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
 		setFather();
-		setSectorNeighbors();
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
@@ -377,6 +377,35 @@ public class map {
 				}
 			}
 		}
+		
+	}
+	public void reduceMap(ArrayList<String> chosenAirSpaces)
+	{
+		HashMap<String, AirBlock>reduceAirBlockDictionary=new HashMap<String, AirBlock>();
+		HashMap<String, Sector>reduceSectorDictionary=new HashMap<String, Sector>();
+		HashMap<String, AirSpace>reduceAirSpaceDictionary=new HashMap<String, AirSpace>();
+		for ( String airSpaceId :chosenAirSpaces)
+		{
+			for (String sectorId :m_airSpaceDictionary.get(airSpaceId).m_sectorId)
+			{
+				for(String airbId :m_sectorDictionary.get(sectorId).m_airBlocksId)
+				{
+					reduceAirBlockDictionary.put(airbId, m_airBlockWithAltDic.get(airbId));
+				}
+				reduceSectorDictionary.put(sectorId, m_sectorDictionary.get(sectorId));
+			}
+			reduceAirSpaceDictionary.put(airSpaceId, m_airSpaceDictionary.get(airSpaceId));
+		}
+		
+		m_sectorDictionary.clear();
+		m_airSpaceDictionary.clear();
+		m_airBlockWithAltDic.clear();
+		
+		m_airBlockWithAltDic=reduceAirBlockDictionary;
+		m_sectorDictionary=reduceSectorDictionary;
+		m_airSpaceDictionary=reduceAirSpaceDictionary;
+		
+		setSectorNeighbors();
 		
 	}
 	

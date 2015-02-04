@@ -14,8 +14,6 @@ public class AirBlock {
 	private ArrayList<Point> m_Coords;
 	private double m_altitudeMin=0;
 	private double m_altitudeMax=0;
-	private HashMap<String,Flight> m_occupation;
-	private int m_capacity;
 	private String m_fatherId;
 	private Sector m_father;
 	private ArrayList<String> neighbors;
@@ -66,35 +64,6 @@ public class AirBlock {
 	public void SetAltMax(double altMax)
 	{
 		this.m_altitudeMax=altMax;
-	}
-
-	
-	public void addFlight(Flight flight){
-		this.m_occupation.put(flight.getFlightID(), flight);
-		if (this.m_occupation.size()==this.m_capacity)
-		{
-			m_father.addFullAirb(this.m_name);
-		}
-	}
-	
-	public void removeFlight(Flight flight){
-		this.m_occupation.remove(flight.getFlightID());
-	}
-	
-	public HashMap<String,Flight> getOccupationMap(){
-		return this.m_occupation;
-	}
-	
-	public int getNbFligths(){
-		return this.m_occupation.size();
-	}
-	
-	public int getCapacity(){
-		return this.m_capacity;
-	}
-	
-	public void setCapacity(int capacity){
-		this.m_capacity=capacity;
 	}
 	
 
