@@ -4,11 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
-<<<<<<< HEAD
-import java.util.*;
-=======
-import java.util.NavigableMap;
->>>>>>> master
+
 
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
@@ -33,11 +29,7 @@ public class FlightPlan {
 	  
 	  public FlightPlan (){
 		  pointProfile=new TreeMap<Date,String>();
-<<<<<<< HEAD
-		  airspaceProfileES=new TreeMap<EntryExitTime,String>(secondDateComparator);	  	  
-=======
 		  airspaceProfileES=new TreeMap<Date,Sector>();
->>>>>>> master
 	  }
 	  
 	  //Methods
@@ -73,15 +65,15 @@ public class FlightPlan {
 	  }
 	  		
 	  		//Flight Plan modification
-	  public void addSector(EntryExitTime time,String sectorID){
+	  public void addSector(Date time,Sector sectorID){
 		  this.airspaceProfileES.put(time, sectorID);
 	  }
 	  
-	  public void replaceSector(EntryExitTime time,String oldSectorID,String newSectorID){
+	  public void replaceSector(Date time,Sector oldSectorID,Sector newSectorID){
 		  this.airspaceProfileES.replace(time, oldSectorID, newSectorID);
 	  }
 	  
-	  public void deletSector(EntryExitTime time,String sectorID){ 
+	  public void deletSector(Date time,Sector sectorID){ 
 		  this.airspaceProfileES.remove(time, sectorID);
 	  }
 	  
@@ -121,7 +113,7 @@ public class FlightPlan {
 	  @Override
 	  public String toString() {
 	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
-	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<EntryExitTime, String>(airspaceProfileES) +"]";
+	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 

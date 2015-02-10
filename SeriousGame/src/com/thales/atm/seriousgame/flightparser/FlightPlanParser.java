@@ -46,11 +46,8 @@ public class FlightPlanParser {
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
-<<<<<<< HEAD
-	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, ArrayList<String> GameSectors) {
-=======
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, map board ) {
->>>>>>> master
+
 	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
 	   try {
@@ -154,20 +151,7 @@ public class FlightPlanParser {
 		           	current_datepoint = null;
 		           	current_point = null;
 	        	}
-<<<<<<< HEAD
-	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
-	        		
-	        		if(current_airspacetype.equals("ES") && GameSectors.contains(current_airspace))
-		           	  {
-				             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
-				             
-		           	  }
-	        		current_entrydate = null;
-	        		current_exitdate = null;
-	        		current_entryexit= null;
-	        		current_airspace= null;
-	        		current_airspacetype = null;
-=======
+
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirSpaceProfile")) {
 	        		if(current_airspacetype.equals("ES"))
 		           	  {
@@ -177,7 +161,6 @@ public class FlightPlanParser {
 	        				}
 		           	  }
 	        		
->>>>>>> master
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT)) {
 	        	  //check if map is empty
