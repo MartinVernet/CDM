@@ -15,7 +15,8 @@ public class EntryExitTime {
 	
 	public Date getEntryTime() {
 	    return entryTime;
-	  }
+	}
+	
 	public void setEntryTime(Date entry) {
 	    entryTime = entry;
 	}

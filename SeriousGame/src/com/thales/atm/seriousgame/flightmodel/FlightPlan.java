@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.*;
 
 import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
@@ -23,7 +24,7 @@ public class FlightPlan {
 	  
 	  public FlightPlan (){
 		  pointProfile=new TreeMap<Date,String>();
-		  airspaceProfileES=new TreeMap<EntryExitTime,String>(secondDateComparator);	  
+		  airspaceProfileES=new TreeMap<EntryExitTime,String>(secondDateComparator);	  	  
 	  }
 	  
 	  //Methods
@@ -57,7 +58,31 @@ public class FlightPlan {
 	  public String getIcaoRoute() {
 		    return aircraftType;
 	  }
+	  		
+	  		//Flight Plan modification
+	  public void addSector(EntryExitTime time,String sectorID){
+		  this.airspaceProfileES.put(time, sectorID);
+	  }
 	  
+	  public void replaceSector(EntryExitTime time,String oldSectorID,String newSectorID){
+		  this.airspaceProfileES.replace(time, oldSectorID, newSectorID);
+	  }
+	  
+	  public void deletSector(EntryExitTime time,String sectorID){ 
+		  this.airspaceProfileES.remove(time, sectorID);
+	  }
+	  
+	  public void rerouteFlight(){
+		  //Tend à revenir sur le plan de vol de base
+		  //delet
+		  //add
+		  //Synchroniser les temps ?
+		  // ... ??
+	  }
+	  
+	  public void regulateFlight(int speed){
+		  
+	  }
 	  		//Others
 	  //Override compare function to compare EntryExitTime type
 	  Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
@@ -68,7 +93,7 @@ public class FlightPlan {
 	    	  } else {
 	    		  if((t1.getEntryTime().compareTo(t2.getEntryTime())) == 0 && (t1.getExitTime().compareTo(t2.getExitTime())) > 0) {
 		    		  return 1;
-		    	  }
+		    	  } 
 	    	  }
 	          // Different entry time
 	    	  if((t1.getEntryTime().compareTo(t2.getEntryTime())) > 0) {
@@ -83,7 +108,7 @@ public class FlightPlan {
 	  @Override
 	  public String toString() {
 	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
-	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<Date, String>(pointProfile) +"]";
+	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<EntryExitTime, String>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 }

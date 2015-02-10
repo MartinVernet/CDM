@@ -28,7 +28,7 @@ import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 public class FlightPlanParser {
 	
 	static final String FLIGHT = "flight"; 
-	static final String FLIGHTID = "id"; 
+	static final String AIRCRAFTID = "aircraftId"; 
 	static final String AIRCRAFTTYPE = "aircraftType";
 	static final String TAKEOFFTIME = "actualTakeOffTime";
 	static final String POINT = "pointId";
@@ -45,7 +45,7 @@ public class FlightPlanParser {
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
-	public List<FlightPlan> parseFlightPlan(String FlightPlanFile) {
+	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, ArrayList<String> GameSectors) {
 	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
 	   try {
@@ -70,7 +70,7 @@ public class FlightPlanParser {
 	          }
 
 	          if (event.asStartElement().getName().getLocalPart()
-	                .equals(FLIGHTID)) {
+	                .equals(AIRCRAFTID)) {
 	            event = eventReader.nextEvent();
 	            flight.setFlightId(event.asCharacters().getData());
 	            continue;
@@ -146,13 +146,21 @@ public class FlightPlanParser {
 	        	//EndElement endElement = event.asEndElement();
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmPointProfile")) {
 		           	flight.getPointProfile().put(current_datepoint, current_point);
-
+		           	current_datepoint = null;
+		           	current_point = null;
 	        	}
-	        	if (event.asEndElement().getName().getLocalPart() == ("airspaceType")) {
-	        		if(current_airspacetype.equals("ES"))
+	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
+	        		
+	        		if(current_airspacetype.equals("ES") && GameSectors.contains(current_airspace))
 		           	  {
 				             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
+				             
 		           	  }
+	        		current_entrydate = null;
+	        		current_exitdate = null;
+	        		current_entryexit= null;
+	        		current_airspace= null;
+	        		current_airspacetype = null;
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT)) {
 	        	  flights.add(flight);
