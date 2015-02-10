@@ -13,6 +13,7 @@ public class Settings {
 	private int m_anticipation;//déclenche une alerte m_anticipation tour avant regulation
 	private int m_delta;
 	private int m_turnLength;
+	private int m_nbMaxTurn;
 	
 	public Settings(){
 		this.m_players=new ArrayList<Player>();
@@ -115,6 +116,14 @@ public class Settings {
 
 	public void setTurnLength(int turnLength) {
 		this.m_turnLength = turnLength;
+	}
+
+	public int getNbMaxTurn() {
+		return m_nbMaxTurn;
+	}
+
+	public void setNbMaxTurn(int m_nbMaxTurn) {
+		this.m_nbMaxTurn = m_nbMaxTurn;
 	}
 	
 	

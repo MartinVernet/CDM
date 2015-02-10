@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jws.WebService;
 
@@ -15,16 +17,20 @@ public class AirSpace {
 	private String m_name;
 	//ArrayList<Sector> m_sector;
 	ArrayList<String> m_sectorId;
+	private boolean m_needRegulation;
+	Set<String> listOfFullSector; //Attention not multiThread Safe
 
 	public AirSpace(String name, ArrayList<String> sect)
 	{
 		this.setName(name);
 		this.m_sectorId=sect;
+		this.listOfFullSector =new HashSet<String>();
 	}
 	public AirSpace()
 	{
 			this.setName("test");
 			this.m_sectorId=null;
+			this.listOfFullSector =new HashSet<String>();
 	}
 	public String getName() {
 		return m_name;
@@ -32,8 +38,23 @@ public class AirSpace {
 	public void setName(String m_name) {
 		this.m_name = m_name;
 	}
-		
-		//creation du dictionnaire des airblocks;
+	public boolean getNeedRegulation() {
+		return m_needRegulation;
+	}
+	public void setNeedRegulation(boolean m_needRegulation) {
+		this.m_needRegulation = m_needRegulation;
+	}
+	
+	public void addFullSector(String sectorId)
+	{
+		//verifier s'il n'est pas deja dedans
+		listOfFullSector.add(sectorId);
+	}
+	public void removeFullSector(String sectorId)
+	{
+		//a optimiser
+		listOfFullSector.remove(sectorId);
+	}
 		
 
 }

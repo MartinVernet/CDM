@@ -1,11 +1,15 @@
 package com.thales.atm.seriousgame;
 
 import java.io.BufferedReader;
+
+import com.vividsolutions.jts.geom.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.jws.WebService;
 
@@ -15,12 +19,14 @@ public class map {
 	HashMap <String,Sector> m_sectorDictionary;
 	HashMap <String,AirSpace> m_airSpaceDictionary;
 	HashMap <String,AirBlock> m_airBlockWithAltDic;
-
+	
+	
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
 		HashMap <String,AirBlock> airBlockDictionaryTemp=InitAirBlock(AirbFile);
 		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
+		setFather();
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
@@ -280,7 +286,130 @@ public class map {
 		return null;
 	}
 	
+	public void setFather()
+	{
+		for(String key : m_sectorDictionary.keySet())
+		{
+			Sector sector=m_sectorDictionary.get(key);
+			sector.setFather(m_airSpaceDictionary.get(sector.getFatherId()));
+		}
 		
+		for(String key : m_airBlockWithAltDic.keySet())
+		{
+			AirBlock airb=m_airBlockWithAltDic.get(key);
+			airb.setFather(m_sectorDictionary.get(airb.getFatherId()));
+		}
+	}
+	
+	private void setAirblockNeighbors()
+	{
+		Map<String,Polygon> AirBpolys=new HashMap<String,Polygon>();
+		for (String idAirB : m_airBlockWithAltDic.keySet())
+		{
+			Coordinate currentCoord[] = new Coordinate[m_airBlockWithAltDic.get(idAirB).GetCoord().size()];
+			
+			GeometryFactory GF = new GeometryFactory();
+			for (int i=0;i<m_airBlockWithAltDic.get(idAirB).GetCoord().size();i++){
+				double x=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetX();
+				double y=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetY();
+				
+				currentCoord[i]=new Coordinate(x,y);
+				
+
+			}
+			AirBpolys.put(idAirB,GF.createPolygon(currentCoord));
+		}
+		//To be optimised (on peut parcourir moins) 
+		for (String idAirB1 : m_airBlockWithAltDic.keySet()){
+			for (String idAirB2 : m_airBlockWithAltDic.keySet()){
+				if (!(idAirB1.equals(idAirB2)) && AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2))){
+					double zmin1 = m_airBlockWithAltDic.get(idAirB1).GetAltMin();
+					double zmin2 = m_airBlockWithAltDic.get(idAirB2).GetAltMin();
+					double zmax1 = m_airBlockWithAltDic.get(idAirB1).GetAltMax();
+					double zmax2 = m_airBlockWithAltDic.get(idAirB2).GetAltMax();
+					if(!(zmin2>zmax1 || zmax2<zmin1))
+					{
+						m_airBlockWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void setSectorNeighbors()
+	{
+		Map<String,Polygon> AirBpolys=new HashMap<String,Polygon>();
+		for (String idAirB : m_airBlockWithAltDic.keySet())
+		{
+			Coordinate currentCoord[] = new Coordinate[m_airBlockWithAltDic.get(idAirB).GetCoord().size()];
+			
+			GeometryFactory GF = new GeometryFactory();
+			for (int i=0;i<m_airBlockWithAltDic.get(idAirB).GetCoord().size();i++){
+				double x=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetX();
+				double y=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetY();
+				
+				currentCoord[i]=new Coordinate(x,y);
+				
+
+			}
+			AirBpolys.put(idAirB,GF.createPolygon(currentCoord));
+		}
+		//To be optimised (on peut parcourir moins) 
+		for (String idAirB1 : m_airBlockWithAltDic.keySet()){
+			for (String idAirB2 : m_airBlockWithAltDic.keySet()){
+				if (!(idAirB1.equals(idAirB2)) && AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2))){
+					double zmin1 = m_airBlockWithAltDic.get(idAirB1).GetAltMin();
+					double zmin2 = m_airBlockWithAltDic.get(idAirB2).GetAltMin();
+					double zmax1 = m_airBlockWithAltDic.get(idAirB1).GetAltMax();
+					double zmax2 = m_airBlockWithAltDic.get(idAirB2).GetAltMax();
+					if(!(zmin2>zmax1 || zmax2<zmin1))
+					{
+						String idFather1 = m_airBlockWithAltDic.get(idAirB1).getFatherId();
+						String idFather2 = m_airBlockWithAltDic.get(idAirB2).getFatherId();
+						if(!idFather1.equals(idFather2))
+						{
+							m_sectorDictionary.get(idFather1).getNeighbors().add(idFather2);
+							//m_airBlckWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
+
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	public void reduceMap(ArrayList<String> chosenAirSpaces)
+	{
+		HashMap<String, AirBlock>reduceAirBlockDictionary=new HashMap<String, AirBlock>();
+		HashMap<String, Sector>reduceSectorDictionary=new HashMap<String, Sector>();
+		HashMap<String, AirSpace>reduceAirSpaceDictionary=new HashMap<String, AirSpace>();
+		for ( String airSpaceId :chosenAirSpaces)
+		{
+			for (String sectorId :m_airSpaceDictionary.get(airSpaceId).m_sectorId)
+			{
+				for(String airbId :m_sectorDictionary.get(sectorId).m_airBlocksId)
+				{
+					reduceAirBlockDictionary.put(airbId, m_airBlockWithAltDic.get(airbId));
+				}
+				reduceSectorDictionary.put(sectorId, m_sectorDictionary.get(sectorId));
+			}
+			reduceAirSpaceDictionary.put(airSpaceId, m_airSpaceDictionary.get(airSpaceId));
+		}
+		
+		m_sectorDictionary.clear();
+		m_airSpaceDictionary.clear();
+		m_airBlockWithAltDic.clear();
+		
+		m_airBlockWithAltDic=reduceAirBlockDictionary;
+		m_sectorDictionary=reduceSectorDictionary;
+		m_airSpaceDictionary=reduceAirSpaceDictionary;
+		
+		setSectorNeighbors();
+		
+	}
+	
+	
 }
 
 

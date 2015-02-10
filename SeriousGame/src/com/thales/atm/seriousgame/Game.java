@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+
 
 
 @WebService
@@ -22,7 +25,6 @@ public class Game {
 	private int m_turn;
 	private Map<Integer,AOC> AOCplayers;
 	private Map<Integer,FMP> FMPplayers;
-	private Map<String,AirSpace> AirSpaceMap;
 	private Map<String,Integer> AirspaceToFMP;
 	private Date currentDate;
 	private map m_board;
@@ -32,7 +34,6 @@ public class Game {
 		this.m_turn=0;
 		this.AOCplayers=new HashMap<Integer, AOC>();
 		this.FMPplayers=new HashMap<Integer, FMP>();
-		this.AirSpaceMap=new HashMap<String, AirSpace>();
 	}
 	
 	public void setSettings(Settings settings){
@@ -54,7 +55,6 @@ public class Game {
 	}
 	
 	
-	
 	/**
     Crée les airspaces, sectors et airblocks à partir des fichiers donnés dans les settings.
 	*/
@@ -62,49 +62,97 @@ public class Game {
 		this.m_board = new map(this.m_settings.getAirBlockFile(),this.m_settings.getSectorFile(),this.m_settings.getAirspaceFile());
 	}
 	
-	public void initiateNewGame() throws IOException{
+	public void initiateNewGame() throws IOException
+	{
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		//Files selection
+		//System.out.println("Airspace File ? ");
+		//String airspaceFile = br.readLine();
+		m_settings.setAirspaceFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
+				
+		//System.out.println("Sector File ? ");
+		//String sectorFile = br.readLine();
+		m_settings.setSectorFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl");
+				
+		//System.out.println("Airblock File ? ");
+		//String airblockFile = br.readLine();
+		m_settings.setAirblockFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar");
+		this.loadAirspace();
+		/*for (String sectorID: m_board.m_sectorDictionary.get("BIRDNO").getNeighbors())
+		{
+			System.out.println("#####################");
+			System.out.println(sectorID);
+			System.out.println("*******");
+			for (String sectorID2: m_board.m_sectorDictionary.get(sectorID).getNeighbors())
+			{
+				System.out.println(sectorID2);
+			}
+		}
+		*/		
+		ArrayList<String> chosenAirSpace =new ArrayList<String>();
+		chosenAirSpace.add("GCCCCTA");
+		chosenAirSpace.add("GMMMCTA");
+		chosenAirSpace.add("GOOOCTA");
+		
+		this.m_board.reduceMap(chosenAirSpace);
+		for(String airsSpaceID:m_board.m_airSpaceDictionary.keySet())
+		{
+			
+			System.out.println(airsSpaceID);
+		}
+		System.out.println("#####################");
+		for(String sectorID:m_board.m_sectorDictionary.keySet())
+		{
+			System.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
+		}
+		
 		
 		//Players creation
 		String addNewPlayer="Y";
 		int i=1;
-		while (addNewPlayer=="Y"){
+		while (addNewPlayer.equals("Y"))
+		{
 			System.out.println("Player "+i);
 			System.out.println("Name of player "+i+" ");
 			String name = br.readLine();
 			String type="none";
-			while (type!="AOC" && type!="FMP")
+			while (!(type.equals("AOC") || type.equals("FMP")))
+			{
 				System.out.println("Type of player: (AOC/FMP)");
 				type=br.readLine();
-				if (type=="AOC"){
+				if (type.equals("AOC"))
+				{
 					AOC P = new AOC(name,i);
 					m_settings.addPlayer(P);
 				}
-				if(type=="FMP"){
+				if(type.equals("FMP"))
+				{
 					String airspaceID="";
+					ArrayList<AirSpace> airspaces=new ArrayList<AirSpace>();
 					System.out.println("Airspace name ?");
 					airspaceID=br.readLine();
-					FMP P = new FMP(name,i,this.AirSpaceMap.get(airspaceID));
+					airspaces.add(m_board.m_airSpaceDictionary.get(airspaceID));
+					System.out.println("Add another airspace ? (Y/N)");
+					String keep;
+					keep=br.readLine();
+					while(keep.equals("Y"))
+					{
+						System.out.println("Airspace name ?");
+						airspaceID=br.readLine();
+						airspaces.add(m_board.m_airSpaceDictionary.get(airspaceID));
+						System.out.println("Add another airspace ? (Y/N)");
+						keep=br.readLine();
+					}
+					FMP P = new FMP(name,i,airspaces);
 					m_settings.addPlayer(P);
 				}
+			}
 			i+=1;
 			System.out.println("Do you want to add a new player (Y/N) ? ");
 			addNewPlayer = br.readLine();
 		}
-				
-		//Files selection
-		System.out.println("Airspace File ? ");
-		String airspaceFile = br.readLine();
-		m_settings.setAirspaceFile(airspaceFile);
-		
-		System.out.println("Sector File ? ");
-		String sectorFile = br.readLine();
-		m_settings.setSectorFile(sectorFile);
-		
-		System.out.println("Airblock File ? ");
-		String airblockFile = br.readLine();
-		m_settings.setAirblockFile(airblockFile);
 		
 		
 		//Level choice
@@ -131,7 +179,8 @@ public class Game {
 		}
 		
 		this.getFinalMapsOfPlayers();
-		this.loadAirspace();
+		//this.loadAirspace();
+		//this.m_board.reduceMap(null);//replace null by  selected airSpace from IHM
 		
 		//Main loop of the game
 		while (this.isFinished()==false){
@@ -143,27 +192,24 @@ public class Game {
 	
 	
 	
-	
-	
-	
 	/**
 	Vérifie si une condition d'arrêt du jeu est remplie.
 	@return True si le jeu se termine, False sinon
 	*/
 	private boolean isFinished() {
-		// check if the game is finished or not
+		if(m_turn>= m_settings.getNbMaxTurn())
+		{
+			return true;
+		}
 		return false;
 	}
 
-	
-	
-	
 	
 	public void startNewTurn(){
 		
 		this.allocateFlights();
 		
-		this.allocateTokens();
+		this.allocateTokens();//
 		
 		this.startAOCTurn();//AOC allocates their tokens to their flights
 		
@@ -231,11 +277,8 @@ public class Game {
 	 */
 	private void startFMPTurn() {
 		while (this.endOfTurn()==false){
-			ArrayList<AirSpace> toBeRegulated = m_board.checkOccupation();
-			for (int i=0;i<toBeRegulated.size();i++){
-				String airspaceID=toBeRegulated.get(i).getName();
-				int IdFMP=this.AirspaceToFMP.get(airspaceID);
-				//To be continued
+			for ( int key : FMPplayers.keySet() ){
+				FMPplayers.get(key).play();
 			}
 			this.forwardDate();
 		}
@@ -256,9 +299,5 @@ public class Game {
 	}
 	
 	
-	
-	private Map<String,AirSpace> getAirSpaceMap(){
-		return this.AirSpaceMap;
-	}
 	
 }
