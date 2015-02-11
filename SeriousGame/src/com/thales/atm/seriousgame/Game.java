@@ -1,4 +1,6 @@
 package com.thales.atm.seriousgame;
+import com.thales.atm.seriousgame.flightmodel.FlightPlan;
+import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
 
 import javax.jws.WebService;
 
@@ -13,8 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
 
 
 @WebService
@@ -107,8 +107,13 @@ public class Game {
 		{
 			System.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
 		}
-		
-		
+		//Flight plan
+		FlightPlanParser read = new FlightPlanParser();
+	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", this.m_board);
+	    	//Tests
+	    for (FlightPlan flight : parseFlightPlan) {
+	      System.out.println(flight);
+	    }
 		//Players creation
 		String addNewPlayer="Y";
 		int i=1;

@@ -84,31 +84,6 @@ public class FlightPlanParser {
 	            flight.setAircraftType(event.asCharacters().getData());
 	            continue;
 	          }
-
-	          if (event.asStartElement().getName().getLocalPart()
-	              .equals(TAKEOFFTIME) || event.asStartElement().getName().getLocalPart()
-	              .equals("estimatedTakeOffTime")) {
-	            event = eventReader.nextEvent();	 	          
-	            flight.setActualTakeOffTime(event.asCharacters().getData());
-	            continue;
-	          }
-
-   
-		      if (event.asStartElement().getName().getLocalPart()
-				       .equals(TIMEPOINT)) {
-				     event = eventReader.nextEvent();
-				     current_datepoint = stringToDate (event.asCharacters().getData());
-				     continue;
-				            
-		       }
-		       if (event.asStartElement().getName().getLocalPart()
-				        .equals(POINT) || event.asStartElement().getName().getLocalPart()
-				        .equals("aerodrome")) {
-		           	  event = eventReader.nextEvent();
-		           	  current_point = event.asCharacters().getData();
-				      continue;
-		       }
-
 		       		       
 		       if (event.asStartElement().getName().getLocalPart()
 				        .equals(AIRSPACE)) {
@@ -146,11 +121,6 @@ public class FlightPlanParser {
 	        
 	        if (event.isEndElement()) {
 	        	//EndElement endElement = event.asEndElement();
-	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmPointProfile")) {
-		           	flight.getPointProfile().put(current_datepoint, current_point);
-		           	current_datepoint = null;
-		           	current_point = null;
-	        	}
 
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirSpaceProfile")) {
 	        		if(current_airspacetype.equals("ES"))
@@ -162,8 +132,8 @@ public class FlightPlanParser {
 		           	  }
 	        		
 		        }
-	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT)) {
-	        	  //check if map is empty
+	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getAirspaceProfile().isEmpty() == false) {
+	        	  
 	            	flights.add(flight);
 	            }
 	        }

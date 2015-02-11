@@ -19,8 +19,6 @@ import javax.jws.WebService;
 public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
-	  private String actualTakeOffTime;
-	  private Map<Date,String> pointProfile;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private TreeMap<Date,Sector> airspaceProfileES;
 	  
@@ -28,16 +26,11 @@ public class FlightPlan {
 	  //priority
 	  
 	  public FlightPlan (){
-		  pointProfile=new TreeMap<Date,String>();
 		  airspaceProfileES=new TreeMap<Date,Sector>();
 	  }
 	  
 	  //Methods
-	  		//Get and Set
-	  public Map<Date,String> getPointProfile() {
-		  return pointProfile;
-	  }
-	  
+	  		//Get and Set 
 	  public Map<Date,Sector> getAirspaceProfile() {
 		  return airspaceProfileES;
 	  }
@@ -53,12 +46,6 @@ public class FlightPlan {
 	  }
 	  public void setAircraftType(String aircraftType) {
 	    this.aircraftType = aircraftType;
-	  }
-	  public String getActualTakeOffTime() {
-	    return actualTakeOffTime;
-	  }
-	  public void setActualTakeOffTime(String actualTakeOffTime) {
-	    this.actualTakeOffTime = actualTakeOffTime;
 	  }
 	  public String getIcaoRoute() {
 		    return aircraftType;
@@ -112,8 +99,7 @@ public class FlightPlan {
 	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
-	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
+	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
