@@ -31,7 +31,7 @@ public class FlightPlan {
 	  
 	  //Methods
 	  		//Get and Set 
-	  public Map<Date,Sector> getAirspaceProfile() {
+	  public TreeMap<Date,Sector> getAirspaceProfile() {
 		  return airspaceProfileES;
 	  }
 	  
@@ -52,7 +52,7 @@ public class FlightPlan {
 	  }
 	  		
 	  		//Flight Plan modification
-	  public void addSector(Date time,Sector sectorID){
+/*	  public void addSector(Date time,Sector sectorID){
 		  this.airspaceProfileES.put(time, sectorID);
 	  }
 	  
@@ -75,6 +75,7 @@ public class FlightPlan {
 	  public void regulateFlight(int speed){
 		  
 	  }
+	  */
 	  		//Others
 	  //Override compare function to compare EntryExitTime type
 	  Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
