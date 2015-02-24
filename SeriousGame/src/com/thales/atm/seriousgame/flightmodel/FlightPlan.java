@@ -9,9 +9,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
-
-
-
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
 import com.thales.atm.seriousgame.map;
@@ -96,20 +93,22 @@ public class FlightPlan {
 			BufferedReader br = null;
 			String a="";
 			String cvsSplitBy = ";";
+			boolean findElement = false;
 			
 			try {
 		 
 					br = new BufferedReader(new FileReader(csvFile));
-					while ((a = br.readLine()) != null) 
+					while ((a = br.readLine()) != null && findElement == false) 
 					{
 						
 		 		        // use semi comma as separator
 						String [] obj= a.split(cvsSplitBy);
 					
-						if(obj[0].equalsIgnoreCase(airlineID))
+						if(obj[0].equals(airlineID))
 						{
 							airline = obj[1];
 							setAirline(airline);
+							findElement = true;
 						}
 						else
 						{
