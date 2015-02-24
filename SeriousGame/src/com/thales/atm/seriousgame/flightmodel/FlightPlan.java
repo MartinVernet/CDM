@@ -134,7 +134,7 @@ public class FlightPlan {
 
 	  		//Others
 	  //Override compare function to compare EntryExitTime type
-	  Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
+	 /* Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
 	      @Override public int compare(EntryExitTime t1, EntryExitTime t2) {
 	    	  // Same entry time
 	    	  if((t1.getEntryTime().compareTo(t2.getEntryTime())) == 0 && (t1.getExitTime().compareTo(t2.getExitTime())) < 0) {
@@ -151,12 +151,12 @@ public class FlightPlan {
 	    		  return -1;
 	    	  }          	    	  
 	      }           
-	  };
+	  };*/
 	  
 	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "[flightId=" + flightId + ", Airline=" + airline + ",aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
+	    return "[flightId=" + flightId + ", Airline=" + airline + ", aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
