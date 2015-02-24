@@ -1,152 +1,162 @@
+AHS;AHS Air International 
+JAF;TUI Airlines Belgium
+LBT;Nouvelair Tunisie
+MCD;Air Medical UK
+CFE;CityFlyer Express
+TVF;Transavia France S.A.S.
+SIO;Sirio Italian
+AEE;Aegean Airlines
+TUI;TUIfly
+EIN;Aer Lingus
 FIN;Finnair
 DHK;D H L
-BGA;airbus transport
-NAX;norwegian
-EXS;jet2.com
-BEL;brussels airlines
-VLG;vueling airlines
-ANE;air nostrum
-LGL;luxair
-KLM;k l m
-EZY;easy jet
-SSQ;sunstate
-FJI;pacific
-QFA;qantas
-SIA;singapore
-WIT;striker
-RXX;rex
-IPU;impulse
-ANG;niugini
-MAD;maple
-FOM;free air
-EIA;ever green
-AFL;aeroflot
-ANA;all nippon airways
-ANZ;new zealand
-AUA;austrian
-AFR;air france
-AVN;air van
-BAW;british airways
-BCS;european air transport
-CCA;air china
-CLX;cargolux
-CAL;dynasty
-CES;china eastern airlines
-COA;continental airlines
-DAL;delta airlines
-DLH;lufthansa
-JKK;span air
-KAL;korean air
-MCK;mac air
-RYR;ryan air
-SAS;scandinavian
-THA;thai airways
-TRA;transavia
-UPS;united parcel service
-VIR;virgin
-ASY;aussie
-VKG;viking
-RKA;air afrique
-QQA;alliance
-AAL;american
-DAH;algerie
-BTV;batavia
-PBN;blue bird
-AUS;australian
-ATL;air atlantic
-AAG;air atlantique
-REU;air austral
-ABB;air belgium
-BOT;air botswana
-AZX;air bristol
-ACA;air canada
-AGN;air gabon
-HJA;air haiti
-AHK;air hong kong
-AIC;air india
-C57;air macau
-MDG;air madagascar
-MAU;air mauritius
-DBD;air niagra express
-RSI;air sunshine
-VTA;air tahiti
-UKA;air united kingdoms
-UKR;air ukraine
-AZW;air zimbabwe
-SAB;sabena
-TWE;transwede
-SWR;swissair
-HLF;hapag
-MAS;malaysian
-CIN;constellation
-OAL;olympic
-GEO;georgia
-SLR;sobelair
-AZA;alitalia
-FCA;jet set
-AMC;air malta
-VIV;viva
-BER;berlin
-ISR;israeli
-LAJ;bee med
-GFA;gulf air
-JOR;blue
-SRK;skyfox
-AEA;europa
-GMI;germania
-UAE;emirates
-JCA;jetcom
-RRR;ascot
-PJS;jetaviation
-CTM;cotam
-MSR;egypt air
-BAL;britannia
-UAL;united
-PGA;portugalia
-ISS;meridiana
-BAF;belgian airforce
-NET;netherlands
-TAM;adria
-SWG;sunwing
-CRX;cross air
-ROT;tarom
-SAT;sata
-LGL;luxair
-FUA;futura
-SVA;saudia
-EZS;topswiss
-AEF;aero lloyd
-TAR;tunis air
-THY;turkish
-INR;air inter
-IBE;iberia
-LDA;lauda
-EBA;belstar
-BMA;midland
-LNK;airlink
-LAZ;balkan
-MON;monarch
-AUA;austrian
-CFG;condor
-LWD;leisure
-TAP;air portugal
-JAL;japan air
-AOM;french line
-BAG;speedway
-OHY;onur air
-HAS;hamburg air
-OME;omega
-FAF;french air force
-EIN;shamrock
-EVA;eva
-GAF;german air
-TLA;translift
-CRL;corsair
-GBL;gibair
-SRR;whitestar
-CNS;centennial
-RCH;reach
-ACI;aircalin
-HLF;hapaglloyd
-FDX;fedex
-KIA;kiwi
+BGA;Airbus transport
+NAX;Norwegian
+EXS;Jet2
+BEL;Brussels airlines
+VLG;Vueling airlines
+ANE;Air nostrum
+LGL;Luxair
+KLM;K L M
+EZY;Easy jet
+SSQ;Sunstate
+FJI;Pacific
+QFA;Qantas
+SIA;Singapore
+WIT;Striker
+RXX;Rex
+IPU;Impulse
+ANG;Niugini
+MAD;Maple
+FOM;Free air
+EIA;Ever green
+AFL;Aeroflot
+ANA;All nippon airways
+ANZ;New zealand
+AUA;Austrian
+AFR;Air france
+AVN;Air van
+BAW;British airways
+BCS;European air transport
+CCA;Air china
+CLX;Cargolux
+CAL;Dynasty
+CES;China eastern airlines
+COA;Continental airlines
+DAL;Delta airlines
+DLH;Lufthansa
+JKK;Span air
+KAL;Korean air
+MCK;Mac air
+RYR;Ryan air
+SAS;Scandinavian
+THA;Thai airways
+TRA;Transavia
+UPS;United parcel service
+VIR;Virgin
+ASY;Aussie
+VKG;Viking
+RKA;Air afrique
+QQA;Alliance
+AAL;American
+DAH;Algerie
+BTV;Batavia
+PBN;Blue bird
+AUS;Australian
+ATL;Air atlantic
+AAG;Air atlantique
+REU;Air austral
+ABB;Air belgium
+BOT;Air botswana
+AZX;Air bristol
+ACA;Air canada
+AGN;Air gabon
+HJA;Air haiti
+AHK;Air hong kong
+AIC;Air india
+C57;Air macau
+MDG;Air madagascar
+MAU;Air mauritius
+DBD;Air niagra express
+RSI;Air sunshine
+VTA;Air tahiti
+UKA;Air united kingdoms
+UKR;Air ukraine
+AZW;Air zimbabwe
+SAB;Sabena
+TWE;Transwede
+SWR;Swissair
+HLF;Hapag
+MAS;Malaysian
+CIN;Constellation
+OAL;Olympic
+GEO;Georgia
+SLR;Sobelair
+AZA;Alitalia
+FCA;Jet set
+AMC;Air malta
+VIV;Viva
+BER;Berlin
+ISR;Israeli
+LAJ;Bee med
+GFA;Gulf air
+JOR;Blue
+SRK;Skyfox
+AEA;Europa
+GMI;Germania
+UAE;Emirates
+JCA;Jetcom
+RRR;Ascot
+PJS;Jetaviation
+CTM;Cotam
+MSR;Egypt air
+BAL;Britannia
+UAL;United
+PGA;Portugalia
+ISS;Meridiana
+BAF;Belgian airforce
+NET;Netherlands
+TAM;Adria
+SWG;Sunwing
+CRX;Cross air
+ROT;Tarom
+SAT;Sata
+LGL;Luxair
+FUA;Futura
+SVA;Saudia
+EZS;Topswiss
+AEF;Aero lloyd
+TAR;Tunis air
+THY;Turkish
+INR;Air inter
+IBE;Iberia
+LDA;Lauda
+EBA;Belstar
+BMA;Midland
+LNK;Airlink
+LAZ;Balkan
+MON;Monarch
+AUA;Austrian
+CFG;Condor
+LWD;Leisure
+TAP;Air portugal
+JAL;Japan air
+AOM;French line
+BAG;Speedway
+OHY;Onur air
+HAS;Hamburg air
+OME;Omega
+FAF;French air force
+EIN;Shamrock
+EVA;Eva
+GAF;German air
+TLA;Translift
+CRL;Corsair
+GBL;Gibair
+SRR;Whitestar
+CNS;Centennial
+RCH;Reach
+ACI;Aircalin
+HLF;Hapaglloyd
+FDX;Fedex
+KIA;Kiwi
