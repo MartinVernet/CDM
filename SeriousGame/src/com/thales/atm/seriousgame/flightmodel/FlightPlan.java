@@ -19,11 +19,10 @@ import javax.jws.WebService;
 public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
+	  private Date exitMap;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private TreeMap<Date,Sector> airspaceProfileES;
-	  
-	  //position
-	  //priority
+
 	  
 	  public FlightPlan (){
 		  airspaceProfileES=new TreeMap<Date,Sector>();
@@ -38,44 +37,40 @@ public class FlightPlan {
 	  public String getFlightId() {
 	    return flightId;
 	  }
+	  
 	  public void setFlightId(String flightId) {
 	    this.flightId = flightId;
 	  }
+	  
 	  public String getAircraftType() {
 	    return aircraftType;
 	  }
+	  
 	  public void setAircraftType(String aircraftType) {
 	    this.aircraftType = aircraftType;
 	  }
-	  public String getIcaoRoute() {
-		    return aircraftType;
+	  
+	  public Date getExitMap() {
+		return exitMap;
+	  }
+
+	  public void setExitMap(Date exitmap) {
+		this.exitMap = exitmap;
 	  }
 	  		
-	  		//Flight Plan modification
-/*	  public void addSector(Date time,Sector sectorID){
-		  this.airspaceProfileES.put(time, sectorID);
+	  public Date getEntryMap(){		  
+		  Date EntryMap = airspaceProfileES.firstKey();
+		  return EntryMap;
 	  }
 	  
-	  public void replaceSector(Date time,Sector oldSectorID,Sector newSectorID){
-		  this.airspaceProfileES.replace(time, oldSectorID, newSectorID);
+	  public Sector getSectorFromDate(Date date) {
+			
+		Date entryDate = airspaceProfileES.floorKey(date);
+		Sector sector =airspaceProfileES.get(entryDate);
+		return sector;
+			
 	  }
-	  
-	  public void deletSector(Date time,Sector sectorID){ 
-		  this.airspaceProfileES.remove(time, sectorID);
-	  }
-	  
-	  public void rerouteFlight(){
-		  //Tend à revenir sur le plan de vol de base
-		  //delet
-		  //add
-		  //Synchroniser les temps ?
-		  // ... ??
-	  }
-	  
-	  public void regulateFlight(int speed){
-		  
-	  }
-	  */
+
 	  		//Others
 	  //Override compare function to compare EntryExitTime type
 	  Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
@@ -100,16 +95,9 @@ public class FlightPlan {
 	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
+	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
-	public Sector getSectorFromDate(Date date) {
-		
-		Date entryDate = airspaceProfileES.floorKey(date);
-		Sector sector =airspaceProfileES.get(entryDate);
-		return sector;
-		
-	}
 }
 

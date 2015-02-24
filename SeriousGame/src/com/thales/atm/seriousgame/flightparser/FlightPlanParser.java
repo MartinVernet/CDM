@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.thales.atm.seriousgame.Sector;
 import com.thales.atm.seriousgame.map;
 import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
@@ -33,18 +36,13 @@ public class FlightPlanParser {
 	static final String FLIGHT = "flight"; 
 	static final String AIRCRAFTID = "aircraftId"; 
 	static final String AIRCRAFTTYPE = "aircraftType";
-	static final String TAKEOFFTIME = "actualTakeOffTime";
-	static final String POINT = "pointId";
-	static final String TIMEPOINT = "timeOver";
 	static final String AIRSPACE = "airspaceId";
 	static final String ENTRYAS = "firstEntryTime";
 	static final String EXITAS = "lastExitTime";
 
-	Date current_datepoint=null;
-	String current_point=null;
 	Date current_entrydate=null;
 	Date current_exitdate=null;
-	EntryExitTime current_entryexit=null;
+	//EntryExitTime current_entryexit=null;
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
@@ -107,16 +105,14 @@ public class FlightPlanParser {
 		             current_entrydate = stringToDate (event.asCharacters().getData());
 		             continue;
 		       }
-	          
-	           /*if (event.asStartElement().getName().getLocalPart()
+	           
+	           if (event.asStartElement().getName().getLocalPart()
 		               .equals(EXITAS)) {
 		             event = eventReader.nextEvent();
 		             current_exitdate = stringToDate (event.asCharacters().getData());
-		             current_entryexit = new EntryExitTime(current_entrydate, current_exitdate);
 		           	 continue;
-		       }*/
-		       
-	           
+		       }
+		       	           
 	          
 	        }
 	        // If we reach the end of an End element, we add it to the list
@@ -127,16 +123,19 @@ public class FlightPlanParser {
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
 	        		//if(current_airspacetype.equals("ES"))
 		           	//  {
-	        				if ( sectorBoard.keySet().contains(current_airspace))
+	        				if (sectorBoard.keySet().contains(current_airspace))
 	        				{
 	        					flight.getAirspaceProfile().put(current_entrydate, sectorBoard.get(current_airspace));
+	        					flight.setExitMap(current_exitdate);
 	        				}
 		           	 // }
 	        		
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getAirspaceProfile().isEmpty() == false) { 
 	        	  
+	            	
 	            	flights.add(flight);
+	            	
 	            }
 	        }
 
@@ -161,6 +160,21 @@ public class FlightPlanParser {
 				e.printStackTrace();
 				return null;
 		  }		  
+	  }
+	  
+	  public int stringToDuration (String stringduration) {
+		  
+		  String stringhours = StringUtils.substring(stringduration, 0, 2);
+		  int hours = Integer.parseInt(stringhours);
+		  
+		  String stringminutes = StringUtils.substring(stringduration, 2, 4);
+		  int minutes = Integer.parseInt(stringminutes);
+		  
+		  String stringseconds = StringUtils.substring(stringduration, 4, 6);
+		  int seconds = Integer.parseInt(stringseconds);
+		  
+		  int duration = 3600 * hours + 60 * minutes + seconds;
+		  return duration;
 	  }
 	        	  
 }
