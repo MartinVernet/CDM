@@ -65,7 +65,7 @@ public class Flight {
 
 	public void setAirline(String airline) {
 		this.airline = airline;
-
+	}
 	
 	public int getEconomicValue(){
 		return economicValue;
