@@ -1,22 +1,27 @@
 package com.thales.atm.seriousgame;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AOC extends Player {
 	
 	private int m_budget;
 	private HashMap<String,Flight> m_flights;
+	private ArrayList<String> newFlights;
 	
 	public AOC(){
 		super();
 		m_budget=0;
 		m_flights=new HashMap<String,Flight>();
+		newFlights= new ArrayList<String>();
 	}
 	
 	public AOC(String name, int i) {
 		
 		super(name,i);
 		m_budget=0;
+		m_flights=new HashMap<String,Flight>();
+		newFlights= new ArrayList<String>();
 	}
 
 	public void play(HashMap<Integer,Integer> flightPriorities){
@@ -38,8 +43,13 @@ public class AOC extends Player {
 		this.m_budget=budget;
 	}
 	
+	public void clearNewFlights(){
+		newFlights.clear();
+	}
+	
 	public void addFlight(Flight flight){
 		this.m_flights.put(flight.getFlightID(),flight);
+		this.newFlights.add(flight.getFlightID());
 	}
 	
 	public void setName(String name){
@@ -54,5 +64,7 @@ public class AOC extends Player {
 		// A compléter
 		return true;
 	}
+	
+
 
 }

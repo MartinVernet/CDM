@@ -118,6 +118,7 @@ public class SettingsGetter implements Runnable{
 						FMP player=new FMP(name,id,playerAirspaces);
 						if (player.isOK()){
 							game.addFMPPlayer(player);
+							player.setAirspaces(game.getBoard());
 						}
 					}
 					

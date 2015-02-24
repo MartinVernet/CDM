@@ -6,7 +6,6 @@ import com.thales.atm.seriousgame.Player;
 import com.thales.atm.seriousgame.Settings;
 import com.thales.atm.seriousgame.client.mainIHMSimulator;
 import com.thales.atm.seriousgame.communications.CommunicationMainIHM;
-
 import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
@@ -19,6 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -36,6 +37,7 @@ public class Game {
 	private HashMap<String,Integer> AirspaceToFMP;
 	private Date currentDate;
 	private map m_board;
+	private TreeMap<Date,ArrayList<FlightPlan>> entryDate2FlightPlan;
 	private CommunicationMainIHM mainClient;
 	private mainIHMSimulator mainIHM;
 	
@@ -54,10 +56,6 @@ public class Game {
 		this.m_turn=0;
 		this.AOCplayers=new HashMap<String, AOC>();
 		this.FMPplayers=new HashMap<String, FMP>();
-		
-		//create socket toward main IHM
-		//this.mainClient=new CommunicationMainIHM(port);
-		//this.mainIHM=new mainIHMSimulator(port);
 	}
 	
 	public Game(Settings settings)
@@ -66,23 +64,7 @@ public class Game {
 		this.m_turn=0;
 		this.AOCplayers=new HashMap<String, AOC>();
 		this.FMPplayers=new HashMap<String, FMP>();
-		
-		
-		
-		//create socket toward main IHM
-		//this.mainClient=new CommunicationMainIHM(port);
-		//this.mainIHM=new mainIHMSimulator(port);
 	}
-	
-	public void initiateGame(){
-		this.loadAirspace();
-		this.getFinalMapsOfPlayers();
-		for (String name : FMPplayers.keySet()){
-			FMPplayers.get(name).setAirspaces(m_board);
-		}
-	}
-	
-	
 	
 	
 	/**
@@ -91,20 +73,23 @@ public class Game {
 	public void launchGame()
 	{
 		
-		//verify that the game is OK
-		while (this.m_settings.checkIfReady()!=true){
-			this.m_settings.solveProblems();
+		if(!this.m_settings.checkIfReady()){
+			System.out.println("settings non conformes");
 		}
 		
-		
-		//this.loadAirspace();
-		//this.m_board.reduceMap(null);//replace null by  selected airSpace from IHM
+		else
+		{
+		ArrayList<String> chosenAirspaces = new ArrayList<String>();
+		for (String key : FMPplayers.keySet()){
+			chosenAirspaces.addAll(FMPplayers.get(key).getAirspacesID());
+			}
+		this.m_board.reduceMap(chosenAirspaces);
 		
 		//Main loop of the game
 		while (this.isFinished()==false){
-			
 			this.m_turn++;
 			this.startNewTurn();
+			}
 		}
 	}
 	
@@ -119,11 +104,13 @@ public class Game {
 	 * 5. Retour de Dashboards résumant le tour pour chaque joueur
 	 */
 	public void startNewTurn()
-	{
+	{	
+		long t=currentDate.getTime();
+		Date endOfTurn=new Date(m_settings.getTurnLength() + (10 * 60000));
 		
-		this.allocateFlights();
+		this.allocateFlights(currentDate,endOfTurn);//alloue à chaque AOC ses vols arrivant sur le plateau au prochain tour
 		
-		this.allocateTokens();//
+		this.allocateBudgets();//alloue un budget à chaque AOC
 		
 		this.startAOCTurn();//AOC allocates their tokens to their flights
 		
@@ -194,6 +181,29 @@ public class Game {
 	}
 	
 	
+	public void loadFlightPlans()
+	{
+		FlightPlanParser read = new FlightPlanParser();
+	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_sectorDictionary);
+	    //Tests
+	    for (FlightPlan flight : parseFlightPlan) {
+	      System.out.println(flight);
+	    }
+	    //Create Tree Map
+	    entryDate2FlightPlan= new TreeMap<Date, ArrayList<FlightPlan>>();
+	    for (FlightPlan fp : parseFlightPlan){
+	    	if (entryDate2FlightPlan.get(fp.getEntryMap())==null){
+	    		ArrayList<FlightPlan> FPlist = new ArrayList<FlightPlan>();
+	    		FPlist.add(fp);
+	    		entryDate2FlightPlan.put(fp.getEntryMap(), FPlist);
+	    	}
+	    	else{
+	    		entryDate2FlightPlan.get(fp.getEntryMap()).add(fp);
+	    	}
+	    }
+	}
+	
+	
 	
 	/**
 	 * Initiation des settings d'un nouveau jeu à l'aide de la console
@@ -251,14 +261,9 @@ public class Game {
 		{
 			System.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
 		}
+		
+		this.loadFlightPlans();
 
-		//Flight plan
-		FlightPlanParser read = new FlightPlanParser();
-	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_sectorDictionary);
-	    	//Tests
-	    for (FlightPlan flight : parseFlightPlan) {
-	      System.out.println(flight);
-	    }
 
 		//Players creation
 		String addNewPlayer="Y";
@@ -276,7 +281,7 @@ public class Game {
 				if (type.equals("AOC"))
 				{
 					AOC P = new AOC(name,i);
-					m_settings.addPlayer(P);
+					this.addAOCPlayer(P);
 				}
 				if(type.equals("FMP"))
 				{
@@ -299,7 +304,8 @@ public class Game {
 						keep=br.readLine();
 					}
 					FMP P = new FMP(name,i,airspaces);
-					m_settings.addPlayer(P);
+					this.addFMPPlayer(P);
+					P.setAirspaces(m_board);
 				}
 			}
 			i+=1;
@@ -339,7 +345,7 @@ public class Game {
 	/**
 	 * Alloue un budget de jetons par AOC, en fonction d'un nombre de jeton par vol, défini dans les settings.
 	*/
-	private void allocateTokens() 
+	private void allocateBudgets() 
 	{
 		
 		for ( String key : AOCplayers.keySet() ){
@@ -357,8 +363,19 @@ public class Game {
 	/**
 	A chaque nouveau tours, cherche les nouveaux vols qui arrivent sur le plateau et les alloue aux AOC correspondants pour qu'ils misent des jetons dessus.
 	*/
-	private void allocateFlights() 
+	private void allocateFlights(Date beginDate, Date endDate)
 	{
+		for (String key : AOCplayers.keySet()){
+			AOCplayers.get(key).clearNewFlights();
+		}
+		SortedMap<Date,ArrayList<FlightPlan>> nextTurnFlightPlans 
+						= entryDate2FlightPlan.subMap(beginDate, endDate);
+		for (Date d : nextTurnFlightPlans.keySet()){
+			for (FlightPlan fp : nextTurnFlightPlans.get(d)){
+				Flight flight = new Flight(fp);
+				AOCplayers.get(flight.getAirline()).addFlight(flight);
+			}
+		}
 		
 	}
 
@@ -417,6 +434,10 @@ public class Game {
 	
 	public HashMap<String,FMP> getFMPplayersDict(){
 		return FMPplayers;
+	}
+
+	public map getBoard() {
+		return m_board;
 	}
 	
 }
