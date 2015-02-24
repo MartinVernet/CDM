@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.NavigableMap;
 
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
+
 	  private Date exitMap;
 	  private String airline;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
@@ -31,12 +33,15 @@ public class FlightPlan {
 
 	  
 	  public FlightPlan (){
+
 		  airspaceProfileES=new TreeMap<Date,Sector>();
 	  }
 	  
 	  //Methods
+
 	  		//Get and Set 
 	  public TreeMap<Date,Sector> getAirspaceProfile() {
+
 		  return airspaceProfileES;
 	  }
 	  
@@ -159,6 +164,7 @@ public class FlightPlan {
 	    return "[flightId=" + flightId + ", Airline=" + airline + ", aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
+
 
 }
 

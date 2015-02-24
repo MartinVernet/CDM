@@ -24,8 +24,9 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import com.thales.atm.seriousgame.Sector;
-import com.thales.atm.seriousgame.map;
-import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
+
+//import com.thales.atm.seriousgame.map;
+//import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
 @WebService
@@ -45,7 +46,9 @@ public class FlightPlanParser {
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
+
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> sectorBoard ) {
+
 
 	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
@@ -104,20 +107,21 @@ public class FlightPlanParser {
 		             current_entrydate = stringToDate (event.asCharacters().getData());
 		             continue;
 		       }
-	           
+
 	           if (event.asStartElement().getName().getLocalPart()
 		               .equals(EXITAS)) {
 		             event = eventReader.nextEvent();
 		             current_exitdate = stringToDate (event.asCharacters().getData());
 		           	 continue;
 		       }
-		       	           
+
 	          
 	        }
 	        // If we reach the end of an End element, we add it to the list
 	        
 	        if (event.isEndElement()) {
 	        	//EndElement endElement = event.asEndElement();
+
 
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
 	        		//if(current_airspacetype.equals("ES"))
@@ -134,7 +138,7 @@ public class FlightPlanParser {
 	            	
 	            	flight.setAirlineFromId();
 	            	flights.add(flight);
-	            	
+
 	            }
 	        }
 

@@ -17,6 +17,7 @@ public class Flight {
 	private String airline;
 	private Sector currentSector;
 	private int m_priority;
+	private int economicValue;
 	
 	public Flight(String ID, FlightPlan flightplan){
 		this.m_flightID=ID;
@@ -64,6 +65,16 @@ public class Flight {
 
 	public void setAirline(String airline) {
 		this.airline = airline;
+
+	
+	public int getEconomicValue(){
+		return economicValue;
+	}
+
+
+	public Sector getCurrentSector() {
+		
+		return currentSector;
 	}
 	
 }

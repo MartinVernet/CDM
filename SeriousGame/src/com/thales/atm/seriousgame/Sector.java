@@ -12,7 +12,7 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 @WebService
 
 public class Sector {
-	String m_name;
+	public String m_name;
 	//ArrayList<AirBlock> m_airBlocks;
 	ArrayList<String> m_airBlocksId;
 	private int capacity;
@@ -99,9 +99,10 @@ public class Sector {
 		}
 
 	}
-	
+
 	@Override
 	  public String toString() {
 	    return "Sector [Name=" + m_name + "]";
 	  }		
+
 }

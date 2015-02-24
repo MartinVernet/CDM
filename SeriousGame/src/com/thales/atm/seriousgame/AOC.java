@@ -41,5 +41,18 @@ public class AOC extends Player {
 	public void addFlight(Flight flight){
 		this.m_flights.put(flight.getFlightID(),flight);
 	}
+	
+	public void setName(String name){
+		this.m_name=name;
+	}
+	
+	public void setId(int id){
+		this.m_id=id;
+	}
+	
+	public boolean isOK() {
+		// A compléter
+		return true;
+	}
 
 }

@@ -34,4 +34,18 @@ public abstract class Player {
 	public void play(){
 		
 	}
+	
+	public void setName(String name){
+		this.m_name=name;
+	}
+	
+	public void setId(int id){
+		this.m_id=id;
+	}
+
+
+	public String getName() {
+		
+		return m_name;
+	}
 }
