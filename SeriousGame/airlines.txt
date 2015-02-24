@@ -1,0 +1,152 @@
+FIN;Finnair
+DHK;D H L
+BGA;airbus transport
+NAX;norwegian
+EXS;jet2.com
+BEL;brussels airlines
+VLG;vueling airlines
+ANE;air nostrum
+LGL;luxair
+KLM;k l m
+EZY;easy jet
+SSQ;sunstate
+FJI;pacific
+QFA;qantas
+SIA;singapore
+WIT;striker
+RXX;rex
+IPU;impulse
+ANG;niugini
+MAD;maple
+FOM;free air
+EIA;ever green
+AFL;aeroflot
+ANA;all nippon airways
+ANZ;new zealand
+AUA;austrian
+AFR;air france
+AVN;air van
+BAW;british airways
+BCS;european air transport
+CCA;air china
+CLX;cargolux
+CAL;dynasty
+CES;china eastern airlines
+COA;continental airlines
+DAL;delta airlines
+DLH;lufthansa
+JKK;span air
+KAL;korean air
+MCK;mac air
+RYR;ryan air
+SAS;scandinavian
+THA;thai airways
+TRA;transavia
+UPS;united parcel service
+VIR;virgin
+ASY;aussie
+VKG;viking
+RKA;air afrique
+QQA;alliance
+AAL;american
+DAH;algerie
+BTV;batavia
+PBN;blue bird
+AUS;australian
+ATL;air atlantic
+AAG;air atlantique
+REU;air austral
+ABB;air belgium
+BOT;air botswana
+AZX;air bristol
+ACA;air canada
+AGN;air gabon
+HJA;air haiti
+AHK;air hong kong
+AIC;air india
+C57;air macau
+MDG;air madagascar
+MAU;air mauritius
+DBD;air niagra express
+RSI;air sunshine
+VTA;air tahiti
+UKA;air united kingdoms
+UKR;air ukraine
+AZW;air zimbabwe
+SAB;sabena
+TWE;transwede
+SWR;swissair
+HLF;hapag
+MAS;malaysian
+CIN;constellation
+OAL;olympic
+GEO;georgia
+SLR;sobelair
+AZA;alitalia
+FCA;jet set
+AMC;air malta
+VIV;viva
+BER;berlin
+ISR;israeli
+LAJ;bee med
+GFA;gulf air
+JOR;blue
+SRK;skyfox
+AEA;europa
+GMI;germania
+UAE;emirates
+JCA;jetcom
+RRR;ascot
+PJS;jetaviation
+CTM;cotam
+MSR;egypt air
+BAL;britannia
+UAL;united
+PGA;portugalia
+ISS;meridiana
+BAF;belgian airforce
+NET;netherlands
+TAM;adria
+SWG;sunwing
+CRX;cross air
+ROT;tarom
+SAT;sata
+LGL;luxair
+FUA;futura
+SVA;saudia
+EZS;topswiss
+AEF;aero lloyd
+TAR;tunis air
+THY;turkish
+INR;air inter
+IBE;iberia
+LDA;lauda
+EBA;belstar
+BMA;midland
+LNK;airlink
+LAZ;balkan
+MON;monarch
+AUA;austrian
+CFG;condor
+LWD;leisure
+TAP;air portugal
+JAL;japan air
+AOM;french line
+BAG;speedway
+OHY;onur air
+HAS;hamburg air
+OME;omega
+FAF;french air force
+EIN;shamrock
+EVA;eva
+GAF;german air
+TLA;translift
+CRL;corsair
+GBL;gibair
+SRR;whitestar
+CNS;centennial
+RCH;reach
+ACI;aircalin
+HLF;hapaglloyd
+FDX;fedex
+KIA;kiwi
