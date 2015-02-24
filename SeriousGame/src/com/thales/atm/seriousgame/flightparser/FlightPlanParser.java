@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,14 +21,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-<<<<<<< HEAD
-=======
 import org.apache.commons.lang3.StringUtils;
 
 import com.thales.atm.seriousgame.Sector;
->>>>>>> master
-import com.thales.atm.seriousgame.map;
-import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
+
+//import com.thales.atm.seriousgame.map;
+//import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
 @WebService

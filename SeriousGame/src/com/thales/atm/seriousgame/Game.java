@@ -7,6 +7,9 @@ import com.thales.atm.seriousgame.Settings;
 import com.thales.atm.seriousgame.client.mainIHMSimulator;
 import com.thales.atm.seriousgame.communications.CommunicationMainIHM;
 
+import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
+import com.thales.atm.seriousgame.flightmodel.FlightPlan;
+
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;

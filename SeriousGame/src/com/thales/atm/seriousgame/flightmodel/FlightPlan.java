@@ -104,13 +104,6 @@ public class FlightPlan {
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
-	public Sector getSectorFromDate(Date date) {
-		
-		Date entryDate = airspaceProfileES.floorKey(date);
-		Sector sector =airspaceProfileES.get(entryDate);
-		return sector;
-		
-	}
 
 }
 
