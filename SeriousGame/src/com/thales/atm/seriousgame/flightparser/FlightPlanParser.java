@@ -132,7 +132,8 @@ public class FlightPlanParser {
 	        		
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getAirspaceProfile().isEmpty() == false) { 
-	        	  
+	            	
+	            	flight.setAirlineFromId();
 	            	flights.add(flight);
 	            	
 	            }

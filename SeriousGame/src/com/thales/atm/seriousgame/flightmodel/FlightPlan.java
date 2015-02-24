@@ -1,9 +1,14 @@
 package com.thales.atm.seriousgame.flightmodel;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+
 
 
 
@@ -23,6 +28,7 @@ public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
 	  private Date exitMap;
+	  private String airline;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private TreeMap<Date,Sector> airspaceProfileES;
 
@@ -66,6 +72,14 @@ public class FlightPlan {
 		  return EntryMap;
 	  }
 	  
+	  public String getAirline(){
+		  return airline;
+	  }
+	  
+	  public void setAirline(String airline){
+		  this.airline=airline;
+	  }
+	  
 	  public Sector getSectorFromDate(Date date) {
 			
 		Date entryDate = airspaceProfileES.floorKey(date);
@@ -74,9 +88,49 @@ public class FlightPlan {
 			
 	  }
 	  
-	  public String getAirlineFromId(){		  
-		  String airline = StringUtils.substring(this.flightId, 0, 3);
-		  return airline;
+	  public void setAirlineFromId(){	
+		  
+		  String airlineID = StringUtils.substring(this.flightId, 0, 3);
+		  
+		  String csvFile = "airlines.txt";
+			BufferedReader br = null;
+			String a="";
+			String cvsSplitBy = ";";
+			
+			try {
+		 
+					br = new BufferedReader(new FileReader(csvFile));
+					while ((a = br.readLine()) != null) 
+					{
+						
+		 		        // use semi comma as separator
+						String [] obj= a.split(cvsSplitBy);
+					
+						if(obj[0].equalsIgnoreCase(airlineID))
+						{
+							airline = obj[1];
+							setAirline(airline);
+						}
+						else
+						{
+							airline = "Private Airline";
+							setAirline(airline);
+						}
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					if (br != null) {
+						try {
+							br.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+		  
 	  }
 
 	  		//Others
@@ -103,7 +157,7 @@ public class FlightPlan {
 	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
+	    return "[flightId=" + flightId + ", Airline=" + airline + ",aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
