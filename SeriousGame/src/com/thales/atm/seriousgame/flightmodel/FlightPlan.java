@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.NavigableMap;
+
 
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
@@ -19,51 +19,58 @@ import javax.jws.WebService;
 public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
-	  private String actualTakeOffTime;
-	  private Map<Date,String> pointProfile;
+	  private Date exitMap;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private TreeMap<Date,Sector> airspaceProfileES;
-	  
-	  //position
-	  //priority
+
 	  
 	  public FlightPlan (){
-		  pointProfile=new TreeMap<Date,String>();
 		  airspaceProfileES=new TreeMap<Date,Sector>();
 	  }
 	  
 	  //Methods
-	  		//Get and Set
-	  public Map<Date,String> getPointProfile() {
-		  return pointProfile;
-	  }
-	  
-	  public Map<Date,Sector> getAirspaceProfile() {
+	  		//Get and Set 
+	  public TreeMap<Date,Sector> getAirspaceProfile() {
 		  return airspaceProfileES;
 	  }
 	  
 	  public String getFlightId() {
 	    return flightId;
 	  }
+	  
 	  public void setFlightId(String flightId) {
 	    this.flightId = flightId;
 	  }
+	  
 	  public String getAircraftType() {
 	    return aircraftType;
 	  }
+	  
 	  public void setAircraftType(String aircraftType) {
 	    this.aircraftType = aircraftType;
 	  }
-	  public String getActualTakeOffTime() {
-	    return actualTakeOffTime;
+	  
+	  public Date getExitMap() {
+		return exitMap;
 	  }
-	  public void setActualTakeOffTime(String actualTakeOffTime) {
-	    this.actualTakeOffTime = actualTakeOffTime;
+
+	  public void setExitMap(Date exitmap) {
+		this.exitMap = exitmap;
 	  }
-	  public String getIcaoRoute() {
-		    return aircraftType;
+	  		
+	  public Date getEntryMap(){		  
+		  Date EntryMap = airspaceProfileES.firstKey();
+		  return EntryMap;
 	  }
 	  
+	  public Sector getSectorFromDate(Date date) {
+			
+		Date entryDate = airspaceProfileES.floorKey(date);
+		Sector sector =airspaceProfileES.get(entryDate);
+		return sector;
+			
+	  }
+
 	  		//Others
 	  //Override compare function to compare EntryExitTime type
 	  Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
@@ -74,7 +81,7 @@ public class FlightPlan {
 	    	  } else {
 	    		  if((t1.getEntryTime().compareTo(t2.getEntryTime())) == 0 && (t1.getExitTime().compareTo(t2.getExitTime())) > 0) {
 		    		  return 1;
-		    	  }
+		    	  } 
 	    	  }
 	          // Different entry time
 	    	  if((t1.getEntryTime().compareTo(t2.getEntryTime())) > 0) {
@@ -88,17 +95,9 @@ public class FlightPlan {
 	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", takeOffTime="
-	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<Date, String>(pointProfile) +"]";
+	    return "[flightId=" + flightId + ", aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
-	public Sector getSectorFromDate(Date date) {
-		
-		Date entryDate = airspaceProfileES.floorKey(date);
-		Sector sector =airspaceProfileES.get(entryDate);
-		return sector;
-		
-	}
 }
 

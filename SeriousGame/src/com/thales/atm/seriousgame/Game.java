@@ -1,4 +1,6 @@
 package com.thales.atm.seriousgame;
+import com.thales.atm.seriousgame.flightmodel.FlightPlan;
+import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
 
 import javax.jws.WebService;
 
@@ -13,8 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
 
 
 @WebService
@@ -70,15 +70,15 @@ public class Game {
 		//Files selection
 		//System.out.println("Airspace File ? ");
 		//String airspaceFile = br.readLine();
-		m_settings.setAirspaceFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
+		m_settings.setAirspaceFile("Airspace.spc");
 				
 		//System.out.println("Sector File ? ");
 		//String sectorFile = br.readLine();
-		m_settings.setSectorFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl");
+		m_settings.setSectorFile("Sector.gsl");
 				
 		//System.out.println("Airblock File ? ");
 		//String airblockFile = br.readLine();
-		m_settings.setAirblockFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar");
+		m_settings.setAirblockFile("Airblock.gar");
 		this.loadAirspace();
 		/*for (String sectorID: m_board.m_sectorDictionary.get("BIRDNO").getNeighbors())
 		{
@@ -96,6 +96,10 @@ public class Game {
 		chosenAirSpace.add("GMMMCTA");
 		chosenAirSpace.add("GOOOCTA");
 		
+		chosenAirSpace.add("LIMMCTA"); //Milano
+		chosenAirSpace.add("LIPPCTA"); //Padova
+		chosenAirSpace.add("LIRRCTA"); //Roma
+		
 		this.m_board.reduceMap(chosenAirSpace);
 		for(String airsSpaceID:m_board.m_airSpaceDictionary.keySet())
 		{
@@ -107,8 +111,13 @@ public class Game {
 		{
 			System.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
 		}
-		
-		
+		//Flight plan
+		FlightPlanParser read = new FlightPlanParser();
+	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_sectorDictionary);
+	    	//Tests
+	    for (FlightPlan flight : parseFlightPlan) {
+	      System.out.println(flight);
+	    }
 		//Players creation
 		String addNewPlayer="Y";
 		int i=1;
