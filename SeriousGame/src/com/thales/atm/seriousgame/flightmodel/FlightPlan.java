@@ -4,7 +4,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.NavigableMap;
 
+import com.thales.atm.seriousgame.AirSpace;
+import com.thales.atm.seriousgame.Sector;
+import com.thales.atm.seriousgame.map;
 import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 
@@ -17,13 +21,15 @@ public class FlightPlan {
 	  private String aircraftType;
 	  private String actualTakeOffTime;
 	  private Map<Date,String> pointProfile;
-	  private Map<EntryExitTime,String> airspaceProfileES;
+	 // private Map<EntryExitTime,String> airspaceProfileES;
+	  private TreeMap<Date,Sector> airspaceProfileES;
+	  
 	  //position
 	  //priority
 	  
 	  public FlightPlan (){
 		  pointProfile=new TreeMap<Date,String>();
-		  airspaceProfileES=new TreeMap<EntryExitTime,String>(secondDateComparator);	  
+		  airspaceProfileES=new TreeMap<Date,Sector>();
 	  }
 	  
 	  //Methods
@@ -32,7 +38,7 @@ public class FlightPlan {
 		  return pointProfile;
 	  }
 	  
-	  public Map<EntryExitTime,String> getAirspaceProfile() {
+	  public Map<Date,Sector> getAirspaceProfile() {
 		  return airspaceProfileES;
 	  }
 	  
@@ -86,5 +92,13 @@ public class FlightPlan {
 	        + actualTakeOffTime + ", spaceProfile=" +  new PrintingMap<Date, String>(pointProfile) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
+
+	public Sector getSectorFromDate(Date date) {
+		
+		Date entryDate = airspaceProfileES.floorKey(date);
+		Sector sector =airspaceProfileES.get(entryDate);
+		return sector;
+		
+	}
 }
 

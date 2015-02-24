@@ -4,14 +4,15 @@ package com.thales.atm.seriousgame;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Date;
+
 import javax.jws.WebService;
+
+import com.thales.atm.seriousgame.client.mainIHMSimulator;
+import com.thales.atm.seriousgame.communications.CommunicationMainIHM;
 
 @WebService
 public class Test
 {
-	
-	Settings m_settings=new Settings();
-	Game m_game=new Game(m_settings);
 	
 	public int add ( int a, int b )
 	{
@@ -20,12 +21,21 @@ public class Test
 
 	public static void main(String[] args) throws IOException{
 		
-		//Settings m_settings=new Settings();
-		//Game m_game=new Game(m_settings);
-		map m=new map(  "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar","C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl","C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
-		System.out.print("valid");
+		CommunicationMainIHM mainClient=new CommunicationMainIHM(0);
+		mainIHMSimulator mainIHM=new mainIHMSimulator(mainClient.getPort());
+		mainIHM.speakToServer();
+		mainClient.listenToClient();
+		//mainIHMSimulator mainIHM2=new mainIHMSimulator(2102);
+		System.out.println("yo");
+		//mainIHM.closeAllSockets();
+		//mainClient.closeAllSockets();
+		//Game m_game=new Game(2009);
+		//map m=new map(  "C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airblock.gar","C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Sector.gsl","C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airspace.spc");
+		//System.out.print("valid");
 		//m_game.initiateNewGame();
-		
+		//m_game.launchGame();
 	}
+	
+	
 
 }

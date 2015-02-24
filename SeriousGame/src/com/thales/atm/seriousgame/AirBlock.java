@@ -14,9 +14,9 @@ public class AirBlock {
 	private ArrayList<Point> m_Coords;
 	private double m_altitudeMin=0;
 	private double m_altitudeMax=0;
-	private HashMap<String,Flight> m_occupation;
-	private int m_capacity;
 	private String m_fatherId;
+	private Sector m_father;
+	private ArrayList<String> neighbors;
 	
 	public AirBlock(String name, ArrayList<Point> coords)
 	{
@@ -65,31 +65,6 @@ public class AirBlock {
 	{
 		this.m_altitudeMax=altMax;
 	}
-
-	
-	public void addFlight(Flight flight){
-		this.m_occupation.put(flight.getFlightID(), flight);
-	}
-	
-	public void removeFlight(Flight flight){
-		this.m_occupation.remove(flight.getFlightID());
-	}
-	
-	public HashMap<String,Flight> getOccupationMap(){
-		return this.m_occupation;
-	}
-	
-	public int getNbFligths(){
-		return this.m_occupation.size();
-	}
-	
-	public int getCapacity(){
-		return this.m_capacity;
-	}
-	
-	public void setCapacity(int capacity){
-		this.m_capacity=capacity;
-	}
 	
 
 
@@ -98,6 +73,26 @@ public class AirBlock {
 	}
 	public void setFatherId(String m_fatherId) {
 		this.m_fatherId = m_fatherId;
+	}
+	public Sector getFather() {
+		return m_father;
+	}
+	public void setFather(Sector m_father) {
+		this.m_father = m_father;
+	}
+	
+	/**
+	 * @return the neighbors
+	 */
+	public ArrayList<String> getNeighbors() {
+		return neighbors;
+	}
+	
+	/**
+	 * @param neighbors the neighbors to set
+	 */
+	public void setNeighbors(ArrayList<String> neighbors) {
+		this.neighbors = neighbors;
 	}
 	
 

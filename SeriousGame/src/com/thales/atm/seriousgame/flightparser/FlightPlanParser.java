@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import com.thales.atm.seriousgame.map;
 import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
@@ -41,11 +42,11 @@ public class FlightPlanParser {
 	String current_point=null;
 	Date current_entrydate=null;
 	Date current_exitdate=null;
-	EntryExitTime current_entryexit=null;
+	//EntryExitTime current_entryexit=null;
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
-	public List<FlightPlan> parseFlightPlan(String FlightPlanFile) {
+	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, map board ) {
 	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
 	   try {
@@ -128,7 +129,7 @@ public class FlightPlanParser {
 		             current_entrydate = stringToDate (event.asCharacters().getData());
 		             continue;
 		       }
-	          
+	          /*
 	           if (event.asStartElement().getName().getLocalPart()
 		               .equals(EXITAS)) {
 		             event = eventReader.nextEvent();
@@ -136,7 +137,7 @@ public class FlightPlanParser {
 		             current_entryexit = new EntryExitTime(current_entrydate, current_exitdate);
 		           	 continue;
 		       }
-		       
+		       */
 	           
 	          
 	        }
@@ -148,14 +149,19 @@ public class FlightPlanParser {
 		           	flight.getPointProfile().put(current_datepoint, current_point);
 
 	        	}
-	        	if (event.asEndElement().getName().getLocalPart() == ("airspaceType")) {
+	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirSpaceProfile")) {
 	        		if(current_airspacetype.equals("ES"))
 		           	  {
-				             flight.getAirspaceProfile().put(current_entryexit, current_airspace);
+	        				if ( board.getSectorDictionary().keySet().contains(current_airspace))
+	        				{
+	        					flight.getAirspaceProfile().put(current_entrydate, board.getSectorDictionary().get(current_airspace));
+	        				}
 		           	  }
+	        		
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT)) {
-	        	  flights.add(flight);
+	        	  //check if map is empty
+	            	flights.add(flight);
 	            }
 	        }
 

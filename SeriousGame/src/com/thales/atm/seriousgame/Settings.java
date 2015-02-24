@@ -1,6 +1,10 @@
 package com.thales.atm.seriousgame;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+
+import com.thales.atm.seriousgame.communications.CommunicationMainIHM;
 
 public class Settings {
 	
@@ -10,9 +14,13 @@ public class Settings {
 	private String m_airblockFile;
 	private int m_level;
 	private int nbTokensPerFlight;
-	private int m_anticipation;//déclenche une alerte m_anticipation tour avant regulation
 	private int m_delta;
 	private int m_turnLength;
+	private int m_nbMaxTurn;
+	private Date initDate;
+	private boolean settingsOK=false;
+	
+	private int nbPlayers;
 	
 	public Settings(){
 		this.m_players=new ArrayList<Player>();
@@ -20,7 +28,92 @@ public class Settings {
 		this.m_sectorFile="";
 		this.m_airblockFile="";
 		this.m_level=0;
+		this.nbPlayers=0;
 	}
+	
+	
+	/**
+	 * get settings from main IHM
+	 * @throws Exception
+	 */
+	public void getSettings(CommunicationMainIHM mainClient) throws Exception{
+		
+		byte[] trame = new byte[3];
+        int nbBytesLus = mainClient.read(trame, 3);
+        if (nbBytesLus != 3) {
+            throw new Exception("Erreur de lecture de l'entete de trame");
+        } 
+        String typeTrame = new String(trame, "ASCII");
+        
+        // ASF : AirspaceFile
+        if (typeTrame.equalsIgnoreCase("ASF")) {
+            trame = new byte[1];
+            nbBytesLus = mainClient.read(trame, 1);
+            if (nbBytesLus != 1) {
+                throw new Exception("Erreur de lecture de la trame ASF");
+            }
+            
+            int nbBytesToRead=(int) trame[0];
+            trame = new byte[nbBytesToRead];
+            nbBytesLus = mainClient.read(trame, nbBytesToRead);
+            
+            this.setAirspaceFile(new String(trame));
+        }
+        
+        // SEF : SectorFile
+        if (typeTrame.equalsIgnoreCase("SEF")) {
+            trame = new byte[1];
+            nbBytesLus = mainClient.read(trame, 1);
+            if (nbBytesLus != 1) {
+                throw new Exception("Erreur de lecture de la trame SEF");
+            }
+            
+            int nbBytesToRead=(int) trame[0];
+            trame = new byte[nbBytesToRead];
+            nbBytesLus = mainClient.read(trame, nbBytesToRead);
+            
+            this.setSectorFile(new String(trame));
+        }
+        
+        // ABF : AirblockFile
+        if (typeTrame.equalsIgnoreCase("ABF")) {
+            trame = new byte[1];
+            nbBytesLus = mainClient.read(trame, 1);
+            if (nbBytesLus != 1) {
+                throw new Exception("Erreur de lecture de la trame ABF");
+            }
+            
+            int nbBytesToRead=(int) trame[0];
+            trame = new byte[nbBytesToRead];
+            nbBytesLus = mainClient.read(trame, nbBytesToRead);
+            
+            this.setAirblockFile(new String(trame));;
+        }
+        
+        // LVL : Level of the game
+        if (typeTrame.equalsIgnoreCase("LVL")) {
+            trame = new byte[1];
+            nbBytesLus = mainClient.read(trame, 1);
+            if (nbBytesLus != 1) {
+                throw new Exception("Erreur de lecture de la trame LVL");
+            }
+            this.setLevel((int) trame[0]);
+        }
+        
+        // NBT: nb tokens per flights
+        if (typeTrame.equalsIgnoreCase("NBT")) {
+            trame = new byte[1];
+            nbBytesLus = mainClient.read(trame, 1);
+            if (nbBytesLus != 1) {
+                throw new Exception("Erreur de lecture de la trame NBT");
+            }
+            this.setNbTokensPerFlights((int) trame[0]);
+        }       
+	}
+	
+	
+	
+	
 	
 	public String getAirspaceFile(){
 		return this.m_airspaceFile;
@@ -35,7 +128,9 @@ public class Settings {
 	}
 	
 	public void addPlayer(Player player){
+		
 		m_players.add(player);
+		nbPlayers+=1;
 	}
 	
 	public ArrayList<Player> getPlayersList(){
@@ -92,13 +187,9 @@ public class Settings {
 		// TODO Auto-generated method stub
 		return this.nbTokensPerFlight;
 	}
-
-	public int getAnticipation() {
-		return m_anticipation;
-	}
-
-	public void setAnticipation(int m_anticipation) {
-		this.m_anticipation = m_anticipation;
+	
+	public void setNbTokensPerFlights(int nbTokens){
+		nbTokensPerFlight=nbTokens;
 	}
 
 	public int getDelta() {
@@ -116,6 +207,67 @@ public class Settings {
 	public void setTurnLength(int turnLength) {
 		this.m_turnLength = turnLength;
 	}
+
+	public int getNbMaxTurn() {
+		return m_nbMaxTurn;
+	}
+
+	public void setNbMaxTurn(int m_nbMaxTurn) {
+		this.m_nbMaxTurn = m_nbMaxTurn;
+	}
+
+
+	public boolean AirspaceFileExists() {
+		
+		if (new File(m_airspaceFile).isFile()){
+			return true;
+		}
+		else{
+			return false;
+		}
+		
+	}
+
+
+	public boolean SectorFileExists() {
+
+		if (new File(m_sectorFile).isFile()){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+
+	public boolean AirBlockFileExists() {
+		
+		if (new File(m_airblockFile).isFile()){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	public int getNbPlayers(){
+		return nbPlayers;
+	}
+
+
+	public int getLevel() {
+		
+		return m_level;
+	}
+
+
+	public boolean isReady() {
+		
+		return settingsOK;
+	}
 	
+	public void setToOK(){
+		settingsOK=true;
+	}
 	
 }
