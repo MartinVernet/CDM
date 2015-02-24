@@ -408,8 +408,7 @@ public class map {
 		setSectorNeighbors();
 		
 	}
-	
-	
+
 }
 
 

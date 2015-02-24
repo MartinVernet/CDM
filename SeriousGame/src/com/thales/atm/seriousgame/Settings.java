@@ -17,10 +17,12 @@ public class Settings {
 	private int m_delta;
 	private int m_turnLength;
 	private int m_nbMaxTurn;
+
 	private Date initDate;
 	private boolean settingsOK=false;
 	
 	private int nbPlayers;
+
 	
 	public Settings(){
 		this.m_players=new ArrayList<Player>();
@@ -216,7 +218,6 @@ public class Settings {
 		this.m_nbMaxTurn = m_nbMaxTurn;
 	}
 
-
 	public boolean AirspaceFileExists() {
 		
 		if (new File(m_airspaceFile).isFile()){
@@ -265,6 +266,7 @@ public class Settings {
 		
 		return settingsOK;
 	}
+
 	
 	public void setToOK(){
 		settingsOK=true;

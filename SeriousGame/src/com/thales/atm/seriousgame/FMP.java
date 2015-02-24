@@ -31,6 +31,7 @@ public class FMP extends Player {
 		for (String id : airspacesId){
 			m_airSpaces.add(board.m_airSpaceDictionary.get(id));
 		}
+
 	}
 	
 	public void play(HashMap<Flight,FlightPlan> regulation){

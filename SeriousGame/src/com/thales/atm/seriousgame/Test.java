@@ -21,19 +21,14 @@ public class Test
 
 	public static void main(String[] args) throws IOException{
 		
-		CommunicationMainIHM mainClient=new CommunicationMainIHM(0);
-		mainIHMSimulator mainIHM=new mainIHMSimulator(mainClient.getPort());
-		mainIHM.speakToServer();
-		mainClient.listenToClient();
-		//mainIHMSimulator mainIHM2=new mainIHMSimulator(2102);
-		System.out.println("yo");
-		//mainIHM.closeAllSockets();
-		//mainClient.closeAllSockets();
-		//Game m_game=new Game(2009);
-		//map m=new map(  "C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airblock.gar","C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Sector.gsl","C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airspace.spc");
+
+		Settings m_settings=new Settings();
+		Game m_game=new Game(m_settings);
+		//map m=new map(  "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar","C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl","C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
 		//System.out.print("valid");
-		//m_game.initiateNewGame();
-		//m_game.launchGame();
+		m_game.initiateNewGame();
+		m_game.launchGame();
+
 	}
 	
 	

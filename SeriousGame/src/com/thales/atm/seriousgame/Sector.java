@@ -99,5 +99,10 @@ public class Sector {
 		}
 
 	}
-		
+
+	@Override
+	  public String toString() {
+	    return "Sector [Name=" + m_name + "]";
+	  }		
+
 }
