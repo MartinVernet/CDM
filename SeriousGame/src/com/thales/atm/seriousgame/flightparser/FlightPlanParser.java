@@ -133,7 +133,6 @@ public class FlightPlanParser {
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getAirspaceProfile().isEmpty() == false) { 
 	        	  
-	            	
 	            	flights.add(flight);
 	            	
 	            }
@@ -162,19 +161,4 @@ public class FlightPlanParser {
 		  }		  
 	  }
 	  
-	  public int stringToDuration (String stringduration) {
-		  
-		  String stringhours = StringUtils.substring(stringduration, 0, 2);
-		  int hours = Integer.parseInt(stringhours);
-		  
-		  String stringminutes = StringUtils.substring(stringduration, 2, 4);
-		  int minutes = Integer.parseInt(stringminutes);
-		  
-		  String stringseconds = StringUtils.substring(stringduration, 4, 6);
-		  int seconds = Integer.parseInt(stringseconds);
-		  
-		  int duration = 3600 * hours + 60 * minutes + seconds;
-		  return duration;
-	  }
-	        	  
 }

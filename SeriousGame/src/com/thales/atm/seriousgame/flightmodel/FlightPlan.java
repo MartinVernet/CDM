@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
+
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
 import com.thales.atm.seriousgame.map;
@@ -13,6 +14,8 @@ import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 
 import javax.jws.WebService;
+
+import org.apache.commons.lang3.StringUtils;
 
 @WebService
 //This class is use to map the xml file
@@ -69,6 +72,11 @@ public class FlightPlan {
 		Sector sector =airspaceProfileES.get(entryDate);
 		return sector;
 			
+	  }
+	  
+	  public String getAirlineFromId(){		  
+		  String airline = StringUtils.substring(this.flightId, 0, 3);
+		  return airline;
 	  }
 
 	  		//Others
