@@ -50,7 +50,7 @@ public class FlightPlanParser {
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> sectorBoard ) {
 
 
-	    List<FlightPlan> flights = new ArrayList<FlightPlan>();
+	   List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
 	   try {
 	      // First, create a new XMLInputFactory
