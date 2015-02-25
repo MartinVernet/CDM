@@ -8,6 +8,7 @@ import com.thales.atm.seriousgame.client.mainIHMSimulator;
 import com.thales.atm.seriousgame.communications.CommunicationMainIHM;
 import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
+import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -241,9 +242,6 @@ public class Game {
 		}
 		*/		
 		ArrayList<String> chosenAirSpace =new ArrayList<String>();
-		chosenAirSpace.add("GCCCCTA");
-		chosenAirSpace.add("GMMMCTA");
-		chosenAirSpace.add("GOOOCTA");
 		
 
 		chosenAirSpace.add("LIMMCTA"); //Milano
@@ -263,7 +261,8 @@ public class Game {
 		}
 		
 		this.loadFlightPlans();
-
+		PrintingMap<Date, ArrayList<FlightPlan>> test = new PrintingMap<Date, ArrayList<FlightPlan>>(entryDate2FlightPlan);
+		System.out.println(test);
 
 		//Players creation
 		String addNewPlayer="Y";

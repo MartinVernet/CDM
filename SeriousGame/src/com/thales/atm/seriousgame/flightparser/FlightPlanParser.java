@@ -42,6 +42,7 @@ public class FlightPlanParser {
 
 	Date current_entrydate=null;
 	Date current_exitdate=null;
+	Date final_exitdate=null;
 	//EntryExitTime current_entryexit=null;
 	String current_airspace=null;
 	String current_airspacetype=null;
@@ -49,7 +50,8 @@ public class FlightPlanParser {
 
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> sectorBoard ) {
 
-
+	   Sector outSector = new Sector("Out",null);
+	   Sector exitSector = new Sector("Exit",null);
 	   List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
 	   try {
@@ -128,14 +130,21 @@ public class FlightPlanParser {
 		           	//  {
 	        				if (sectorBoard.keySet().contains(current_airspace))
 	        				{
-	        					flight.getAirspaceProfile().put(current_entrydate, sectorBoard.get(current_airspace));
-	        					flight.setExitMap(current_exitdate);
+	        					final_exitdate=current_exitdate;
+	        					flight.getAirspaceProfile().put(current_entrydate, sectorBoard.get(current_airspace));						        					
+	        					flight.setExitMap(final_exitdate);	        					
+	        				}
+	        				else
+	        				{      					
+	        					flight.getAirspaceProfile().put(current_entrydate, outSector);
 	        				}
 		           	 // }
 	        		
 		        }
-	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getAirspaceProfile().isEmpty() == false) { 
-	        	  
+	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getExitMap() == null) { 
+	            	
+	            	//flight.getAirspaceProfile().subMap(flight.getAirspaceProfile().firstKey(), true, final_exitdate, false);
+	            	//flight.getAirspaceProfile().put(final_exitdate, exitSector);
 	            	flight.setAirlineFromId();	            	
 	            	flights.add(flight);
 
