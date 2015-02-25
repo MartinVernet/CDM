@@ -1,6 +1,7 @@
 package com.thales.atm.seriousgame;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import com.thales.atm.seriousgame.Player;
@@ -8,7 +9,7 @@ import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
 public class FMP extends Player {
 	
-	private ArrayList< AirSpace> m_airSpaces;
+	private ArrayList<AirSpace> m_airSpaces;
 	private ArrayList<String> airspacesId;
 	
 	public FMP(){
@@ -64,5 +65,14 @@ public class FMP extends Player {
 		// A compléter
 		return true;
 	}
+
+	public ArrayList<AirSpace> getAirspaces() {
+		return m_airSpaces;
+	}
+	
+	public ArrayList<String> getAirspacesID() {
+		return airspacesId;
+	}
+
 
 }

@@ -1,20 +1,23 @@
 package com.thales.atm.seriousgame.flightmodel;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.NavigableMap;
 
+
+
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
 import com.thales.atm.seriousgame.map;
 import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.jws.WebService;
 
@@ -25,9 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 public class FlightPlan {
 	  private String flightId; 
 	  private String aircraftType;
-
-	  private Date exitMap;
 	  private String airline;
+	  private Date exitMap;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private TreeMap<Date,Sector> airspaceProfileES;
 
@@ -73,21 +75,13 @@ public class FlightPlan {
 		  Date EntryMap = airspaceProfileES.firstKey();
 		  return EntryMap;
 	  }
-	  
+
 	  public String getAirline(){
 		  return airline;
 	  }
 	  
 	  public void setAirline(String airline){
 		  this.airline=airline;
-	  }
-	  
-	  public Sector getSectorFromDate(Date date) {
-			
-		Date entryDate = airspaceProfileES.floorKey(date);
-		Sector sector =airspaceProfileES.get(entryDate);
-		return sector;
-			
 	  }
 	  
 	  public void setAirlineFromId(){	
@@ -98,22 +92,20 @@ public class FlightPlan {
 			BufferedReader br = null;
 			String a="";
 			String cvsSplitBy = ";";
-			boolean findElement = false;
 			
 			try {
 		 
 					br = new BufferedReader(new FileReader(csvFile));
-					while ((a = br.readLine()) != null && findElement == false) 
+					while ((a = br.readLine()) != null) 
 					{
 						
 		 		        // use semi comma as separator
 						String [] obj= a.split(cvsSplitBy);
 					
-						if(obj[0].equals(airlineID))
+						if(obj[0].equalsIgnoreCase(airlineID))
 						{
 							airline = obj[1];
 							setAirline(airline);
-							findElement = true;
 						}
 						else
 						{
@@ -135,7 +127,17 @@ public class FlightPlan {
 					}
 				}
 		  
+	  }	  
+	  
+	  
+	  public Sector getSectorFromDate(Date date) {
+			
+		Date entryDate = airspaceProfileES.floorKey(date);
+		Sector sector =airspaceProfileES.get(entryDate);
+		return sector;
+			
 	  }
+	  
 
 	  		//Others
 	  //Override compare function to compare EntryExitTime type
