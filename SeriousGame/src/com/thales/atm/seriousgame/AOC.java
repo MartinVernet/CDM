@@ -1,19 +1,22 @@
 package com.thales.atm.seriousgame;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class AOC extends Player {
 	
 	private int m_budget;
 	private HashMap<String,Flight> m_flights;
-	private ArrayList<String> newFlights;
+	private HashMap<String,Flight> newFlights;
+	private HashMap<String,Flight> fligthsOnBoard;
+	private HashMap<String,Flight> oldFlights;
 	
 	public AOC(){
 		super();
 		m_budget=0;
 		m_flights=new HashMap<String,Flight>();
-		newFlights= new ArrayList<String>();
+		newFlights= new HashMap<String,Flight>();
 	}
 	
 	public AOC(String name, int i) {
@@ -21,13 +24,13 @@ public class AOC extends Player {
 		super(name,i);
 		m_budget=0;
 		m_flights=new HashMap<String,Flight>();
-		newFlights= new ArrayList<String>();
+		newFlights= new HashMap<String,Flight>();
 	}
 
 	public void play(HashMap<Integer,Integer> flightPriorities){
 		// Need to check that flightPriorities.keySet()==this.m_flights.keySet()
 		for ( int flightID : flightPriorities.keySet() ){
-			m_flights.get(flightID).setPriority(flightPriorities.get(flightID));
+			newFlights.get(flightID).setPriority(flightPriorities.get(flightID));
 		}
 	}
 	
@@ -49,7 +52,7 @@ public class AOC extends Player {
 	
 	public void addFlight(Flight flight){
 		this.m_flights.put(flight.getFlightID(),flight);
-		this.newFlights.add(flight.getFlightID());
+		this.newFlights.put(flight.getFlightID(),flight);
 	}
 	
 	public void setName(String name){
@@ -63,6 +66,53 @@ public class AOC extends Player {
 	public boolean isOK() {
 		// A compléter
 		return true;
+	}
+
+	public HashMap<String,Flight> getFligthsOnBoard() {
+		return fligthsOnBoard;
+	}
+
+	public void setFligthsOnBoard(HashMap<String,Flight> fligthsOnBoard) {
+		this.fligthsOnBoard = fligthsOnBoard;
+	}
+
+	public HashMap<String,Flight> getOldFlights() {
+		return oldFlights;
+	}
+
+	public void setOldFlights(HashMap<String,Flight> oldFlights) {
+		this.oldFlights = oldFlights;
+	}
+
+	public HashMap<String,Flight> getNewFlights() {
+		return newFlights;
+	}
+
+	public void setNewFlights(HashMap<String,Flight> newFlights) {
+		this.newFlights = newFlights;
+	}
+
+	public void moveFlights(Date currentDate) 
+	{
+		
+		for(String flightId: newFlights.keySet()) 
+		{
+			if(newFlights.get(flightId).getSectorFromDate(currentDate)!=null)
+			{
+				fligthsOnBoard.put(flightId, newFlights.get(flightId));
+				newFlights.remove(flightId);
+			}
+		}
+		//Attention: si le flightPlan est discontinu par rapport a notre map, il risque de quitter notre board (et donc d'etre dans oldflight alors que en theorie il est censé revenir sur notre board)
+		for (String flightId: fligthsOnBoard.keySet())
+		{
+			fligthsOnBoard.get(flightId).move(currentDate);
+			if (fligthsOnBoard.get(flightId).getCurrentSector()==null)
+			{
+				oldFlights.put(flightId, newFlights.get(flightId));
+				fligthsOnBoard.remove(flightId);
+			}
+		}
 	}
 	
 

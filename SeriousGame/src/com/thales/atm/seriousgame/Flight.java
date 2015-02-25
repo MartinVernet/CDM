@@ -37,15 +37,10 @@ public class Flight {
 		this.m_priority=priority;
 	}
 	
-	public void move(Date currentDate, int nbMinutes){
-		Calendar cal = Calendar.getInstance(); 
-	    cal.setTime(currentDate);
-	    cal.add(Calendar.MINUTE, nbMinutes); 
-	    Date newDate=cal.getTime();
-	    refreshSectorsOccupation(newDate);
-	}
+	
+	
 
-	public void refreshSectorsOccupation(Date newDate) {
+	public void move(Date newDate) {
 		Sector newSector =	getSectorFromDate(newDate);
 		if(currentSector != newSector)
 		{

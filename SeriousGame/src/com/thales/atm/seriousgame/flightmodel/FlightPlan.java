@@ -91,12 +91,13 @@ public class FlightPlan {
 		  String csvFile = "airlines.txt";
 			BufferedReader br = null;
 			String a="";
-			String cvsSplitBy = ";";
+			String cvsSplitBy = ";"; 
+			boolean itemfind= false;
 			
 			try {
 		 
 					br = new BufferedReader(new FileReader(csvFile));
-					while ((a = br.readLine()) != null) 
+					while ((a = br.readLine()) != null && itemfind ==false) 
 					{
 						
 		 		        // use semi comma as separator
@@ -106,6 +107,7 @@ public class FlightPlan {
 						{
 							airline = obj[1];
 							setAirline(airline);
+							itemfind = true;
 						}
 						else
 						{

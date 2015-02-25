@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Game {
 	
 	private HashMap<String,Integer> AirspaceToFMP;
 	private Date currentDate;
-	private map m_board;
+	public map m_board;
 	private TreeMap<Date,ArrayList<FlightPlan>> entryDate2FlightPlan;
 	private CommunicationMainIHM mainClient;
 	private mainIHMSimulator mainIHM;
@@ -114,13 +115,17 @@ public class Game {
 		
 		this.startAOCTurn();//AOC allocates their tokens to their flights
 		
-		this.startFMPTurn();//FMP regulates their sectors
+		//need function that start the slot, every x time the Board is reloaded with sectors occupation actualized and the current Date
+		
+		
+		
+		this.startFMPTurn(endOfTurn);//FMP regulates their sectors
+		
 		
 		this.getDashboards();//Display metrics of the last turn
+		
+		
 	}
-	
-	
-	
 	/**
 	 Le temps est mis en pause et chaque AOC peut miser ses jetons sur ses vols.
 	 */
@@ -138,18 +143,25 @@ public class Game {
 	/**
 	 Après le tour des AOC, le temps avance et à chaque besoin de régulation, les FMP interviennent sur leurs secteurs.
 	 */
-	private void startFMPTurn() 
+	private void startFMPTurn(Date endOfturn) 
 	{
-		while (this.endOfTurn()==false){
+		while (endOfturn!=currentDate){
+			this.forwardDate();
+			this.moveFlights();
 			for ( String key : FMPplayers.keySet() ){
 				FMPplayers.get(key).play();
 			}
-			this.forwardDate();
 		}
 		
 	}
 	
-	
+	private void moveFlights()
+	{
+		for(String AOCId: AOCplayers.keySet() )
+		{
+			AOCplayers.get(AOCId).moveFlights(currentDate);
+		}
+	}
 	
 
 	
@@ -398,7 +410,13 @@ public class Game {
 	 */
 	private void forwardDate()
 	{
-		
+		Calendar cal = Calendar.getInstance(); 
+	    cal.setTime(this.currentDate);
+	    cal.add(Calendar.MINUTE, m_settings.getDelta()); 
+	    Date newDate=cal.getTime();
+	    //ici: recuperer tous les avions qui sont sur sur le plateau et faire refresh sectorOccupation sur chacun 
+	    //refreshSectorsOccupation(newDate);
+	    this.currentDate=newDate;
 	}
 	
 	
@@ -407,6 +425,7 @@ public class Game {
 	
 	private boolean endOfTurn()
 	{
+		
 		return false;
 	}
 	
