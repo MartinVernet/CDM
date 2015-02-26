@@ -11,6 +11,8 @@ import java.util.HashMap;
 //import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 import javax.jws.WebService;
 import javax.xml.stream.XMLEventReader;
@@ -25,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.thales.atm.seriousgame.Sector;
 
+import com.thales.atm.seriousgame.map;
 //import com.thales.atm.seriousgame.map;
 //import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
@@ -43,12 +46,13 @@ public class FlightPlanParser {
 	Date current_entrydate=null;
 	Date current_exitdate=null;
 	Date final_exitdate=null;
+	boolean findEntry=false;
 	//EntryExitTime current_entryexit=null;
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
 
-	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> sectorBoard ) {
+	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> reducedBoard) {
 
 	   Sector outSector = new Sector("Out",null);
 	   Sector exitSector = new Sector("Exit",null);
@@ -126,27 +130,40 @@ public class FlightPlanParser {
 
 
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
-	        		//if(current_airspacetype.equals("ES"))
-		           	//  {
-	        				if (sectorBoard.keySet().contains(current_airspace))
+	        		if(board.getSectorDictionary().keySet().contains(current_airspacetype))
+		           	{
+	        				if (reducedBoard.keySet().contains(current_airspace))
 	        				{
+	        					
 	        					final_exitdate=current_exitdate;
-	        					flight.getAirspaceProfile().put(current_entrydate, sectorBoard.get(current_airspace));						        					
-	        					flight.setExitMap(final_exitdate);	        					
+	        					flight.getAirspaceProfile().put(current_entrydate, reducedBoard.get(current_airspace));						        					
+	        					flight.setExitMap(final_exitdate);
+								if(findEntry == false){
+	        						flight.setEntryMap(current_entrydate);
+									findEntry = true;
+								}
 	        				}
 	        				else
-	        				{      					
-	        					flight.getAirspaceProfile().put(current_entrydate, outSector);
+	        				{   
+	        					if(flight.getAirspaceProfile().containsKey(current_entrydate) == false)
+	        					{
+	        						flight.getAirspaceProfile().put(current_entrydate, outSector);
+	        					}
 	        				}
-		           	 // }
+		           	 }
 	        		
 		        }
-	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getExitMap() == null) { 
+	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getExitMap() != null) { 
 	            	
-	            	//flight.getAirspaceProfile().subMap(flight.getAirspaceProfile().firstKey(), true, final_exitdate, false);
-	            	//flight.getAirspaceProfile().put(final_exitdate, exitSector);
+	            	flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
+	            	NavigableMap<Date,Sector> reducedmap = flight.getAirspaceProfile().subMap(flight.getEntryMap(), true, flight.getExitMap(), true);
+	            	System.out.println(reducedmap);
+	            	flight.setAirspaceProfile(reducedmap);
+	            	//flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
+	            	//System.out.println(flight.getAirspaceProfile());
 	            	flight.setAirlineFromId();	            	
 	            	flights.add(flight);
+	            	findEntry = false;
 
 	            }
 	        }

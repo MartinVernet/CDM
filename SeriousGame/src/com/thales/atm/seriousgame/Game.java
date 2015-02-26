@@ -262,7 +262,7 @@ public class Game {
 		
 		this.loadFlightPlans();
 		PrintingMap<Date, ArrayList<FlightPlan>> test = new PrintingMap<Date, ArrayList<FlightPlan>>(entryDate2FlightPlan);
-		System.out.println(test);
+		//System.out.println(test);
 
 		//Players creation
 		String addNewPlayer="Y";

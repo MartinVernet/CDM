@@ -30,8 +30,9 @@ public class FlightPlan {
 	  private String aircraftType;
 	  private String airline;
 	  private Date exitMap;
+	  private Date entryMap;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
-	  private TreeMap<Date,Sector> airspaceProfileES;
+	  private NavigableMap<Date,Sector> airspaceProfileES;
 
 	  
 	  public FlightPlan (){
@@ -42,12 +43,12 @@ public class FlightPlan {
 	  //Methods
 
 	  		//Get and Set 
-	  public TreeMap<Date,Sector> getAirspaceProfile() {
+	  public NavigableMap<Date,Sector> getAirspaceProfile() {
 
 		  return airspaceProfileES;
 	  }
 	  
-	  public void setAirspaceProfile(TreeMap<Date,Sector> AirspaceProfile) {
+	  public void setAirspaceProfile(NavigableMap<Date,Sector> AirspaceProfile) {
 		  this.airspaceProfileES=AirspaceProfile;
 	  }
 	  public String getFlightId() {
@@ -75,10 +76,13 @@ public class FlightPlan {
 	  }
 	  		
 	  public Date getEntryMap(){		  
-		  Date EntryMap = airspaceProfileES.firstKey();
-		  return EntryMap;
+		  return entryMap;
 	  }
-
+	  
+	  public void setEntryMap(Date entryMap){
+		  this.entryMap = entryMap;
+	  }
+	  
 	  public String getAirline(){
 		  return airline;
 	  }
@@ -168,7 +172,7 @@ public class FlightPlan {
 	  //Print for testing purpose
 	  @Override
 	  public String toString() {
-	    return "[flightId=" + flightId + ", Airline=" + airline + ", aircraftType=" + aircraftType + ", EntryMap=" + getEntryMap() + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
+	    return "[flightId=" + flightId + ", Airline=" + airline + ", aircraftType=" + aircraftType + ", EntryMap=" + entryMap + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
 	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
 
