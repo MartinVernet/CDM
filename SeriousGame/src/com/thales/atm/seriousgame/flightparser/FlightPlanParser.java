@@ -52,7 +52,7 @@ public class FlightPlanParser {
 	String current_airspacetype=null;
 	
 
-	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> reducedBoard) {
+	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> board, HashMap<String,Sector> reducedBoard) {
 
 	   Sector outSector = new Sector("Out",null);
 	   Sector exitSector = new Sector("Exit",null);
@@ -120,17 +120,14 @@ public class FlightPlanParser {
 		             current_exitdate = stringToDate (event.asCharacters().getData());
 		           	 continue;
 		       }
-
 	          
 	        }
 	        // If we reach the end of an End element, we add it to the list
 	        
 	        if (event.isEndElement()) {
-	        	//EndElement endElement = event.asEndElement();
-
 
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
-	        		if(board.getSectorDictionary().keySet().contains(current_airspacetype))
+	        		if(board.keySet().contains(current_airspace))
 		           	{
 	        				if (reducedBoard.keySet().contains(current_airspace))
 	        				{
@@ -152,15 +149,14 @@ public class FlightPlanParser {
 	        				}
 		           	 }
 	        		
+	        		
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getExitMap() != null) { 
 	            	
 	            	flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
 	            	NavigableMap<Date,Sector> reducedmap = flight.getAirspaceProfile().subMap(flight.getEntryMap(), true, flight.getExitMap(), true);
-	            	System.out.println(reducedmap);
+	            	
 	            	flight.setAirspaceProfile(reducedmap);
-	            	//flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
-	            	//System.out.println(flight.getAirspaceProfile());
 	            	flight.setAirlineFromId();	            	
 	            	flights.add(flight);
 	            	findEntry = false;
