@@ -222,7 +222,7 @@ public class Game {
 	public void loadFlightPlans()
 	{
 		FlightPlanParser read = new FlightPlanParser();
-	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_sectorDictionary);
+	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_completSectorDictionary, m_board.m_sectorDictionary);
 	    //Tests
 	    for (FlightPlan flight : parseFlightPlan) {
 	      //system.out.println(flight);
@@ -297,14 +297,14 @@ public class Game {
 		}
 		*/		
 		ArrayList<String> chosenAirSpace =new ArrayList<String>();
-		chosenAirSpace.add("GCCCCTA");
-		chosenAirSpace.add("GMMMCTA");
-		chosenAirSpace.add("GOOOCTA");
 		
-
-		chosenAirSpace.add("LIMMCTA"); //Milano
-		chosenAirSpace.add("LIPPCTA"); //Padova
-		chosenAirSpace.add("LIRRCTA"); //Roma
+		//tests
+		chosenAirSpace.add("LFBBCTA"); // Bordeaux
+		chosenAirSpace.add("LFFFCTA"); // Paris
+		chosenAirSpace.add("LFMNFCTA"); // Nice
+		chosenAirSpace.add("LIMMCTA"); // Milano
+		chosenAirSpace.add("LIPPCTA"); // Padova
+		chosenAirSpace.add("LIRRCTA"); // Roma
 
 		this.m_board.reduceMap(chosenAirSpace);
 		for(String airsSpaceID:m_board.m_airSpaceDictionary.keySet())
@@ -319,7 +319,6 @@ public class Game {
 		}
 		
 		this.loadFlightPlans();
-
 
 		//Players creation
 		String addNewPlayer="Y";
