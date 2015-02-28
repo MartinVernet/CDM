@@ -34,6 +34,7 @@ public class Sector {
 		this.m_airBlocksId=airb;
 		this.neighbors=new HashSet<String>();
 		this.capacity=15;
+		this.occupation= new HashMap<String,Flight>();
 		
 	}
 	public Sector()

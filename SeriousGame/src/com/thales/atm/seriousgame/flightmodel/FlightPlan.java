@@ -135,8 +135,12 @@ public class FlightPlan {
 	  public Sector getSectorFromDate(Date date) {
 			
 		Date entryDate = airspaceProfileES.floorKey(date);
+		if (entryDate != null)
+		{
 		Sector sector =airspaceProfileES.get(entryDate);
 		return sector;
+		}
+		else return null;
 			
 	  }
 	  

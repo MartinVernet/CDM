@@ -21,7 +21,7 @@ public class Flight {
 		this.currentSector=null;
 		this.m_priority=0;
 		this.economicValue=0;
-		//this.airline=fp.getAirline();
+		this.airline=fp.getAirline();
 	}
 	
 	
@@ -44,7 +44,10 @@ public class Flight {
 		Sector newSector =	getSectorFromDate(newDate);
 		if(currentSector != newSector)
 		{
-			currentSector.removeFlight(this);
+			if(currentSector != null)
+			{
+				currentSector.removeFlight(this);
+			}
 			currentSector=newSector;
 			currentSector.addFlight(this);
 		}

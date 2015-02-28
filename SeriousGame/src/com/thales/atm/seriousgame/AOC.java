@@ -17,6 +17,8 @@ public class AOC extends Player {
 		m_budget=0;
 		m_flights=new HashMap<String,Flight>();
 		newFlights= new HashMap<String,Flight>();
+		fligthsOnBoard= new HashMap<String,Flight>();
+		oldFlights= new HashMap<String,Flight>();
 	}
 	
 	public AOC(String name, int i) {
@@ -25,6 +27,8 @@ public class AOC extends Player {
 		m_budget=0;
 		m_flights=new HashMap<String,Flight>();
 		newFlights= new HashMap<String,Flight>();
+		fligthsOnBoard= new HashMap<String,Flight>();
+		oldFlights= new HashMap<String,Flight>();
 	}
 
 	public void play(HashMap<Integer,Integer> flightPriorities){
@@ -94,25 +98,38 @@ public class AOC extends Player {
 
 	public void moveFlights(Date currentDate) 
 	{
-		
+		ArrayList<String > newflightToRemove = new ArrayList<String>();
+		ArrayList<String > currentflightToRemove = new ArrayList<String>();
+
 		for(String flightId: newFlights.keySet()) 
 		{
+			Flight f=newFlights.get(flightId);
+			f.getSectorFromDate(currentDate);
 			if(newFlights.get(flightId).getSectorFromDate(currentDate)!=null)
 			{
 				fligthsOnBoard.put(flightId, newFlights.get(flightId));
-				newFlights.remove(flightId);
+				newflightToRemove.add(flightId);
+				//newFlights.remove(flightId);
 			}
 		}
 		//Attention: si le flightPlan est discontinu par rapport a notre map, il risque de quitter notre board (et donc d'etre dans oldflight alors que en theorie il est censé revenir sur notre board)
+		for (String flToRemove : newflightToRemove){
+			newFlights.remove(flToRemove);
+		}
 		for (String flightId: fligthsOnBoard.keySet())
 		{
 			fligthsOnBoard.get(flightId).move(currentDate);
-			if (fligthsOnBoard.get(flightId).getCurrentSector()==null)
+			if (fligthsOnBoard.get(flightId).getCurrentSector().m_name=="Exit")
 			{
 				oldFlights.put(flightId, newFlights.get(flightId));
-				fligthsOnBoard.remove(flightId);
+				currentflightToRemove.add(flightId);
+				//fligthsOnBoard.remove(flightId);
 			}
 		}
+		for (String flToRemove : currentflightToRemove){
+			fligthsOnBoard.remove(flToRemove);
+		}
+		
 	}
 	
 
