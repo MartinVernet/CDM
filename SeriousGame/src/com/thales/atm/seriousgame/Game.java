@@ -117,7 +117,7 @@ public class Game {
 		
 		Calendar cal = Calendar.getInstance(); 
 	    cal.setTime(this.currentDate);
-	    cal.add(Calendar.MINUTE, 60); 
+	    cal.add(Calendar.MINUTE, 60);
 	    Date endOfTurn=cal.getTime();
 		
 		//Date endOfTurn=new Date(m_settings.getTurnLength() + (10 * 60000));

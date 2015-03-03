@@ -15,6 +15,7 @@ public class Sector {
 	public String m_name;
 	//ArrayList<AirBlock> m_airBlocks;
 	ArrayList<String> m_airBlocksId;
+	private int normalCapacity=15;
 	private int capacity;
 	private Set<String> neighbors; //Attention not multiThread Safe
 	private String m_fatherId;
@@ -33,10 +34,11 @@ public class Sector {
 		this.m_name=name;
 		this.m_airBlocksId=airb;
 		this.neighbors=new HashSet<String>();
-		this.capacity=15;
+		this.capacity=normalCapacity;
 		this.occupation= new HashMap<String,Flight>();
 		
 	}
+	
 	public Sector()
 	{
 		this.m_name="test";
@@ -104,6 +106,14 @@ public class Sector {
 	@Override
 	  public String toString() {
 	    return "Sector [Name=" + m_name + "]";
-	  }		
+	  }
+
+	public void resetCapacity() {
+		this.capacity=this.normalCapacity;
+	}
+
+	public void degradation(double decrease) {
+		this.capacity=(int) Math.floor(capacity*decrease);
+	}		
 
 }
