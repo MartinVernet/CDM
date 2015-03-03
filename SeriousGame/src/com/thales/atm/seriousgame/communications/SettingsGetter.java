@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.thales.atm.seriousgame.AOC;
+import com.thales.atm.seriousgame.AOCPlayer;
 import com.thales.atm.seriousgame.FMP;
 import com.thales.atm.seriousgame.Game;
 import com.thales.atm.seriousgame.Settings;
@@ -207,7 +208,8 @@ public class SettingsGetter implements Runnable{
 					
 					if (messages[1].equals("AOC")){
 						
-						AOC player = new AOC(messages[2],0);
+
+						AOCPlayer player = new AOCPlayer(messages[2],0);
 						
 						if (player.isOK()){
 							game.addAOCPlayer(player);

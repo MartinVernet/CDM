@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.jws.WebService;
 
@@ -407,6 +408,51 @@ public class map {
 		
 		setSectorNeighbors();
 		
+	}
+	
+	
+	/**
+	 * Handle capacity change due to level
+	 * Level 1 : All capacity stay at the initial normalCapacity
+	 * Level 2 : Announce capacity diminution that will happen
+	 * Level 3 : Announce probability of diminution in each sector
+	 * Level 4 : No information
+	 * @param level
+	 */
+	public void setCapacities(int level){
+		
+		for (String sectorID : m_sectorDictionary.keySet()){
+			m_sectorDictionary.get(sectorID).resetCapacity();
+		}
+		
+		if (level == 1){
+			
+		}
+		
+		else if (level == 2){
+			
+			Random random = new Random();
+			ArrayList<String> keys = new ArrayList<String>(m_sectorDictionary.keySet());
+			String randomKey = keys.get(random.nextInt(keys.size()));
+			Sector impactedSector = m_sectorDictionary.get(randomKey);
+			
+			impactedSector.degradation(0.5);
+			//prévenir AOC et FMP
+		}
+		
+		else if (level == 3){
+			
+			Random random = new Random();
+			ArrayList<String> keys = new ArrayList<String>(m_sectorDictionary.keySet());
+			String randomKey = keys.get(random.nextInt(keys.size()));
+			
+			Sector impactedSector = m_sectorDictionary.get(randomKey);
+			
+			double decrease = random.nextDouble();
+			
+			impactedSector.degradation(decrease);
+		}
+
 	}
 
 }

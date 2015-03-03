@@ -9,31 +9,21 @@ import java.util.HashMap;
 
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
 
-public class AOC extends Player {
+public class AOCPlayer extends AOC {
 	
-	protected int m_budget;
-	protected HashMap<String,Flight> m_flights;
-	protected HashMap<String,Flight> newFlights;
-	protected HashMap<String,Flight> fligthsOnBoard;
-	protected HashMap<String,Flight> oldFlights;
+	private String AOCType;
 	
-	public AOC(){
+	public AOCPlayer(){
 		super();
-		m_budget=0;
-		m_flights=new HashMap<String,Flight>();
-		newFlights= new HashMap<String,Flight>();
-		fligthsOnBoard= new HashMap<String,Flight>();
-		oldFlights= new HashMap<String,Flight>();
+		setAOCType("human");
+		
 	}
 	
-	public AOC(String name, int i) {
+	public AOCPlayer(String name, int i) {
 		
 		super(name,i);
-		m_budget=0;
-		m_flights=new HashMap<String,Flight>();
-		newFlights= new HashMap<String,Flight>();
-		fligthsOnBoard= new HashMap<String,Flight>();
-		oldFlights= new HashMap<String,Flight>();
+		setAOCType("human");
+		
 	}
 
 	public void play() 
@@ -151,7 +141,7 @@ public class AOC extends Player {
 				//newFlights.remove(flightId);
 			}
 		}
-		//Attention: si le flightPlan est discontinu par rapport a notre map, il risque de quitter notre board (et donc d'etre dans oldflight alors que en theorie il est censé revenir sur notre board)
+		
 		for (String flToRemove : newflightToRemove){
 			newFlights.remove(flToRemove);
 		}
@@ -162,13 +152,20 @@ public class AOC extends Player {
 			{
 				oldFlights.put(flightId, newFlights.get(flightId));
 				currentflightToRemove.add(flightId);
-				//fligthsOnBoard.remove(flightId);
 			}
 		}
 		for (String flToRemove : currentflightToRemove){
 			fligthsOnBoard.remove(flToRemove);
 		}
 		
+	}
+
+	public String getAOCType() {
+		return AOCType;
+	}
+
+	public void setAOCType(String aOCType) {
+		AOCType = aOCType;
 	}
 	
 

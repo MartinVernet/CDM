@@ -35,7 +35,7 @@ public class Game {
 	
 	private Settings m_settings;
 	private int m_turn;
-	private HashMap<String,AOC> AOCplayers;
+	private HashMap<String,AOCPlayer> AOCplayers;
 	private HashMap<String,FMP> FMPplayers;
 	
 	private HashMap<String,Integer> AirspaceToFMP;
@@ -45,6 +45,7 @@ public class Game {
 	private CommunicationMainIHM mainClient;
 	private mainIHMSimulator mainIHM;
 	private HashMap<String,AOC> availableAirlines = new HashMap<String,AOC>();
+	private HashMap<String,AOCIA> airlineIA = new HashMap<String,AOCIA>();
 	
 	public ConcurrentHashMap<String,Socket> BoardMap = new ConcurrentHashMap<String,Socket>();
 	public ConcurrentHashMap<String,Socket> PlayerMap = new ConcurrentHashMap<String,Socket>();
@@ -59,7 +60,7 @@ public class Game {
 	{
 		this.m_settings=new Settings();
 		this.m_turn=0;
-		this.AOCplayers=new HashMap<String, AOC>();
+		this.AOCplayers=new HashMap<String, AOCPlayer>();
 		this.FMPplayers=new HashMap<String, FMP>();
 	}
 	
@@ -67,7 +68,7 @@ public class Game {
 	{
 		this.m_settings=settings;
 		this.m_turn=0;
-		this.AOCplayers=new HashMap<String, AOC>();
+		this.AOCplayers=new HashMap<String, AOCPlayer>();
 		this.FMPplayers=new HashMap<String, FMP>();
 	}
 	
@@ -115,7 +116,7 @@ public class Game {
 		
 		Calendar cal = Calendar.getInstance(); 
 	    cal.setTime(this.currentDate);
-	    cal.add(Calendar.MINUTE, 60); 
+	    cal.add(Calendar.MINUTE, 60);
 	    Date endOfTurn=cal.getTime();
 		
 		//Date endOfTurn=new Date(m_settings.getTurnLength() + (10 * 60000));
@@ -144,6 +145,9 @@ public class Game {
 	{
 		for ( String key : AOCplayers.keySet() ){
 			AOCplayers.get(key).play();
+		}
+		for ( String key : airlineIA.keySet() ){
+			airlineIA.get(key).play();
 		}
 		
 	}
@@ -201,7 +205,7 @@ public class Game {
 		ArrayList<Player> L=m_settings.getPlayersList();
 		for (int i=0;i<L.size();i++){
 			if (L.get(i).getType()=="AOC"){
-				AOCplayers.put(L.get(i).getName(), (AOC) L.get(i));
+				AOCplayers.put(L.get(i).getName(), (AOCPlayer) L.get(i));
 			}
 			else{
 				FMPplayers.put(L.get(i).getName(), (FMP) L.get(i));
@@ -227,15 +231,23 @@ public class Game {
 	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_completSectorDictionary, m_board.m_sectorDictionary);
 	    //Tests
 	    for (FlightPlan flight : parseFlightPlan) {
-	      //system.out.println(flight);
+	      System.out.println(flight);
 	    }
 	    //Create Tree Map
 	    entryDate2FlightPlan= new TreeMap<Date, ArrayList<FlightPlan>>();
 	    for (FlightPlan fp : parseFlightPlan){
 	    	if (availableAirlines.get(fp.getAirline())==null){
-	    		AOC aoc = new AOC(fp.getAirline(),0);
-	    		availableAirlines.put(fp.getAirline(),aoc);
-	    		//AOCplayers.put(aoc.getName(), aoc);
+	    		if (AOCplayers.get(fp.getAirline())==null)
+	    		{
+		    		AOCIA aoc = new AOCIA(fp.getAirline(),0);
+		    		availableAirlines.put(fp.getAirline(),aoc);
+		    		airlineIA.put(fp.getAirline(),aoc);
+		    		//AOCplayers.put(aoc.getName(), aoc);
+	    		}
+	    		else 
+	    		{
+	    			availableAirlines.put(fp.getAirline(),AOCplayers.get(fp.getAirline()));
+	    		}
 	    	}
 	    	if (entryDate2FlightPlan.get(fp.getEntryMap())==null){
 	    		ArrayList<FlightPlan> FPlist = new ArrayList<FlightPlan>();
@@ -252,11 +264,11 @@ public class Game {
 	    }
 	    for (Date d :entryDate2FlightPlan.keySet() )
 	    {
-	    	//system.out.println("######");
-	    	//system.out.println(d);
+	    	System.out.println("######");
+	    	System.out.println(d);
 	    	for (FlightPlan fp: entryDate2FlightPlan.get(d))
 	    	{
-	    		//system.out.println(fp);
+	    		System.out.println(fp);
 	    	}
 	    }
 	}
@@ -337,7 +349,7 @@ public class Game {
 				type=br.readLine();
 				if (type.equals("AOC"))
 				{
-					AOC P = new AOC(name,i);
+					AOCPlayer P = new AOCPlayer(name,i);
 					this.addAOCPlayer(P);
 				}
 				if(type.equals("FMP"))
@@ -405,13 +417,28 @@ public class Game {
 	private void allocateBudgets() 
 	{
 		
-		for ( String key : AOCplayers.keySet() ){
+		/*for ( String key : AOCplayers.keySet() ){
 			
 			//AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
 			int nbflight =AOCplayers.get(key).getNewFlights().size();
 			int budgetmax=nbflight*m_settings.getnbTokensPerFlight();
 			AOCplayers.get(key).setBudget(budgetmax);
 			
+		}
+		for ( String key : airlineIA.keySet() ){
+			
+			//AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			int nbflight =airlineIA.get(key).getNewFlights().size();
+			int budgetmax=nbflight*m_settings.getnbTokensPerFlight();
+			airlineIA.get(key).setBudget(budgetmax);
+			
+		}*/
+		for ( String key : availableAirlines.keySet() ){
+			
+			//AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			int nbflight =availableAirlines.get(key).getNewFlights().size();
+			int budgetmax=nbflight*m_settings.getnbTokensPerFlight();
+			availableAirlines.get(key).setBudget(budgetmax);
 		}
 		
 	}
@@ -446,9 +473,9 @@ public class Game {
 		for (Date d : nextTurnFlightPlans.keySet()){
 			for (FlightPlan fp : nextTurnFlightPlans.get(d)){
 				Flight flight = new Flight(fp);
-				if(AOCplayers.get(flight.getAirline())!=null)
+				if(availableAirlines.get(flight.getAirline())!=null)
 				{
-					AOCplayers.get(flight.getAirline()).addFlight(flight);
+					availableAirlines.get(flight.getAirline()).addFlight(flight);
 				}
 			}
 		}
@@ -501,17 +528,22 @@ public class Game {
 		m_settings=settings;
 	}
 	
-	public void addAOCPlayer(AOC player){
+	public void addAOCPlayer(AOCPlayer player){
 		AOCplayers.put(player.m_name,player);
 		m_settings.addPlayer(player);
 	}
+	public void addAOCIA(AOCIA IA){
+		airlineIA.put(IA.m_name,IA);
+		m_settings.addPlayer(IA);
+	}
+	
 	
 	public void addFMPPlayer(FMP player){
 		FMPplayers.put(player.m_name,player);
 		m_settings.addPlayer(player);
 	}
 	
-	public HashMap<String,AOC> getAOCplayersDict(){
+	public HashMap<String,AOCPlayer> getAOCplayersDict(){
 		return AOCplayers;
 	}
 	
