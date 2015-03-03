@@ -6,74 +6,38 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
 
-public class AOC extends Player {
+public class AOCIA extends AOC {
 	
-	protected int m_budget;
-	protected HashMap<String,Flight> m_flights;
-	protected HashMap<String,Flight> newFlights;
-	protected HashMap<String,Flight> fligthsOnBoard;
-	protected HashMap<String,Flight> oldFlights;
+	private String AOCType;
 	
-	public AOC(){
+	public AOCIA(){
 		super();
-		m_budget=0;
-		m_flights=new HashMap<String,Flight>();
-		newFlights= new HashMap<String,Flight>();
-		fligthsOnBoard= new HashMap<String,Flight>();
-		oldFlights= new HashMap<String,Flight>();
+		setAOCType("IA");
+		
 	}
 	
-	public AOC(String name, int i) {
+	public AOCIA(String name, int i) {
 		
 		super(name,i);
-		m_budget=0;
-		m_flights=new HashMap<String,Flight>();
-		newFlights= new HashMap<String,Flight>();
-		fligthsOnBoard= new HashMap<String,Flight>();
-		oldFlights= new HashMap<String,Flight>();
+		setAOCType("IA");
+		
 	}
 
 	public void play() 
 	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		System.out.println(this.m_name);
-		System.out.println("budget max = ");
-		System.out.println(m_budget);
-		int budgetRestant=m_budget;
+		int budgetRestant= m_budget;
 		for ( String flightID :newFlights.keySet())
 		{
-			
-			int p =-1;
-			while ((p<0 || p>6) || budgetRestant<0)
-			{
-				
-				System.out.println("budget restant = "+budgetRestant);
-				System.out.println("priorité du vol : "+flightID +"=");
-				String priority="";
-				
-				try {
-					priority = br.readLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				p=Integer.parseInt(priority);
-				if(p<0 || p>6 || budgetRestant<0)
-				{
-					System.out.println("erreur dans la saisie de la priorité, /n veuillez saisir un nombre entre 0 et 5");
-				}
-				else
-				{
-				 
-				 budgetRestant=budgetRestant-p;
-				 
-				}
-			}
-			newFlights.get(flightID).setPriority(p);
+			int max =Math.min(budgetRestant,5);
+			Random rand =new Random();
+			int random = (int)(Math.random() * (max)) ;
+			int priority = rand.nextInt(max+1);
+			newFlights.get(flightID).setPriority(priority);
+			budgetRestant=budgetRestant-priority;
 		}
 	}
 	
@@ -151,7 +115,7 @@ public class AOC extends Player {
 				//newFlights.remove(flightId);
 			}
 		}
-		//Attention: si le flightPlan est discontinu par rapport a notre map, il risque de quitter notre board (et donc d'etre dans oldflight alors que en theorie il est censé revenir sur notre board)
+		
 		for (String flToRemove : newflightToRemove){
 			newFlights.remove(flToRemove);
 		}
@@ -162,13 +126,20 @@ public class AOC extends Player {
 			{
 				oldFlights.put(flightId, newFlights.get(flightId));
 				currentflightToRemove.add(flightId);
-				//fligthsOnBoard.remove(flightId);
 			}
 		}
 		for (String flToRemove : currentflightToRemove){
 			fligthsOnBoard.remove(flToRemove);
 		}
 		
+	}
+
+	public String getAOCType() {
+		return AOCType;
+	}
+
+	public void setAOCType(String aOCType) {
+		AOCType = aOCType;
 	}
 	
 

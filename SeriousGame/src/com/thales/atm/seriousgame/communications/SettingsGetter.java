@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import com.thales.atm.seriousgame.AOC;
+import com.thales.atm.seriousgame.AOCPlayer;
 import com.thales.atm.seriousgame.FMP;
 import com.thales.atm.seriousgame.Game;
 import com.thales.atm.seriousgame.Settings;
@@ -94,7 +95,7 @@ public class SettingsGetter implements Runnable{
 					
 					if (messages[1].equals("AOC")){
 						
-						AOC player = new AOC(messages[3],Integer.parseInt(messages[2]));
+						AOCPlayer player = new AOCPlayer(messages[3],Integer.parseInt(messages[2]));
 						
 						if (player.isOK()){
 							game.addAOCPlayer(player);
