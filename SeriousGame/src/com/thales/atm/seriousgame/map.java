@@ -23,6 +23,7 @@ public class map {
 
 
 	
+	
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
 		HashMap <String,AirBlock> airBlockDictionaryTemp=InitAirBlock(AirbFile);
@@ -97,9 +98,6 @@ public class map {
 				}
 				AirBlock lastAirb= new  AirBlock(name1,points);
 				airblocksDictionary.put(name1,lastAirb);
-				for (int i=0; i<7; i++)
-
-				System.out.println(airblocksDictionary.get("999UK").GetCoord().get(i).GetX());
 
 			
 	 
@@ -184,8 +182,7 @@ public class map {
 				}
 				Sector lastSect= new  Sector(name1,airBlockListId);
 				SectorDictionary.put(name1,lastSect);
-				for (int i=0; i<7; i++)
-				System.out.println(SectorDictionary.get("BIRDNO"));
+				
 			
 	 
 		} catch (FileNotFoundException e) {
@@ -261,8 +258,7 @@ public class map {
 				}
 				AirSpace lastAirSp= new  AirSpace(name1,SectorListId);
 				airSpaceDictionary.put(name1,lastAirSp);
-				for (int i=0; i<7; i++)
-				System.out.println(airSpaceDictionary.get("BIRDNO"));
+				
 			
 	 
 		} catch (FileNotFoundException e) {

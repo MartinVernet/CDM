@@ -20,12 +20,15 @@ public class FMP extends Player {
 	
 	public FMP(String name,int i){
 		super(name,i);
+		m_airSpaces = new ArrayList<AirSpace>();
+		airspacesId = new ArrayList<String>();
 	}
 	
 	public FMP(String name, int i, ArrayList<String> airspaces) {
 		// TODO Auto-generated constructor stub
 		super(name,i);
 		this.airspacesId=airspaces;
+		m_airSpaces = new ArrayList<AirSpace>();
 	}
 	
 	public void setAirspaces(map board){
@@ -74,5 +77,8 @@ public class FMP extends Player {
 		return airspacesId;
 	}
 
-
+	public void addAirspace(String airspaceId)
+	{
+		airspacesId.add(airspaceId);
+	}
 }

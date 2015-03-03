@@ -1,5 +1,7 @@
 package com.thales.atm.seriousgame;
 
+import java.io.IOException;
+
 public abstract class Player {
 	
 	String m_name;
@@ -31,7 +33,7 @@ public abstract class Player {
 		return "none";
 	}
 	
-	public void play(){
+	public void play() {
 		
 	}
 	

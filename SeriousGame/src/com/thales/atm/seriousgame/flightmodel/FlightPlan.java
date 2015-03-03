@@ -98,13 +98,15 @@ public class FlightPlan {
 		  String csvFile = "airlines.txt";
 			BufferedReader br = null;
 			String a="";
-			String cvsSplitBy = ";";
-			boolean itemfind = false;
+
+			String cvsSplitBy = ";"; 
+			boolean itemfind= false;
 			
 			try {
 		 
 					br = new BufferedReader(new FileReader(csvFile));
-					while ((a = br.readLine()) != null && itemfind == false) 
+
+					while ((a = br.readLine()) != null && itemfind ==false) 
 					{
 						
 		 		        // use semi comma as separator
@@ -142,8 +144,12 @@ public class FlightPlan {
 	  public Sector getSectorFromDate(Date date) {
 			
 		Date entryDate = airspaceProfileES.floorKey(date);
+		if (entryDate != null)
+		{
 		Sector sector =airspaceProfileES.get(entryDate);
 		return sector;
+		}
+		else return null;
 			
 	  }
 	  

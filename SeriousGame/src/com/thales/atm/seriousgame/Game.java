@@ -2,6 +2,8 @@ package com.thales.atm.seriousgame;
 
 import javax.jws.WebService;
 
+import sun.util.locale.provider.AvailableLanguageTags;
+
 import com.thales.atm.seriousgame.Player;
 import com.thales.atm.seriousgame.Settings;
 import com.thales.atm.seriousgame.client.mainIHMSimulator;
@@ -10,11 +12,14 @@ import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +39,12 @@ public class Game {
 	private HashMap<String,FMP> FMPplayers;
 	
 	private HashMap<String,Integer> AirspaceToFMP;
-	private Date currentDate;
-	private map m_board;
+	public Date currentDate;
+	public map m_board;
 	private TreeMap<Date,ArrayList<FlightPlan>> entryDate2FlightPlan;
 	private CommunicationMainIHM mainClient;
 	private mainIHMSimulator mainIHM;
+	private HashMap<String,AOC> availableAirlines = new HashMap<String,AOC>();
 	
 	public ConcurrentHashMap<String,Socket> BoardMap = new ConcurrentHashMap<String,Socket>();
 	public ConcurrentHashMap<String,Socket> PlayerMap = new ConcurrentHashMap<String,Socket>();
@@ -73,7 +79,7 @@ public class Game {
 	{
 		
 		if(!this.m_settings.checkIfReady()){
-			System.out.println("settings non conformes");
+			//system.out.println("settings non conformes");
 		}
 		
 		else
@@ -83,12 +89,13 @@ public class Game {
 			chosenAirspaces.addAll(FMPplayers.get(key).getAirspacesID());
 			}
 		this.m_board.reduceMap(chosenAirspaces);
-		
+		loadFlightPlans();
 		//Main loop of the game
 		while (this.isFinished()==false){
 			this.m_turn++;
 			this.startNewTurn();
 			}
+		System.out.println("Game Is Over");
 		}
 	}
 	
@@ -105,7 +112,13 @@ public class Game {
 	public void startNewTurn()
 	{	
 		long t=currentDate.getTime();
-		Date endOfTurn=new Date(m_settings.getTurnLength() + (10 * 60000));
+		
+		Calendar cal = Calendar.getInstance(); 
+	    cal.setTime(this.currentDate);
+	    cal.add(Calendar.MINUTE, 60); 
+	    Date endOfTurn=cal.getTime();
+		
+		//Date endOfTurn=new Date(m_settings.getTurnLength() + (10 * 60000));
 		
 		this.allocateFlights(currentDate,endOfTurn);//alloue à chaque AOC ses vols arrivant sur le plateau au prochain tour
 		
@@ -113,13 +126,17 @@ public class Game {
 		
 		this.startAOCTurn();//AOC allocates their tokens to their flights
 		
-		this.startFMPTurn();//FMP regulates their sectors
+		//need function that start the slot, every x time the Board is reloaded with sectors occupation actualized and the current Date
+		
+		
+		
+		this.startFMPTurn(endOfTurn);//FMP regulates their sectors
+		
 		
 		this.getDashboards();//Display metrics of the last turn
+		
+		
 	}
-	
-	
-	
 	/**
 	 Le temps est mis en pause et chaque AOC peut miser ses jetons sur ses vols.
 	 */
@@ -137,18 +154,42 @@ public class Game {
 	/**
 	 Après le tour des AOC, le temps avance et à chaque besoin de régulation, les FMP interviennent sur leurs secteurs.
 	 */
-	private void startFMPTurn() 
+	private void startFMPTurn(Date endOfturn) 
 	{
-		while (this.endOfTurn()==false){
+		while (endOfturn.after(currentDate)){
+			this.forwardDate();
+			this.moveFlights();
+			ecrire("test.txt", "\r\n");
+			ecrire("test.txt", currentDate.toString()+"\r\n");
 			for ( String key : FMPplayers.keySet() ){
 				FMPplayers.get(key).play();
 			}
-			this.forwardDate();
+			
+			
+			for(String IdSect: m_board.m_sectorDictionary.keySet())
+			{
+				
+				ecrire("test.txt", "	"+IdSect+"\r\n");
+				for (String flightid : m_board.m_sectorDictionary.get(IdSect).getOccupation().keySet())
+				{
+					ecrire("test.txt", "		"+flightid+" [priority= "+m_board.m_sectorDictionary.get(IdSect).getOccupation().get(flightid).getPriority()+" |airline= "+m_board.m_sectorDictionary.get(IdSect).getOccupation().get(flightid).getAirline()+"]" +"\r\n");
+					
+				}
+				
+				
+				
+			}
 		}
 		
 	}
 	
-	
+	private void moveFlights()
+	{
+		for(String AOCId: availableAirlines.keySet() )
+		{
+			availableAirlines.get(AOCId).moveFlights(currentDate);
+		}
+	}
 	
 
 	
@@ -186,11 +227,16 @@ public class Game {
 	    List<FlightPlan> parseFlightPlan = read.parseFlightPlan("PlansDeVol.xml", m_board.m_completSectorDictionary, m_board.m_sectorDictionary);
 	    //Tests
 	    for (FlightPlan flight : parseFlightPlan) {
-	      System.out.println(flight);
+	      //system.out.println(flight);
 	    }
 	    //Create Tree Map
 	    entryDate2FlightPlan= new TreeMap<Date, ArrayList<FlightPlan>>();
 	    for (FlightPlan fp : parseFlightPlan){
+	    	if (availableAirlines.get(fp.getAirline())==null){
+	    		AOC aoc = new AOC(fp.getAirline(),0);
+	    		availableAirlines.put(fp.getAirline(),aoc);
+	    		//AOCplayers.put(aoc.getName(), aoc);
+	    	}
 	    	if (entryDate2FlightPlan.get(fp.getEntryMap())==null){
 	    		ArrayList<FlightPlan> FPlist = new ArrayList<FlightPlan>();
 	    		FPlist.add(fp);
@@ -198,6 +244,19 @@ public class Game {
 	    	}
 	    	else{
 	    		entryDate2FlightPlan.get(fp.getEntryMap()).add(fp);
+	    	}
+	    }
+	    for (String id:availableAirlines.keySet())
+	    {
+	    	System.out.println(id);
+	    }
+	    for (Date d :entryDate2FlightPlan.keySet() )
+	    {
+	    	//system.out.println("######");
+	    	//system.out.println(d);
+	    	for (FlightPlan fp: entryDate2FlightPlan.get(d))
+	    	{
+	    		//system.out.println(fp);
 	    	}
 	    }
 	}
@@ -214,28 +273,28 @@ public class Game {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		//Files selection
-		//System.out.println("Airspace File ? ");
+		////system.out.println("Airspace File ? ");
 		//String airspaceFile = br.readLine();
 
 		m_settings.setAirspaceFile("Airspace.spc");
 				
-		//System.out.println("Sector File ? ");
+		////system.out.println("Sector File ? ");
 		//String sectorFile = br.readLine();
 		m_settings.setSectorFile("Sector.gsl");
 				
-		//System.out.println("Airblock File ? ");
+		////system.out.println("Airblock File ? ");
 		//String airblockFile = br.readLine();
 		m_settings.setAirblockFile("Airblock.gar");
 
 		this.loadAirspace();
 		/*for (String sectorID: m_board.m_sectorDictionary.get("BIRDNO").getNeighbors())
 		{
-			System.out.println("#####################");
-			System.out.println(sectorID);
-			System.out.println("*******");
+			//system.out.println("#####################");
+			//system.out.println(sectorID);
+			//system.out.println("*******");
 			for (String sectorID2: m_board.m_sectorDictionary.get(sectorID).getNeighbors())
 			{
-				System.out.println(sectorID2);
+				//system.out.println(sectorID2);
 			}
 		}
 		*/		
@@ -253,12 +312,12 @@ public class Game {
 		for(String airsSpaceID:m_board.m_airSpaceDictionary.keySet())
 		{
 			
-			System.out.println(airsSpaceID);
+			//system.out.println(airsSpaceID);
 		}
-		System.out.println("#####################");
+		//system.out.println("#####################");
 		for(String sectorID:m_board.m_sectorDictionary.keySet())
 		{
-			System.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
+			//system.out.println(m_board.m_sectorDictionary.get(sectorID).getFatherId());
 		}
 		
 		this.loadFlightPlans();
@@ -268,13 +327,13 @@ public class Game {
 		int i=1;
 		while (addNewPlayer.equals("Y"))
 		{
-			System.out.println("Player "+i);
-			System.out.println("Name of player "+i+" ");
+			//system.out.println("Player "+i);
+			//system.out.println("Name of player "+i+" ");
 			String name = br.readLine();
 			String type="none";
 			while (!(type.equals("AOC") || type.equals("FMP")))
 			{
-				System.out.println("Type of player: (AOC/FMP)");
+				//system.out.println("Type of player: (AOC/FMP)");
 				type=br.readLine();
 				if (type.equals("AOC"))
 				{
@@ -285,20 +344,20 @@ public class Game {
 				{
 					String airspaceID="";
 					ArrayList<String> airspaces=new ArrayList<String>();
-					System.out.println("Airspace name ?");
+					//system.out.println("Airspace name ?");
 					airspaceID=br.readLine();
 					airspaces.add(airspaceID);
 
-					System.out.println("Add another airspace ? (Y/N)");
+					//system.out.println("Add another airspace ? (Y/N)");
 					String keep;
 					keep=br.readLine();
 					while(keep.equals("Y"))
 					{
-						System.out.println("Airspace name ?");
+						//system.out.println("Airspace name ?");
 						airspaceID=br.readLine();
 						airspaces.add(airspaceID);
 
-						System.out.println("Add another airspace ? (Y/N)");
+						//system.out.println("Add another airspace ? (Y/N)");
 						keep=br.readLine();
 					}
 					FMP P = new FMP(name,i,airspaces);
@@ -307,18 +366,18 @@ public class Game {
 				}
 			}
 			i+=1;
-			System.out.println("Do you want to add a new player (Y/N) ? ");
+			//system.out.println("Do you want to add a new player (Y/N) ? ");
 			addNewPlayer = br.readLine();
 		}
 		
 		
 		//Level choice
-		System.out.println("Enter level: ");
+		//system.out.println("Enter level: ");
 		int level = Integer.parseInt(br.readLine());
 		m_settings.setLevel(level);
 		        
 		//Summary
-		System.out.println(m_settings.returnSettingsInfos());
+		//system.out.println(m_settings.returnSettingsInfos());
 	}
 	
 	
@@ -348,7 +407,10 @@ public class Game {
 		
 		for ( String key : AOCplayers.keySet() ){
 			
-			AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			//AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			int nbflight =AOCplayers.get(key).getNewFlights().size();
+			int budgetmax=nbflight*m_settings.getnbTokensPerFlight();
+			AOCplayers.get(key).setBudget(budgetmax);
 			
 		}
 		
@@ -363,15 +425,31 @@ public class Game {
 	*/
 	private void allocateFlights(Date beginDate, Date endDate)
 	{
+		////system.out.println(beginDate);
+		////system.out.println(endDate);
 		for (String key : AOCplayers.keySet()){
 			AOCplayers.get(key).clearNewFlights();
 		}
-		SortedMap<Date,ArrayList<FlightPlan>> nextTurnFlightPlans 
-						= entryDate2FlightPlan.subMap(beginDate, endDate);
+		
+		SortedMap<Date,ArrayList<FlightPlan>> nextTurnFlightPlans =new TreeMap <Date, ArrayList<FlightPlan>>();			
+		nextTurnFlightPlans= entryDate2FlightPlan.subMap(beginDate, endDate);
+		
+		for (Date d :nextTurnFlightPlans.keySet() )
+	    {
+	    	//system.out.println("######");
+	    	//system.out.println(d);
+	    	for (FlightPlan fp: nextTurnFlightPlans.get(d))
+	    	{
+	    		//system.out.println(fp);
+	    	}
+	    }
 		for (Date d : nextTurnFlightPlans.keySet()){
 			for (FlightPlan fp : nextTurnFlightPlans.get(d)){
 				Flight flight = new Flight(fp);
-				AOCplayers.get(flight.getAirline()).addFlight(flight);
+				if(AOCplayers.get(flight.getAirline())!=null)
+				{
+					AOCplayers.get(flight.getAirline()).addFlight(flight);
+				}
 			}
 		}
 		
@@ -396,7 +474,13 @@ public class Game {
 	 */
 	private void forwardDate()
 	{
-		
+		Calendar cal = Calendar.getInstance(); 
+	    cal.setTime(this.currentDate);
+	    cal.add(Calendar.MINUTE, m_settings.getDelta()); 
+	    Date newDate=cal.getTime();
+	    //ici: recuperer tous les avions qui sont sur sur le plateau et faire refresh sectorOccupation sur chacun 
+	    //refreshSectorsOccupation(newDate);
+	    this.currentDate=newDate;
 	}
 	
 	
@@ -405,6 +489,7 @@ public class Game {
 	
 	private boolean endOfTurn()
 	{
+		
 		return false;
 	}
 	
@@ -438,6 +523,7 @@ public class Game {
 		return m_board;
 	}
 	
+
 	public void setCurrentDate(Date date){
 		this.currentDate=date;
 	}
@@ -445,4 +531,43 @@ public class Game {
 	public Date getCurrentDate(){
 		return currentDate;
 	}
+
+	public void ecrire(String nomFic, String texte)
+	{
+		//on va chercher le chemin et le nom du fichier et on me tout ca dans un String
+		String adressedufichier = System.getProperty("user.dir") + "/"+ nomFic;
+	
+		//on met try si jamais il y a une exception
+		try
+		{
+			/**
+			 * BufferedWriter a besoin d un FileWriter, 
+			 * les 2 vont ensemble, on donne comme argument le nom du fichier
+			 * true signifie qu on ajoute dans le fichier (append), on ne marque pas par dessus 
+			 
+			 */
+			FileWriter fw = new FileWriter(adressedufichier, true);
+			
+			// le BufferedWriter output auquel on donne comme argument le FileWriter fw cree juste au dessus
+			BufferedWriter output = new BufferedWriter(fw);
+			
+			//on marque dans le fichier ou plutot dans le BufferedWriter qui sert comme un tampon(stream)
+			output.write(texte+"\n");
+			//on peut utiliser plusieurs fois methode write
+			
+			output.flush();
+			//ensuite flush envoie dans le fichier, ne pas oublier cette methode pour le BufferedWriter
+			
+			output.close();
+			//et on le ferme
+			//System.out.println("fichier créé");
+		}
+		catch(IOException ioe){
+			System.out.print("Erreur : ");
+			ioe.printStackTrace();
+			}
+
+	}
+	
+
 }

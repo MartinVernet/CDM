@@ -21,7 +21,7 @@ public class Flight {
 		this.currentSector=null;
 		this.m_priority=0;
 		this.economicValue=0;
-		//this.airline=fp.getAirline();
+		this.airline=fp.getAirline();
 	}
 	
 	
@@ -37,19 +37,17 @@ public class Flight {
 		this.m_priority=priority;
 	}
 	
-	public void move(Date currentDate, int nbMinutes){
-		Calendar cal = Calendar.getInstance(); 
-	    cal.setTime(currentDate);
-	    cal.add(Calendar.MINUTE, nbMinutes); 
-	    Date newDate=cal.getTime();
-	    refreshSectorsOccupation(newDate);
-	}
+	
+	
 
-	public void refreshSectorsOccupation(Date newDate) {
+	public void move(Date newDate) {
 		Sector newSector =	getSectorFromDate(newDate);
 		if(currentSector != newSector)
 		{
-			currentSector.removeFlight(this);
+			if(currentSector != null)
+			{
+				currentSector.removeFlight(this);
+			}
 			currentSector=newSector;
 			currentSector.addFlight(this);
 		}
