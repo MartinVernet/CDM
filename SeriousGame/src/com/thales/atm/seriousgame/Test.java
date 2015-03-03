@@ -43,14 +43,11 @@ public class Test
 		
 		m_game.addFMPPlayer(Arthur);
 		
-		//ArrayList<String> chosenAirSpace =new ArrayList<String>();
-		//chosenAirSpace.add("GMMMCTA");
-		//m_game.m_board.reduceMap(chosenAirSpace);
 		
 		m_settings.setDelta(3);
 		m_settings.setTurnLength(60);//multiple
 		
-		//m_game.loadFlightPlans();
+		
 		m_settings.setNbMaxTurn(20);
 		AOC jeanPaul =new AOC ("Private Airline",3);
 		m_game.addAOCPlayer(jeanPaul);

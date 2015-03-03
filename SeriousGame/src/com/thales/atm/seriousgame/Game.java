@@ -12,6 +12,8 @@ import com.thales.atm.seriousgame.flightparser.FlightPlanParser;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -159,21 +161,23 @@ public class Game {
 		while (endOfturn.after(currentDate)){
 			this.forwardDate();
 			this.moveFlights();
+			ecrire("test.txt", "\r\n");
+			ecrire("test.txt", currentDate.toString()+"\r\n");
 			for ( String key : FMPplayers.keySet() ){
 				FMPplayers.get(key).play();
 			}
-			//system.out.println("SECTOR STATUS");
+			
+			
 			for(String IdSect: m_board.m_sectorDictionary.keySet())
 			{
 				
-				//system.out.println(currentDate);
-				//system.out.println(IdSect);
+				ecrire("test.txt", "	"+IdSect+"\r\n");
 				for (String flightid : m_board.m_sectorDictionary.get(IdSect).getOccupation().keySet())
 				{
-					//system.out.println (flightid);
-					//system.out.println( m_board.m_sectorDictionary.get(IdSect).getOccupation().get(flightid).getCurrentSector());
+					ecrire("test.txt", "		"+flightid+" [priority= "+m_board.m_sectorDictionary.get(IdSect).getOccupation().get(flightid).getPriority()+" |airline= "+m_board.m_sectorDictionary.get(IdSect).getOccupation().get(flightid).getAirline()+"]" +"\r\n");
+					
 				}
-				//system.out.println("########");
+				
 				
 				
 			}
@@ -233,7 +237,7 @@ public class Game {
 	    	if (availableAirlines.get(fp.getAirline())==null){
 	    		AOC aoc = new AOC(fp.getAirline(),0);
 	    		availableAirlines.put(fp.getAirline(),aoc);
-	    		AOCplayers.put(aoc.getName(), aoc);
+	    		//AOCplayers.put(aoc.getName(), aoc);
 	    	}
 	    	if (entryDate2FlightPlan.get(fp.getEntryMap())==null){
 	    		ArrayList<FlightPlan> FPlist = new ArrayList<FlightPlan>();
@@ -405,7 +409,10 @@ public class Game {
 		
 		for ( String key : AOCplayers.keySet() ){
 			
-			AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			//AOCplayers.get(key).setBudget(this.m_settings.getnbTokensPerFlight());
+			int nbflight =AOCplayers.get(key).getNewFlights().size();
+			int budgetmax=nbflight*m_settings.getnbTokensPerFlight();
+			AOCplayers.get(key).setBudget(budgetmax);
 			
 		}
 		
@@ -516,6 +523,43 @@ public class Game {
 
 	public map getBoard() {
 		return m_board;
+	}
+	
+	public void ecrire(String nomFic, String texte)
+	{
+		//on va chercher le chemin et le nom du fichier et on me tout ca dans un String
+		String adressedufichier = System.getProperty("user.dir") + "/"+ nomFic;
+	
+		//on met try si jamais il y a une exception
+		try
+		{
+			/**
+			 * BufferedWriter a besoin d un FileWriter, 
+			 * les 2 vont ensemble, on donne comme argument le nom du fichier
+			 * true signifie qu on ajoute dans le fichier (append), on ne marque pas par dessus 
+			 
+			 */
+			FileWriter fw = new FileWriter(adressedufichier, true);
+			
+			// le BufferedWriter output auquel on donne comme argument le FileWriter fw cree juste au dessus
+			BufferedWriter output = new BufferedWriter(fw);
+			
+			//on marque dans le fichier ou plutot dans le BufferedWriter qui sert comme un tampon(stream)
+			output.write(texte+"\n");
+			//on peut utiliser plusieurs fois methode write
+			
+			output.flush();
+			//ensuite flush envoie dans le fichier, ne pas oublier cette methode pour le BufferedWriter
+			
+			output.close();
+			//et on le ferme
+			//System.out.println("fichier créé");
+		}
+		catch(IOException ioe){
+			System.out.print("Erreur : ");
+			ioe.printStackTrace();
+			}
+
 	}
 	
 }

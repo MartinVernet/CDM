@@ -31,6 +31,7 @@ public class Settings {
 		this.m_airblockFile="";
 		this.m_level=0;
 		this.nbPlayers=0;
+		this.nbTokensPerFlight=2;
 	}
 	
 	
