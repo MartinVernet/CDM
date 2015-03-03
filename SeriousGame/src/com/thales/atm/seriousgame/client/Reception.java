@@ -31,7 +31,7 @@ public class Reception implements Runnable {
 			
 			if (message!=null){
 				
-				System.out.println("Le serveur vous dit :" +message);
+				System.out.println("Le serveur vous dit : " +message);
 				if (message.equals("AUT")){
 					Message id = new Message(out,"Please enter your ID : ","ID?");
 					Message type = new Message(out,"Please enter your type : ","TYP");
@@ -40,9 +40,11 @@ public class Reception implements Runnable {
 					runningCommunicationThread.interrupt();
 					System.out.println("Le serveur attend les settings");
 					Thread tset;
-					tset = new Thread(new SettingsInterface(out,in));
-					tset.start();
-					runningCommunicationThread=tset;
+					SettingsInterface set = new SettingsInterface(out,in);
+					set.run();
+					//tset = new Thread(new SettingsInterface(out,in));
+					//tset.start();
+					//runningCommunicationThread=tset;
 				}
 				
 

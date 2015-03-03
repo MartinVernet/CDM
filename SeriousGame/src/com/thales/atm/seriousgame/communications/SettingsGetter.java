@@ -26,6 +26,7 @@ public class SettingsGetter implements Runnable{
 	private boolean ABFok=false;//test airblock
 	private boolean PLYok=false;//test player
 	private boolean LVLok=false;//test level
+	private boolean NBPok=false;
 
 	public boolean settingsOK = false;
 	
@@ -57,68 +58,119 @@ public class SettingsGetter implements Runnable{
 			
 			if (messages[0].equals("ASF")){
 				game.getSettings().setAirspaceFile(messages[1]);
-				System.out.println("ASF set to "+game.getSettings().getAirspaceFile());
 				ASFok=game.getSettings().AirspaceFileExists();
+				if (ASFok){
+					System.out.println("ASF set to "+game.getSettings().getAirspaceFile());
+					out.println("ASF"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("ASF"+"$"+"notok");
+					out.flush();
+				}
 			}
 			
 			else if (messages[0].equals("SCF")){
 				game.getSettings().setSectorFile(messages[1]);
-				System.out.println("SCF set to "+game.getSettings().getSectorFile());
 				SCFok=game.getSettings().SectorFileExists();
-
+				if (SCFok){
+					System.out.println("SCF set to "+game.getSettings().getSectorFile());
+					out.println("SCF"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("SCF"+"$"+"notok");
+					out.flush();
+				}
 			}
 			
 			else if (messages[0].equals("ABF")){
 				game.getSettings().setAirblockFile(messages[1]);
-				System.out.println("ABF set to "+game.getSettings().getAirBlockFile());
 				ABFok=game.getSettings().AirBlockFileExists();
+				if (ABFok){
+					System.out.println("ABF set to "+game.getSettings().getAirBlockFile());
+					out.println("ABF"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("ABF"+"$"+"notok");
+					out.flush();
+				}
 			}
 			
 			else if (messages[0].equals("NBP")){
 				nbPlayers=Integer.parseInt(messages[1]);
+				NBPok=true;
+				if (NBPok){
+					out.println("NBP"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("NBP"+"$"+"notok");
+					out.flush();
+				}
 			}
 			
 			else if (messages[0].equals("LVL")){
-				
 				game.getSettings().setLevel(Integer.parseInt(messages[1]));
-				System.out.println("Level set to "+game.getSettings().getLevel());
 				LVLok=true;
+				if (LVLok){
+					System.out.println("Level set to "+game.getSettings().getLevel());
+					out.println("LVL"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("LVL"+"$"+"notok");
+					out.flush();
+				}
 			}
 			
 			
 			else if (messages[0].equals("PLY")){
 				
-				if (ASFok && SCFok && ABFok){
+				if (ASFok && SCFok && ABFok && NBPok){
 					
 					game.loadAirspace();
 					
 					if (messages[1].equals("AOC")){
 						
-						AOC player = new AOC(messages[3],Integer.parseInt(messages[2]));
+						AOC player = new AOC(messages[2],0);
 						
 						if (player.isOK()){
 							game.addAOCPlayer(player);
+							out.println("ply"+"$"+"ok");
+							out.flush();
+						}
+						else{
+							out.println("ply"+"$"+"notok");
+							out.flush();
 						}
 					}
 					
 					else if (messages[1].equals("FMP")){
 						
-						int id = Integer.parseInt(messages[2]);
-						String name = messages[3];
-						int nbAirspace = Integer.parseInt(messages[4]);
+						//int id = Integer.parseInt(messages[2]);
+						String name = messages[2];
+						int nbAirspace = Integer.parseInt(messages[3]);
 						ArrayList<String> playerAirspaces = new ArrayList<String>();
 						//besoin de construire la map avant pour vérifier l'existence des airspaces
 						int i=1;
 						while (i<=nbAirspace){
-							String newAirspaceName = messages[4+i];
+							String newAirspaceName = messages[3+i];
 							playerAirspaces.add(newAirspaceName);
 							i+=1;
 						}
 						
-						FMP player=new FMP(name,id,playerAirspaces);
+						FMP player=new FMP(name,0,playerAirspaces);
 						if (player.isOK()){
 							game.addFMPPlayer(player);
 							player.setAirspaces(game.getBoard());
+							out.println("ply"+"$"+"ok");
+							out.flush();
+						}
+						else{
+							out.println("ply"+"$"+"notok");
+							out.flush();
 						}
 					}
 					
@@ -129,7 +181,19 @@ public class SettingsGetter implements Runnable{
 				
 				
 				PLYok = (nbPlayers==game.getSettings().getNbPlayers());
+				
+				if(PLYok){
+					out.println("PLY"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("PLY"+"$"+"notok");
+					out.flush();
+				}
+					
 			}
+			
+			
 
 			settingsOK = ASFok && SCFok && ABFok && PLYok && LVLok;
 			
@@ -137,6 +201,9 @@ public class SettingsGetter implements Runnable{
 			
 			game.getSettings().setToOK();
 			System.out.println(game.getSettings().returnSettingsInfos());
+			
+			out.println("SET"+"$"+"ok");
+			out.flush();
 			 
 			t2 = new Thread(new CommunicationClientServer(socket,id));
 			t2.start();
