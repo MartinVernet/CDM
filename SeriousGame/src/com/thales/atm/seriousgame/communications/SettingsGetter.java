@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.thales.atm.seriousgame.AOC;
 import com.thales.atm.seriousgame.FMP;
@@ -26,7 +28,11 @@ public class SettingsGetter implements Runnable{
 	private boolean ABFok=false;//test airblock
 	private boolean PLYok=false;//test player
 	private boolean LVLok=false;//test level
-	private boolean NBPok=false;
+	private boolean NBPok=false;//test Nbplayers
+	private boolean TRNok=false;
+	private boolean DLTok=false;
+	private boolean NBTok=false;
+	private boolean IDTok=false;
 
 	public boolean settingsOK = false;
 	
@@ -121,6 +127,73 @@ public class SettingsGetter implements Runnable{
 				}
 				else{
 					out.println("LVL"+"$"+"notok");
+					out.flush();
+				}
+			}
+			
+			else if (messages[0].equals("TRN")){
+				game.getSettings().setTurnLength(Integer.parseInt(messages[1]));
+				TRNok=true;
+				if (TRNok){
+					System.out.println("Turn length set to "+game.getSettings().getTurnLength()+" minutes");
+					out.println("TRN"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("TRN"+"$"+"notok");
+					out.flush();
+				}
+			}
+			
+			else if (messages[0].equals("DLT")){
+				game.getSettings().setDelta(Integer.parseInt(messages[1]));
+				DLTok=true;
+				if (DLTok){
+					System.out.println("Delta set to "+game.getSettings().getDelta()+" minutes");
+					out.println("DLT"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("DLT"+"$"+"notok");
+					out.flush();
+				}
+			}
+			
+			else if (messages[0].equals("NBT")){
+				game.getSettings().setNbMaxTurn(Integer.parseInt(messages[1]));
+				NBTok=true;
+				if (NBTok){
+					System.out.println("Nb max of turns set to "+game.getSettings().getNbMaxTurn()+" turns");
+					out.println("NBT"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("NBT"+"$"+"notok");
+					out.flush();
+				}
+			}
+			
+			else if (messages[0].equals("IDT")){
+				String dateDelims = "[/]";
+				String[] dateInfos = messages[1].split(dateDelims);
+				int year = Integer.parseInt(dateInfos[0]);
+				int month = Integer.parseInt(dateInfos[1]);
+				int day = Integer.parseInt(dateInfos[2]);
+				int hour = Integer.parseInt(dateInfos[3]);
+				int min = Integer.parseInt(dateInfos[4]);
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(0);
+				cal.set(year, month-1, day, hour, min, 0);
+				Date date=cal.getTime();
+				game.setCurrentDate(date);
+				IDTok=true;
+				if (IDTok){
+					System.out.println("Initial date set to "+game.getCurrentDate().toString());
+					out.println("IDT"+"$"+"ok");
+					out.flush();
+				}
+				else{
+					out.println("IDT"+"$"+"notok");
 					out.flush();
 				}
 			}

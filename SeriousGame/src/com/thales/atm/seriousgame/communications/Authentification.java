@@ -30,7 +30,6 @@ public class Authentification implements Runnable {
 	
 	
 	public Authentification(Socket s,ConcurrentHashMap<String,Socket> clientsMap, Game game){
-		//System.out.println("Create Authentification");
 		 socket = s;
 		 this.clientsMap = clientsMap;
 		 this.game = game;
@@ -39,14 +38,12 @@ public class Authentification implements Runnable {
 	public void run() {
 	
 		try {
-			//System.out.println("Prep Authentification");
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream());
 			out.println("AUT");
 			out.flush();
 			
 		while(!authentifier){
-			//System.out.println("Authentification...");
 			
 			String message = in.readLine();
 			System.out.println(message);
@@ -71,11 +68,16 @@ public class Authentification implements Runnable {
 					game.BoardMap.putIfAbsent(id, socket);
 				}
 				else if (type.equals("AOC") || type.equals("FMP")){
-					out.println("connecté");
-					System.out.println(id +" ( "+type+" ) "+" vient de se connecter ");
-					out.flush();
-					authentifier = true;
-					game.PlayerMap.putIfAbsent(id, socket);
+					if (game.getSettings().isReady()){
+						out.println("connecté");
+						System.out.println(id +" ( "+type+" ) "+" vient de se connecter ");
+						out.flush();
+						authentifier = true;
+						game.PlayerMap.putIfAbsent(id, socket);
+					}
+					else{
+						System.out.println("Please first connect the main IHM and define game settings");
+					}
 				}
 				else{
 					out.println("Unknown error");
@@ -91,19 +93,26 @@ public class Authentification implements Runnable {
 
 		
 		if (type.equals("Board")){
-			
 			System.out.println("Asking for settings");
 			t2 = new Thread(new SettingsGetter(socket,id,game));
 			t2.start();
 		}
 		
-		else if (type.equals("Player")){
-			
-			if (game.getSettings().isReady()){
-				
+		else if (type.equals("AOC")||type.equals("FMP")){
+			if(clientsMap.keySet().size()==game.getSettings().getNbPlayers()){
+				game.launchGame();
 			}
 			else{
-				System.out.println("Please first connect the main IHM and define game settings");
+				for (String player:game.getAOCplayersDict().keySet()){
+					if (clientsMap.get(player) == null){
+						System.out.println("Waiting for "+player+" to connect");
+					}
+				}
+				for (String player:game.getFMPplayersDict().keySet()){
+					if (clientsMap.get(player) == null){
+						System.out.println("Waiting for "+player+" to connect");
+					}
+				}
 			}
 		}
 		
@@ -169,31 +178,6 @@ public class Authentification implements Runnable {
 				return false;
 			}
 		}
-		
-		/**
-		//Si un board est déjà connecté
-		else if (type == "Board" && game.BoardMap.keySet().size()>0){
-			out.println("Board déjà connecté, il ne peut y en avoir qu'un seul");
-			out.flush();
-			return false;
-		}
-		else if (type == "AOC" && game.getAOCplayersDict().get(login)!=null){
-			
-		}
-		else if (availableTypes.contains(type)){
-			if(clientsMap.putIfAbsent(login,socket)==null){
-				return true;
-			}
-			else{
-				return false;
-			}
-		}
-			
-			
-		else{
-			return false;
-		}
-		*/
 		
 	}
 

@@ -28,8 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Game {
 	
-	
-	
 	private Settings m_settings;
 	private int m_turn;
 	private HashMap<String,AOC> AOCplayers;
@@ -440,4 +438,11 @@ public class Game {
 		return m_board;
 	}
 	
+	public void setCurrentDate(Date date){
+		this.currentDate=date;
+	}
+	
+	public Date getCurrentDate(){
+		return currentDate;
+	}
 }
