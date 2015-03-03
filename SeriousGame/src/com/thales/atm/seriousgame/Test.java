@@ -49,7 +49,7 @@ public class Test
 		
 		
 		m_settings.setNbMaxTurn(20);
-		AOC jeanPaul =new AOC ("Private Airline",3);
+		AOCPlayer jeanPaul =new AOCPlayer("Private Airline",3);
 		m_game.addAOCPlayer(jeanPaul);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
