@@ -19,7 +19,9 @@ public class map {
 	HashMap <String,Sector> m_sectorDictionary;
 	HashMap <String,AirSpace> m_airSpaceDictionary;
 	HashMap <String,AirBlock> m_airBlockWithAltDic;
-	
+	HashMap <String,Sector> m_completSectorDictionary;
+
+
 	
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
@@ -397,6 +399,8 @@ public class map {
 			reduceAirSpaceDictionary.put(airSpaceId, m_airSpaceDictionary.get(airSpaceId));
 		}
 		
+		m_completSectorDictionary = new HashMap <String ,Sector>(m_sectorDictionary);
+		//fm_completSectorDictionary. m_sectorDictionary;
 		m_sectorDictionary.clear();
 		m_airSpaceDictionary.clear();
 		m_airBlockWithAltDic.clear();
