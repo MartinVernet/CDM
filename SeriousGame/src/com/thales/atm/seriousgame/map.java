@@ -4,11 +4,16 @@ import java.io.BufferedReader;
 
 import com.vividsolutions.jts.geom.*;
 
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.swingViewer.Viewer;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
@@ -21,6 +26,7 @@ public class map {
 	HashMap <String,AirSpace> m_airSpaceDictionary;
 	HashMap <String,AirBlock> m_airBlockWithAltDic;
 	HashMap <String,Sector> m_completSectorDictionary;
+	Graph graph;
 
 
 	
@@ -31,6 +37,7 @@ public class map {
 		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
 		setFather();
+		
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
@@ -453,6 +460,52 @@ public class map {
 			impactedSector.degradation(decrease);
 		}
 
+	}
+	
+	public void displaymap()
+	{
+		/*Graph graph = new SingleGraph("Tutorial 1");
+		 
+        graph.addNode("A");
+        graph.addNode("B");
+        graph.addNode("C");
+        graph.addEdge("AB", "A", "B");
+        graph.addEdge("BC", "B", "C");
+        graph.addEdge("CA", "C", "A");
+
+        graph.display();*/
+		
+		 graph = new SingleGraph("Tutorial 1");
+		 
+		 HashSet<String> alreadySet=new HashSet<String>();
+		for (String sectorID: m_sectorDictionary.keySet())
+		{
+			 graph.addNode(sectorID);
+		}
+		for(Node node:graph)
+		{
+			node.addAttribute("ui.label", node.getId());
+			//node.addAttribute("ui.class","node {fill-mode: plain; fill-color: red; }");
+			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,40px;");
+			
+		}
+		for (String sectorID: m_sectorDictionary.keySet())
+		{
+			for (String neighbor:m_sectorDictionary.get(sectorID).getNeighbors())
+			{
+				if(!alreadySet.contains(neighbor))
+				{
+					graph.addEdge(sectorID+neighbor, sectorID, neighbor);
+					
+				}
+				
+			}
+			alreadySet.add(sectorID);
+			//graph.addEdge(sectorID+neighbor, sectorID, neighbor);
+		}
+        
+
+        graph.display();
 	}
 
 }

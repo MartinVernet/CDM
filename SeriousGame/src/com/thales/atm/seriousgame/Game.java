@@ -2,6 +2,14 @@ package com.thales.atm.seriousgame;
 
 import javax.jws.WebService;
 
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.graphicGraph.GraphicGraph;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
+import org.graphstream.ui.swingViewer.View;
+import org.graphstream.ui.swingViewer.Viewer;
+
 import sun.util.locale.provider.AvailableLanguageTags;
 
 import com.thales.atm.seriousgame.Player;
@@ -90,6 +98,7 @@ public class Game {
 			chosenAirspaces.addAll(FMPplayers.get(key).getAirspacesID());
 			}
 		this.m_board.reduceMap(chosenAirspaces);
+		this.m_board.displaymap();
 		loadFlightPlans();
 		//Main loop of the game
 		while (this.isFinished()==false){
@@ -160,8 +169,15 @@ public class Game {
 	 */
 	private void startFMPTurn(Date endOfturn) 
 	{
+		
 		while (endOfturn.after(currentDate)){
 			this.forwardDate();
+			try {
+				Thread.sleep(800);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.moveFlights();
 			ecrire("test.txt", "\r\n");
 			ecrire("test.txt", currentDate.toString()+"\r\n");
@@ -189,10 +205,45 @@ public class Game {
 	
 	private void moveFlights()
 	{
+		System.out.println(currentDate);
+		//ArrayList<Sprite>
+		SpriteManager sman = new SpriteManager(m_board.graph);
 		for(String AOCId: availableAirlines.keySet() )
 		{
 			availableAirlines.get(AOCId).moveFlights(currentDate);
 		}
+		
+		for(Node node :m_board.graph )
+		{
+			int nbofFlight=m_board.m_sectorDictionary.get(node.getId()).getOccupation().size();
+			node.addAttribute("ui.label", node.getId()+" "+nbofFlight);
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==0)
+			{
+				node.setAttribute("ui.style", "fill-color: rgb(0,0,255);");//bleu
+				node.addAttribute("ui.label", node.getId()+" "+nbofFlight);
+			}
+			else 
+			{
+				String flights="";
+				for(String flightId: m_board.m_sectorDictionary.get(node.getId()).getOccupation().keySet())
+				{
+					flights+=", "+flightId ;
+					
+				}
+				node.addAttribute("ui.label", node.getId()+" "+nbofFlight+"/ "+flights);
+			}
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==1)
+				node.setAttribute("ui.style", "fill-color: rgb(0,255,0);");//vert
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==2)
+				node.setAttribute("ui.style", "fill-color: rgb(255,255,0);");//jaune
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==3)
+				node.setAttribute("ui.style", "fill-color: rgb(255,0,200);");//violet
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()>3)
+				node.setAttribute("ui.style", "fill-color: rgb(255,0,0);");//rouge
+		}
+		
+		
+		
 	}
 	
 
