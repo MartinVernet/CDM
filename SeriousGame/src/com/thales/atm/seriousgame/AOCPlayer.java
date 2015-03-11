@@ -40,7 +40,8 @@ public class AOCPlayer extends AOC {
 			int p =-1;
 			while ((p<0 || p>6) || budgetRestant<0)
 			{
-				
+				System.out.println("########");
+				System.out.println("Set priority for airline "+this.m_name);
 				System.out.println("budget restant = "+budgetRestant);
 				System.out.println("priorité du vol : "+flightID +"=");
 				String priority="";
