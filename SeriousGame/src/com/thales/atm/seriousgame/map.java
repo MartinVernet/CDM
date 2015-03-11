@@ -486,7 +486,7 @@ public class map {
 		{
 			node.addAttribute("ui.label", node.getId());
 			//node.addAttribute("ui.class","node {fill-mode: plain; fill-color: red; }");
-			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,40px;");
+			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
 			
 		}
 		for (String sectorID: m_sectorDictionary.keySet())

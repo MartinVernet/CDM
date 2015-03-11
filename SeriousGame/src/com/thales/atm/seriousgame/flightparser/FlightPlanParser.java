@@ -55,7 +55,9 @@ public class FlightPlanParser {
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> board, HashMap<String,Sector> reducedBoard) {
 
 	   Sector outSector = new Sector("Out",null);
+	   outSector.setCapacity(10000);
 	   Sector exitSector = new Sector("Exit",null);
+	   exitSector.setCapacity(10000);
 	   List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
 	   try {

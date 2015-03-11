@@ -96,7 +96,8 @@ public class Game {
 		ArrayList<String> chosenAirspaces = new ArrayList<String>();
 		for (String key : FMPplayers.keySet()){
 			chosenAirspaces.addAll(FMPplayers.get(key).getAirspacesID());
-			}
+		}
+		//chosenAirspaces.addAll(m_board.m_airSpaceDictionary.keySet());
 		this.m_board.reduceMap(chosenAirspaces);
 		this.m_board.displaymap();
 		loadFlightPlans();

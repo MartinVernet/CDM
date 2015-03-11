@@ -37,8 +37,8 @@ public class Test
 		System.out.print(m_game.m_board.m_sectorDictionary.get("GMMMOCE").m_name);
 		
 		FMP Arthur= new FMP("arthur",2);
-		Arthur.addAirspace("GMMMCTA");
-		Arthur.addAirspace("GCCCCTA");
+		Arthur.addAirspace("LFFFCTA");
+		Arthur.addAirspace("LFEECTA");
 		Arthur.setAirspaces(m_game.m_board);
 		
 		m_game.addFMPPlayer(Arthur);
@@ -49,11 +49,11 @@ public class Test
 		
 		
 		m_settings.setNbMaxTurn(20);
-		AOCPlayer jeanPaul =new AOCPlayer("Private Airline",3);
+		AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
 		m_game.addAOCPlayer(jeanPaul);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
-		cal.set(2014, 9, 15, 10, 00, 00);
+		cal.set(2014, 9, 15, 12, 00, 00);
 		Date date = cal.getTime();
 		m_game.currentDate=date;
 		System.out.println(m_game.currentDate);
