@@ -143,10 +143,8 @@ public class FlightPlan {
 		  
 	  }	  
 	  
-	  public void regulateSector(Sector regulateSector, ArrayList<Sector> newSectors, int penality){
-		 
-		  ArrayList<Sector> currentList;
-		    
+	  public void refreshFlightPlan(Sector regulateSector, ArrayList<Sector> newSectors, int penality){
+		 		    
 		  if(this.airspaceProfileES.keySet().contains(regulateSector))
 		  {
 			 //find current sector to regulate
@@ -170,13 +168,13 @@ public class FlightPlan {
 					 int nb = 1;
 					 for (Sector rSector : nextSectors)
 					 {
-						 nb++;
 						 Calendar cal = Calendar.getInstance(); 
 						 cal.setTime(firstDate);
 						 cal.add(Calendar.MINUTE, nb*penality);
 						 Date newDate=cal.getTime();
 						 
 						 planC.put(newDate, rSector);
+						 nb++;
 					 }
 					 
 					 
@@ -196,7 +194,12 @@ public class FlightPlan {
 					 }	
 					 
 					 //merge plans
+					 NavigableMap<Date, Sector> regulateFlightPlan= new TreeMap<Date, Sector>();
+					 regulateFlightPlan.putAll(planA);
+					 regulateFlightPlan.putAll(planB);
+					 regulateFlightPlan.putAll(planC);
 					 
+					 this.setAirspaceProfile(regulateFlightPlan);
 
 				 }
 				 
