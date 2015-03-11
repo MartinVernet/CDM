@@ -18,19 +18,19 @@ public class AirSpace {
 	//ArrayList<Sector> m_sector;
 	ArrayList<String> m_sectorId;
 	private boolean m_needRegulation;
-	Set<String> listOfFullSector; //Attention not multiThread Safe
+	Set<Sector> listOfFullSector; //Attention not multiThread Safe
 
 	public AirSpace(String name, ArrayList<String> sect)
 	{
 		this.setName(name);
 		this.m_sectorId=sect;
-		this.listOfFullSector =new HashSet<String>();
+		this.listOfFullSector =new HashSet<Sector>();
 	}
 	public AirSpace()
 	{
 			this.setName("test");
 			this.m_sectorId=null;
-			this.listOfFullSector =new HashSet<String>();
+			this.listOfFullSector =new HashSet<Sector>();
 	}
 	public String getName() {
 		return m_name;
@@ -45,12 +45,12 @@ public class AirSpace {
 		this.m_needRegulation = m_needRegulation;
 	}
 	
-	public void addFullSector(String sectorId)
+	public void addFullSector(Sector sectorId)
 	{
 		//verifier s'il n'est pas deja dedans
 		listOfFullSector.add(sectorId);
 	}
-	public void removeFullSector(String sectorId)
+	public void removeFullSector(Sector sectorId)
 	{
 		//a optimiser
 		listOfFullSector.remove(sectorId);

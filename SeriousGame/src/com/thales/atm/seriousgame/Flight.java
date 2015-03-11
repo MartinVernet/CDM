@@ -83,5 +83,9 @@ public class Flight {
 	public void setAirline(String airline) {
 		this.airline = airline;
 	}
+	public FlightPlan getFlightPlan()
+	{
+		return this.m_flightplan;
+	}
 	
 }

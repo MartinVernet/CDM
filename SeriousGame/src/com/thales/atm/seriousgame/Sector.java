@@ -15,9 +15,9 @@ public class Sector {
 	public String m_name;
 	//ArrayList<AirBlock> m_airBlocks;
 	ArrayList<String> m_airBlocksId;
-	private int normalCapacity=15;
+	private int normalCapacity=4;//15;
 	private int capacity;
-	private Set<String> neighbors; //Attention not multiThread Safe
+	private Set<Sector> neighbors; //Attention not multiThread Safe
 	private String m_fatherId;
 	private HashMap<String,Flight> occupation;
 	private AirSpace m_father;
@@ -33,7 +33,7 @@ public class Sector {
 	{
 		this.m_name=name;
 		this.m_airBlocksId=airb;
-		this.neighbors=new HashSet<String>();
+		this.neighbors=new HashSet<Sector>();
 		this.capacity=normalCapacity;
 		this.occupation= new HashMap<String,Flight>();
 		
@@ -61,13 +61,13 @@ public class Sector {
 	/**
 	 * @return the neighbors
 	 */
-	public Set<String> getNeighbors() {
+	public Set<Sector> getNeighbors() {
 		return neighbors;
 	}
 	/**
 	 * @param neighbors the neighbors to set
 	 */
-	public void setNeighbors(Set<String> neighbors) {
+	public void setNeighbors(Set<Sector> neighbors) {
 		this.neighbors = neighbors;
 	}
 	public HashMap<String,Flight> getOccupation() {
@@ -89,7 +89,7 @@ public class Sector {
 		if(capacity==occupation.size())
 		{
 			needRegulation= false;
-			m_father.removeFullSector(this.m_name);
+			m_father.removeFullSector(this);
 		}
 	}
 	public void addFlight(Flight flight)
@@ -98,7 +98,7 @@ public class Sector {
 		if(capacity==occupation.size()+1)
 		{
 			needRegulation= true;
-			m_father.addFullSector(this.m_name);
+			m_father.addFullSector(this);
 		}
 
 	}
@@ -115,5 +115,11 @@ public class Sector {
 	public void degradation(double decrease) {
 		this.capacity=(int) Math.floor(capacity*decrease);
 	}		
-
+	
+	public void setNormalCapacity(int newCapa)
+	{
+		normalCapacity=newCapa;
+	}
+	
+	
 }
