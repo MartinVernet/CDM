@@ -33,8 +33,6 @@ public class FlightPlan {
 	  private String airline;
 	  private Date exitMap;
 	  private Date entryMap;
-	  private String delay;
-	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private NavigableMap<Date,Sector> airspaceProfileES;
 
 	  
@@ -105,13 +103,11 @@ public class FlightPlan {
 			String cvsSplitBy = ";"; 
 			boolean itemfind= false;
 			
-			try {
-		 
+			try { 
 					br = new BufferedReader(new FileReader(csvFile));
 
 					while ((a = br.readLine()) != null && itemfind ==false) 
-					{
-						
+					{	
 		 		        // use semi comma as separator
 						String [] obj= a.split(cvsSplitBy);
 					
@@ -148,12 +144,12 @@ public class FlightPlan {
 		  if(this.airspaceProfileES.keySet().contains(regulateSector))
 		  {
 			 //find current sector to regulate
-			 for (Entry <Date, Sector> entry : this.airspaceProfileES.entrySet())
+			 for (Entry <Date, Sector> entry : this.airspaceProfileES .entrySet())
 			 {
 				 if(regulateSector.equals(entry.getValue()))
 				 {
 					 Date firstDate = entry.getKey();
-					 Sector firstSector = newSectors.get(0);
+					 Sector firstSector = regulateSector;
 					 NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, firstDate, false);
 
 					 this.airspaceProfileES.replace(firstDate, firstSector);
@@ -161,21 +157,19 @@ public class FlightPlan {
 					 NavigableMap<Date,Sector> planB = this.airspaceProfileES.subMap(firstDate, true, this.exitMap, true);
 					 
 					 NavigableMap<Date,Sector> planC = new TreeMap<Date,Sector>();
-					 
-					 ArrayList<Sector> nextSectors = (ArrayList<Sector>) newSectors.subList(1, newSectors.size());
-					 
+					 					 
 					//new sectors
-					 int nb = 1;
-					 for (Sector rSector : nextSectors)
+					 int nb = 0;
+					 for (Sector rSector : newSectors)
 					 {
+						 nb++;
 						 Calendar cal = Calendar.getInstance(); 
 						 cal.setTime(firstDate);
 						 cal.add(Calendar.MINUTE, nb*penality);
 						 Date newDate=cal.getTime();
 						 
 						 planC.put(newDate, rSector);
-						 nb++;
-					 }
+ 					 }
 					 
 					 
 					//regulate planB 
@@ -200,29 +194,8 @@ public class FlightPlan {
 					 regulateFlightPlan.putAll(planC);
 					 
 					 this.setAirspaceProfile(regulateFlightPlan);
-
+					 break;
 				 }
-				 
-					 /*if(newSectors.size() > 0)
-					 {
-						 currentList = (ArrayList<Sector>) newSectors.subList(1, newSectors.size());
-						 
-						 for(Entry <Date, Sector> rEntry : currentPlan.entrySet())
-						 {
-							 for (Sector rSector : currentList)
-							 {
-								 Date rDate = rEntry.getKey();
-								 currentPlan.remove(rEntry.getKey(), rEntry.getValue());
-								 
-								 Calendar cal = Calendar.getInstance(); 
-								 cal.setTime(rDate);
-								 cal.add(Calendar.MINUTE, penality);
-								 Date newDate=cal.getTime();
-								 
-								 currentPlan.put(newDate, rSector);
-							 }
-						 }
-					 }*/
 			 }
 		 }
 	  }
@@ -238,28 +211,6 @@ public class FlightPlan {
 		else return null;
 			
 	  }
-	  
-
-	  		//Others
-	  //Override compare function to compare EntryExitTime type
-	 /* Comparator<EntryExitTime> secondDateComparator = new Comparator<EntryExitTime>() {
-	      @Override public int compare(EntryExitTime t1, EntryExitTime t2) {
-	    	  // Same entry time
-	    	  if((t1.getEntryTime().compareTo(t2.getEntryTime())) == 0 && (t1.getExitTime().compareTo(t2.getExitTime())) < 0) {
-	    		  return -1; 
-	    	  } else {
-	    		  if((t1.getEntryTime().compareTo(t2.getEntryTime())) == 0 && (t1.getExitTime().compareTo(t2.getExitTime())) > 0) {
-		    		  return 1;
-		    	  } 
-	    	  }
-	          // Different entry time
-	    	  if((t1.getEntryTime().compareTo(t2.getEntryTime())) > 0) {
-	    		  return 1;
-	    	  } else {
-	    		  return -1;
-	    	  }          	    	  
-	      }           
-	  };*/
 	  
 	  //Print for testing purpose
 	  @Override
