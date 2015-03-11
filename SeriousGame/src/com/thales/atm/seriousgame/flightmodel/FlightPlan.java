@@ -1,10 +1,14 @@
 package com.thales.atm.seriousgame.flightmodel;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.NavigableMap;
+
+
 
 
 
@@ -31,6 +35,7 @@ public class FlightPlan {
 	  private String airline;
 	  private Date exitMap;
 	  private Date entryMap;
+	  private String delay;
 	 // private Map<EntryExitTime,String> airspaceProfileES;
 	  private NavigableMap<Date,Sector> airspaceProfileES;
 
@@ -140,6 +145,22 @@ public class FlightPlan {
 		  
 	  }	  
 	  
+	  public void regulateSector(Sector regulateSector, Sector newSector){
+		 
+		  if(this.airspaceProfileES.keySet().contains(regulateSector))
+		 {
+			 //find current sector to regulate
+			 for (Entry <Date, Sector> entry : this.airspaceProfileES.entrySet())
+			 {
+				 if(regulateSector.equals(entry.getValue()))
+				 {
+					 Date tmp = entry.getKey();
+					 this.airspaceProfileES.replace(tmp, newSector);
+					 
+				 }
+			 }
+		 }
+	  }
 	  
 	  public Sector getSectorFromDate(Date date) {
 			
