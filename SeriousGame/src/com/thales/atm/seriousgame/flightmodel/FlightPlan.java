@@ -1,15 +1,13 @@
 package com.thales.atm.seriousgame.flightmodel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.NavigableMap;
-
-
-
 
 
 import com.thales.atm.seriousgame.AirSpace;
@@ -145,19 +143,83 @@ public class FlightPlan {
 		  
 	  }	  
 	  
-	  public void regulateSector(Sector regulateSector, Sector newSector){
+	  public void regulateSector(Sector regulateSector, ArrayList<Sector> newSectors, int penality){
 		 
+		  ArrayList<Sector> currentList;
+		    
 		  if(this.airspaceProfileES.keySet().contains(regulateSector))
-		 {
+		  {
 			 //find current sector to regulate
 			 for (Entry <Date, Sector> entry : this.airspaceProfileES.entrySet())
 			 {
 				 if(regulateSector.equals(entry.getValue()))
 				 {
-					 Date tmp = entry.getKey();
-					 this.airspaceProfileES.replace(tmp, newSector);
+					 Date firstDate = entry.getKey();
+					 Sector firstSector = newSectors.get(0);
+					 NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, firstDate, false);
+
+					 this.airspaceProfileES.replace(firstDate, firstSector);
+					
+					 NavigableMap<Date,Sector> planB = this.airspaceProfileES.subMap(firstDate, true, this.exitMap, true);
 					 
+					 NavigableMap<Date,Sector> planC = new TreeMap<Date,Sector>();
+					 
+					 ArrayList<Sector> nextSectors = (ArrayList<Sector>) newSectors.subList(1, newSectors.size());
+					 
+					//new sectors
+					 int nb = 1;
+					 for (Sector rSector : nextSectors)
+					 {
+						 nb++;
+						 Calendar cal = Calendar.getInstance(); 
+						 cal.setTime(firstDate);
+						 cal.add(Calendar.MINUTE, nb*penality);
+						 Date newDate=cal.getTime();
+						 
+						 planC.put(newDate, rSector);
+					 }
+					 
+					 
+					//regulate planB 
+					 for(Entry <Date, Sector> rEntry : planB.entrySet())
+					 {
+						 Date rDate = rEntry.getKey();
+						 Sector rSector = rEntry.getValue();
+						 planB.remove(rEntry.getKey(), rEntry.getValue());
+						 
+						 Calendar cal = Calendar.getInstance(); 
+						 cal.setTime(rDate);
+						 cal.add(Calendar.MINUTE, newSectors.size()*penality);
+						 Date newDate=cal.getTime();
+						 
+						 planB.put(newDate, rSector);
+					 }	
+					 
+					 //merge plans
+					 
+
 				 }
+				 
+					 /*if(newSectors.size() > 0)
+					 {
+						 currentList = (ArrayList<Sector>) newSectors.subList(1, newSectors.size());
+						 
+						 for(Entry <Date, Sector> rEntry : currentPlan.entrySet())
+						 {
+							 for (Sector rSector : currentList)
+							 {
+								 Date rDate = rEntry.getKey();
+								 currentPlan.remove(rEntry.getKey(), rEntry.getValue());
+								 
+								 Calendar cal = Calendar.getInstance(); 
+								 cal.setTime(rDate);
+								 cal.add(Calendar.MINUTE, penality);
+								 Date newDate=cal.getTime();
+								 
+								 currentPlan.put(newDate, rSector);
+							 }
+						 }
+					 }*/
 			 }
 		 }
 	  }
