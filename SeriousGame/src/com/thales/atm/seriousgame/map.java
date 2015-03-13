@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 
 import com.vividsolutions.jts.geom.*;
 
+import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.Viewer;
@@ -26,6 +27,7 @@ public class map {
 	HashMap <String,AirSpace> m_airSpaceDictionary;
 	HashMap <String,AirBlock> m_airBlockWithAltDic;
 	HashMap <String,Sector> m_completSectorDictionary;
+	private int penality =5 ;
 	Graph graph;
 
 
@@ -375,7 +377,7 @@ public class map {
 						String idFather2 = m_airBlockWithAltDic.get(idAirB2).getFatherId();
 						if(!idFather1.equals(idFather2))
 						{
-							m_sectorDictionary.get(idFather1).getNeighbors().add(idFather2);
+							m_sectorDictionary.get(idFather1).getNeighbors().add(m_sectorDictionary.get(idFather2));
 							//m_airBlckWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
 
 						}
@@ -463,18 +465,7 @@ public class map {
 	}
 	
 	public void displaymap()
-	{
-		/*Graph graph = new SingleGraph("Tutorial 1");
-		 
-        graph.addNode("A");
-        graph.addNode("B");
-        graph.addNode("C");
-        graph.addEdge("AB", "A", "B");
-        graph.addEdge("BC", "B", "C");
-        graph.addEdge("CA", "C", "A");
-
-        graph.display();*/
-		
+	{		
 		 graph = new SingleGraph("Tutorial 1");
 		 
 		 HashSet<String> alreadySet=new HashSet<String>();
@@ -485,17 +476,16 @@ public class map {
 		for(Node node:graph)
 		{
 			node.addAttribute("ui.label", node.getId());
-			//node.addAttribute("ui.class","node {fill-mode: plain; fill-color: red; }");
 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
 			
 		}
 		for (String sectorID: m_sectorDictionary.keySet())
 		{
-			for (String neighbor:m_sectorDictionary.get(sectorID).getNeighbors())
+			for (Sector neighbor:m_sectorDictionary.get(sectorID).getNeighbors())
 			{
-				if(!alreadySet.contains(neighbor))
+				if(!alreadySet.contains(neighbor.m_name))
 				{
-					graph.addEdge(sectorID+neighbor, sectorID, neighbor);
+					graph.addEdge(sectorID+neighbor.m_name, sectorID, neighbor.m_name);
 					
 				}
 				
@@ -507,6 +497,77 @@ public class map {
 
         graph.display();
 	}
+	
+	ArrayList<Path> getSetsOfShortestPath(Sector A, Sector B, Sector I)// pour les FMP joueurs 
+	{
+		ArrayList<Path> rerouteChoices= new ArrayList<Path>();
+		SingleGraph subgraph = new SingleGraph("sub_ graph");
+		 HashSet<String> nodeAlreadySet=new HashSet<String>();
+		 HashSet<String> edgeAlreadySet=new HashSet<String>();
+		 HashSet<String> nodeSources=new HashSet<String>();
+		//graph.addNode(B.m_name);
+		for (Sector neighbourA: A.getNeighbors())
+		{
+			subgraph.addNode(neighbourA.m_name);
+			nodeAlreadySet.add(neighbourA.m_name);
+			if(I.getNeighbors().contains(neighbourA))
+			{
+				nodeSources.add(neighbourA.m_name);
+			}
+		}
+		for (Sector neighbourB: B.getNeighbors())
+		{
+			if(!nodeAlreadySet.contains(neighbourB.m_name) && !neighbourB.m_name.equals(A.m_name))
+			{
+				subgraph.addNode(neighbourB.m_name);
+				nodeAlreadySet.add(neighbourB.m_name);
+			}
+		}
+		
+		for (Node node:subgraph)
+		{
+			for (Sector neighbor:m_sectorDictionary.get(node.getId()).getNeighbors())
+			{
+				if(!edgeAlreadySet.contains(neighbor.m_name) && nodeAlreadySet.contains(neighbor.m_name))
+				{
+					subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);;
+					
+				}
+			}
+			edgeAlreadySet.add(node.getId());
+		}
+		
+		
+		
+		 Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
+		 
+         // Compute the shortest paths in g from A to all nodes
+         dijkstra.init(subgraph);
+         dijkstra.setSource(subgraph.getNode(B.m_name));
+         dijkstra.compute();
+         for (String source: nodeSources)
+         {
+        	 rerouteChoices.add(dijkstra.getPath(subgraph.getNode(source)));
+         }
+         for(Node node:subgraph)
+ 		{
+ 			node.addAttribute("ui.label", node.getId());
+ 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
+ 			
+ 		}
+         subgraph.display();
+         return rerouteChoices;
+	}
+
+	public int getPenality() {
+		return penality;
+	}
+
+	public void setPenality(int penality) {
+		this.penality = penality;
+	}
+	
+	
 
 }
 

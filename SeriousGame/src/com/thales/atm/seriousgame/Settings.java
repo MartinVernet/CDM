@@ -17,6 +17,7 @@ public class Settings {
 	private int m_delta;
 	private int m_turnLength;
 	private int m_nbMaxTurn;
+	private int delayPerSector;
 
 	private Date initDate;
 	private boolean settingsOK=false;
@@ -32,6 +33,7 @@ public class Settings {
 		this.m_level=0;
 		this.nbPlayers=0;
 		this.nbTokensPerFlight=2;
+		this.delayPerSector=5;
 	}
 	
 	
@@ -272,6 +274,16 @@ public class Settings {
 	
 	public void setToOK(){
 		settingsOK=true;
+	}
+
+
+	public int getDelayPerSector() {
+		return delayPerSector;
+	}
+
+
+	public void setDelayPerSector(int delayPerSector) {
+		this.delayPerSector = delayPerSector;
 	}
 	
 }

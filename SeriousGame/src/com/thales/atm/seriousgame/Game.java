@@ -140,7 +140,7 @@ public class Game {
 		//need function that start the slot, every x time the Board is reloaded with sectors occupation actualized and the current Date
 		
 		
-		
+		this.m_board.setCapacities(m_settings.getLevel());
 		this.startFMPTurn(endOfTurn);//FMP regulates their sectors
 		
 		
@@ -274,6 +274,7 @@ public class Game {
 	public void loadAirspace()
 	{
 		this.m_board = new map(this.m_settings.getAirBlockFile(),this.m_settings.getSectorFile(),this.m_settings.getAirspaceFile());
+		this.m_board.setPenality(m_settings.getDelayPerSector());
 	}
 	
 	
