@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
+import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 import com.thales.atm.seriousgame.Player;
@@ -53,24 +55,34 @@ public class FMP extends Player {
 	public void play(){
 		System.out.println("#####"+ this.m_id);
 		String flightChosen="";
-		Path routeChosen=new Path();
-		HashMap<Flight,Path> allRegulations = new HashMap<Flight,Path>();
+		ArrayList<Sector> routeChosen;
+		HashMap<Flight,ArrayList<Sector>> allRegulations = new HashMap<Flight,ArrayList<Sector>>();
 		for ( AirSpace airSpace : m_airSpaces )
 		{
 			for(Sector sector : airSpace.listOfFullSector)
 			{
 				int nbFlightToRegulate = sector.getOccupation().size()-sector.getCapacity();
-				HashMap<Flight,Path> regulations = new HashMap<Flight,Path>();
-				for (int i = 0;i<nbFlightToRegulate;i++)
+				HashMap<Flight,ArrayList<Sector>> regulations = new HashMap<Flight,ArrayList<Sector>>();
+				HashSet<String> choiceOfFlight = new HashSet<String>(sector.getOccupation().keySet());
+				int i = 0;
+				while (i<nbFlightToRegulate && choiceOfFlight.size()>0)
 				{
 					System.out.println(sector.m_name+" need regulation");//board.m_airSpaceDictionary.get(sector);//action mettre dans boite au lettre , regulation a faire sur ce airblock
 					System.out.println("choose flight ");
-					flightChosen = chooseFlightRegulated(sector,regulations);
+					flightChosen = chooseFlightRegulated(sector,choiceOfFlight);
 					System.out.println("choose possible rerout ");
 					routeChosen = chooseReroute(sector,flightChosen);
-					System.out.println("regulation du secteur "+sector.m_name+ " : \n"+ flightChosen+"  "+ routeChosen);
-					regulations.put(sector.getOccupation().get(flightChosen),routeChosen);
-					
+					if (routeChosen==null){
+						System.out.println("Choose another flight. ERROR: First entrance on map");
+						choiceOfFlight.remove(flightChosen);
+					}
+					else{
+						System.out.println("regulation du secteur "+sector.m_name+ " : \n"+ flightChosen+"  "+ routeChosen);
+						regulations.put(sector.getOccupation().get(flightChosen),routeChosen);
+						choiceOfFlight.remove(flightChosen);
+						i+=1;
+					}
+										
 					
 				}
 				//fligthPlanRefresh()
@@ -83,15 +95,14 @@ public class FMP extends Player {
 		}
 	}
 	
-	public String chooseFlightRegulated(Sector sector,HashMap<Flight,Path> alreadyRegulated){
+	public String chooseFlightRegulated(Sector sector,HashSet<String> choiceOfFlight){
+		
 		String flightChosen = "";
 		System.out.println("choose flight ");
-		for (String flightID: sector.getOccupation().keySet())
+		for (String flightID: choiceOfFlight)
 		{
 			Flight flight = sector.getOccupation().get(flightID);
-			if (!alreadyRegulated.containsKey(flight.getFlightID())){
-				System.out.println(flight.getFlightID()+ " priority:"+ sector.getOccupation().get(flight.getFlightID()).getPriority());
-			}
+			System.out.println(flight.getFlightID()+ " priority:"+ sector.getOccupation().get(flight.getFlightID()).getPriority());
 		}
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -103,17 +114,42 @@ public class FMP extends Player {
 		return flightChosen;
 	}
 	
-	public Path chooseReroute(Sector sector, String flightChosen){
+	public ArrayList<Sector> chooseReroute(Sector sector, String flightChosen){
+		
 		String routeChosen = "";
 		FlightPlan fp = sector.getOccupation().get(flightChosen).getFlightPlan();
+		System.out.println(fp);
 		Sector nextSector = new Sector();
 		Sector previousSector = new Sector();
+		ArrayList<Sector> reroute = new ArrayList<Sector>();
 		for (Date d:fp.getAirspaceProfile().keySet())
 		{
-			if (fp.getAirspaceProfile().get(d).m_name.equals(sector))
+			if (fp.getAirspaceProfile().get(d).m_name.equals(sector.m_name))
 			{
 				nextSector=fp.getAirspaceProfile().get( fp.getAirspaceProfile().higherKey(d));
-				previousSector=fp.getAirspaceProfile().get(fp.getAirspaceProfile().lowerKey(d));
+				if (nextSector.m_name.equals("Exit")){
+					nextSector=null;
+					return null;
+				}
+				else if (nextSector.m_name.equals("Out")){
+					Sector out =new Sector ();
+					out.m_name="Out";
+					reroute.add(out);
+					return reroute;
+				}
+				else{
+					
+				}
+				if (sector.m_name.equals(fp.getAirspaceProfile().firstEntry().getValue().m_name))
+				{
+					previousSector=null;
+					return null;
+				}
+				else
+				{
+					previousSector=fp.getAirspaceProfile().get(fp.getAirspaceProfile().lowerKey(d));
+				}
+				
 			}
 			
 		}
@@ -121,10 +157,25 @@ public class FMP extends Player {
 		//ArrayList<ArrayList<Sector>> rerouteChoices = sector.getPossibleRerouting(nextSector);
 		ArrayList<Path> rerouteChoices = board.getSetsOfShortestPath(sector, nextSector, previousSector);
 		int i=0;
+		
 		for (Path path : rerouteChoices)
 		{
-			i+=1;
+			String p="";
+			Path local = new Path();
+			local = path;
+			System.out.println(local);
+			while (local.size()>1)
+			{
+				p+=local.popNode()+" ; ";
+			}
+			if (local.size()==1)
+			{
+				p+=local.peekNode();
+			}
 			System.out.println(i+" : " +path.toString());
+			
+			System.out.println(i+" : " +p);
+			i+=1;
 		}
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -133,7 +184,20 @@ public class FMP extends Player {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return rerouteChoices.get(Integer.parseInt(routeChosen));
+		Path pathChosen =  rerouteChoices.get(Integer.parseInt(routeChosen));
+		System.out.println(pathChosen);
+		while(pathChosen.size()>1)
+		{
+			reroute.add(board.m_sectorDictionary.get(pathChosen.popNode().getId()));
+			System.out.println(pathChosen.popNode().getId());
+		}
+		if(pathChosen.size()==1)
+		{
+			reroute.add(board.m_sectorDictionary.get(pathChosen.peekNode().getId()));
+			System.out.println(pathChosen.peekNode().getId());
+		}
+		
+		return reroute;
 	}
 	
 	public String getType(){

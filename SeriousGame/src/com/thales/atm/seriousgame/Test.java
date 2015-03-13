@@ -54,7 +54,7 @@ public class Test
 		m_game.addAOCPlayer(jeanPaul);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
-		cal.set(2014, 9, 15, 12, 00, 00);
+		cal.set(2014, 9, 15, 13, 13, 00);
 		Date date = cal.getTime();
 		m_game.currentDate=date;
 		System.out.println(m_game.currentDate);

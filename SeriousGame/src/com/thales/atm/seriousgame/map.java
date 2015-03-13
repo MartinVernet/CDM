@@ -530,7 +530,7 @@ public class map {
 			{
 				if(!edgeAlreadySet.contains(neighbor.m_name) && nodeAlreadySet.contains(neighbor.m_name))
 				{
-					graph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);;
+					subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);;
 					
 				}
 			}
@@ -542,14 +542,20 @@ public class map {
 		 Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
 		 
          // Compute the shortest paths in g from A to all nodes
-         dijkstra.init(graph);
-         dijkstra.setSource(graph.getNode(B.m_name));
+         dijkstra.init(subgraph);
+         dijkstra.setSource(subgraph.getNode(B.m_name));
          dijkstra.compute();
          for (String source: nodeSources)
          {
-        	 rerouteChoices.add(dijkstra.getPath(graph.getNode(source)));
+        	 rerouteChoices.add(dijkstra.getPath(subgraph.getNode(source)));
          }
-         
+         for(Node node:subgraph)
+ 		{
+ 			node.addAttribute("ui.label", node.getId());
+ 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
+ 			
+ 		}
+         subgraph.display();
          return rerouteChoices;
 	}
 
