@@ -8,34 +8,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-//import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.NavigableMap;
-import java.util.TreeMap;
 
-import javax.jws.WebService;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-//import javax.xml.stream.events.Attribute;
-//import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.thales.atm.seriousgame.Sector;
 
-import com.thales.atm.seriousgame.map;
-//import com.thales.atm.seriousgame.map;
-//import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
+/**
 
-@WebService
-//This class parse the Flight Plan xml file
-public class FlightPlanParser {
-	
+This class parse the Flight Plan xml file
+
+ */
+public class FlightPlanParser {	
 	static final String FLIGHT = "flight"; 
 	static final String AIRCRAFTID = "aircraftId"; 
 	static final String AIRCRAFTTYPE = "aircraftType";
@@ -47,16 +38,17 @@ public class FlightPlanParser {
 	Date current_exitdate=null;
 	Date final_exitdate=null;
 	boolean findEntry=false;
-	//EntryExitTime current_entryexit=null;
 	String current_airspace=null;
 	String current_airspacetype=null;
 	
-
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> board, HashMap<String,Sector> reducedBoard) {
-
-	   Sector outSector = new Sector("Out",null);
+		//This function is use to parse the xml file
+			//output : List of flights from xml file
+			//input : xml file and board / reduced board to be sure to only get elementary sectors
+		
+	   Sector outSector = new Sector("Out",null); // An Out sector is use to maintaining the flight plan continuity when flight go out of the map.
 	   outSector.setCapacity(10000);
-	   Sector exitSector = new Sector("Exit",null);
+	   Sector exitSector = new Sector("Exit",null); // An Exit sector is use to know when the flight exit the map
 	   exitSector.setCapacity(10000);
 	   List<FlightPlan> flights = new ArrayList<FlightPlan>();
 	   
@@ -129,6 +121,8 @@ public class FlightPlanParser {
 	        if (event.isEndElement()) {
 
 	        	if (event.asEndElement().getName().getLocalPart() == ("ctfmAirspaceProfile")) {
+	        		
+	        		//Set airspace profile to the TreeMap and add Out/Exit sector when needed
 	        		if(board.keySet().contains(current_airspace))
 		           	{
 	        				if (reducedBoard.keySet().contains(current_airspace))
@@ -149,12 +143,10 @@ public class FlightPlanParser {
 	        						flight.getAirspaceProfile().put(current_entrydate, outSector);
 	        					}
 	        				}
-		           	 }
-	        		
-	        		
+		           	 }          		
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getExitMap() != null) { 
-	            	
+	            	//Only add flight plan in the range of the reduced map
 	            	flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
 	            	NavigableMap<Date,Sector> reducedmap = flight.getAirspaceProfile().subMap(flight.getEntryMap(), true, flight.getExitMap(), true);
 	            	
@@ -162,10 +154,8 @@ public class FlightPlanParser {
 	            	flight.setAirlineFromId();	            	
 	            	flights.add(flight);
 	            	findEntry = false;
-
 	            }
 	        }
-
 	      }
 	    } catch (FileNotFoundException e) {
 	      e.printStackTrace();
@@ -173,11 +163,10 @@ public class FlightPlanParser {
 	      e.printStackTrace();
 	    }
 	    return flights;
-	  }	  
+	 }	  
 	  
-	//String to Date and time
-	  public Date stringToDate (String stringdate) {
-		  
+		//String to Date and time
+	  public Date stringToDate (String stringdate) {		  
 		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE);
 		  sdf.setLenient(false);
 		  try {		  
@@ -187,21 +176,5 @@ public class FlightPlanParser {
 				e.printStackTrace();
 				return null;
 		  }		  
-	  }
-	  
-	  public int stringToDuration (String stringduration) {
-		  
-		  String stringhours = StringUtils.substring(stringduration, 0, 2);
-		  int hours = Integer.parseInt(stringhours);
-		  
-		  String stringminutes = StringUtils.substring(stringduration, 2, 4);
-		  int minutes = Integer.parseInt(stringminutes);
-		  
-		  String stringseconds = StringUtils.substring(stringduration, 4, 6);
-		  int seconds = Integer.parseInt(stringseconds);
-		  
-		  int duration = 3600 * hours + 60 * minutes + seconds;
-		  return duration;
-	  }
-	        	  
+	  }	        	  
 }
