@@ -85,13 +85,12 @@ public class FMP extends Player {
 										
 					
 				}
-				//fligthPlanRefresh()
-				//flightChosen.move()
 				allRegulations.putAll(regulations);
 			}
 		}
 		for(Flight flight : allRegulations.keySet() ){
-			//flight.getFlightPlan().refreshFlightPlan()
+			flight.getFlightPlan().refreshFlightPlanV2(flight.getCurrentSector(),allRegulations.get(flight),board.getPenality());
+			flight.refreshPositionAfterRegulation(allRegulations.get(flight).get(0));
 		}
 	}
 	
@@ -157,24 +156,27 @@ public class FMP extends Player {
 		//ArrayList<ArrayList<Sector>> rerouteChoices = sector.getPossibleRerouting(nextSector);
 		ArrayList<Path> rerouteChoices = board.getSetsOfShortestPath(sector, nextSector, previousSector);
 		int i=0;
-		
+		ArrayList<ArrayList<Sector>> arrayRerouteChoices = new ArrayList<ArrayList<Sector>>();
 		for (Path path : rerouteChoices)
 		{
 			String p="";
-			Path local = new Path();
-			local = path;
-			System.out.println(local);
-			while (local.size()>1)
+			//Path local = new Path();
+			//local = path;
+			ArrayList<Sector> arrayPath = new ArrayList<Sector>();
+			//System.out.println(local);
+			while (path.size()>1)
 			{
-				p+=local.popNode()+" ; ";
+				//p+=local.popNode()+" ; ";
+				arrayPath.add(board.m_sectorDictionary.get(path.popNode().getId()));
 			}
-			if (local.size()==1)
+			if (path.size()==1)
 			{
-				p+=local.peekNode();
+				//p+=local.peekNode();
+				arrayPath.add(board.m_sectorDictionary.get(path.peekNode().getId()));
 			}
-			System.out.println(i+" : " +path.toString());
-			
-			System.out.println(i+" : " +p);
+			//System.out.println(i+" : " +path.toString());
+			arrayRerouteChoices.add(arrayPath);
+			System.out.println(i+" : " +arrayPath);
 			i+=1;
 		}
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -184,9 +186,10 @@ public class FMP extends Player {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Path pathChosen =  rerouteChoices.get(Integer.parseInt(routeChosen));
+		//Path pathChosen =  rerouteChoices.get(Integer.parseInt(routeChosen));
+		ArrayList<Sector> pathChosen = arrayRerouteChoices.get(Integer.parseInt(routeChosen));
 		System.out.println(pathChosen);
-		while(pathChosen.size()>1)
+		/**while(pathChosen.size()>1)
 		{
 			reroute.add(board.m_sectorDictionary.get(pathChosen.popNode().getId()));
 			System.out.println(pathChosen.popNode().getId());
@@ -195,9 +198,9 @@ public class FMP extends Player {
 		{
 			reroute.add(board.m_sectorDictionary.get(pathChosen.peekNode().getId()));
 			System.out.println(pathChosen.peekNode().getId());
-		}
+		}*/
 		
-		return reroute;
+		return pathChosen;
 	}
 	
 	public String getType(){

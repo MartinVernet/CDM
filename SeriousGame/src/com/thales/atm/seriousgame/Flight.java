@@ -52,6 +52,18 @@ public class Flight {
 			currentSector.addFlight(this);
 		}
 	}
+	
+	public void refreshPositionAfterRegulation(Sector newSector){
+		if(currentSector != newSector)
+		{
+			if(currentSector != null)
+			{
+				currentSector.removeFlight(this);
+			}
+			currentSector=newSector;
+			currentSector.addFlight(this);
+		}
+	}
 
 	public Sector getSectorFromDate(Date date) {
 		// recupere le secteur dans lequel est l'avion dans le plan de vol

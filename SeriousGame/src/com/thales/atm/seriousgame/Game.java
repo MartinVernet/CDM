@@ -182,9 +182,17 @@ public class Game {
 			this.moveFlights();
 			ecrire("test.txt", "\r\n");
 			ecrire("test.txt", currentDate.toString()+"\r\n");
-			for ( String key : FMPplayers.keySet() ){
-				FMPplayers.get(key).play();
+			boolean regulation = true;
+			while (regulation){
+				for ( String key : FMPplayers.keySet() ){
+					FMPplayers.get(key).play();
+				}
+				regulation = false;
+				for (String as: m_board.m_airSpaceDictionary.keySet()){
+					regulation = regulation || m_board.m_airSpaceDictionary.get(as).getNeedRegulation();
+				}
 			}
+			
 			
 			
 			for(String IdSect: m_board.m_sectorDictionary.keySet())

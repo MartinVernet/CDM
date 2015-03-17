@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.NavigableMap;
 
 
+
 import com.thales.atm.seriousgame.AirSpace;
 import com.thales.atm.seriousgame.Sector;
 import com.thales.atm.seriousgame.map;
@@ -138,10 +139,83 @@ public class FlightPlan {
 				}
 		  
 	  }	  
-	  
+	  public void refreshFlightPlanV2(Sector regulateSector, ArrayList<Sector> newSectors, int penality)
+	  {
+		  System.out.println("flight plan avant "+ airspaceProfileES);
+		  Date dA=new Date();
+		  Date dB= new Date();
+		  for (Entry <Date, Sector> entry : this.airspaceProfileES .entrySet())
+			 {
+				 if(regulateSector.equals(entry.getValue()))
+				 {
+					 dA = entry.getKey();
+					 
+				 }
+				 else if (newSectors.get(newSectors.size()-1).equals(entry.getValue())){
+					 dB = entry.getKey();
+				 }
+			 }
+		  Sector firstSector = regulateSector;
+		  NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, dA, false);
+			
+		  NavigableMap<Date,Sector> planB = new TreeMap<Date,Sector>(this.airspaceProfileES.subMap(dB, false, this.exitMap, true));
+			 
+		  NavigableMap<Date,Sector> planC = new TreeMap<Date,Sector>();
+		  
+		  int n=newSectors.size()-1;
+		  int totalDelay=n*penality;
+		  Calendar cal = Calendar.getInstance(); 
+		  cal.setTime(dB);
+		  cal.add(Calendar.MINUTE,totalDelay);
+		  Date dBnew=cal.getTime();
+		  int deltaT=(int)((dBnew.getTime()/60000) - (dA.getTime()/60000));
+		  int step =(int)deltaT/n;
+		  int i=0;
+		  for (Sector sector:newSectors)
+		  {
+			  if(i<n)
+			  {
+				  Calendar local = Calendar.getInstance(); 
+				  local.setTime(dA);
+				  local.add(Calendar.MINUTE,i*step);
+				  i+=1;
+				  Date d=local.getTime();
+				  planC.put(d, sector);
+			  }
+			  else
+			  {
+				  planC.put(dBnew, sector);
+			  }
+		  }
+		  NavigableMap<Date,Sector> copyPlanB = new TreeMap<Date,Sector>(planB);
+			 for(Entry <Date, Sector> rEntry : copyPlanB.entrySet())
+			 {
+				 Date rDate = rEntry.getKey();
+				 Sector rSector = rEntry.getValue();
+				 planB.remove(rEntry.getKey(), rEntry.getValue());
+				 
+				 Calendar local = Calendar.getInstance(); 
+				 local.setTime(rDate);
+				 local.add(Calendar.MINUTE, totalDelay);
+				 Date newDate=local.getTime();
+				 
+				 planB.put(newDate, rSector);
+			 }	
+			 //merge plans
+			 NavigableMap<Date, Sector> regulateFlightPlan= new TreeMap<Date, Sector>();
+			 regulateFlightPlan.putAll(planA);
+			 regulateFlightPlan.putAll(planC);
+			 regulateFlightPlan.putAll(planB);
+			 
+			 this.setAirspaceProfile(regulateFlightPlan);
+			 System.out.println("flight plan apres "+ airspaceProfileES);
+			 
+		 //find current sector to regulate
+	  }
 	  public void refreshFlightPlan(Sector regulateSector, ArrayList<Sector> newSectors, int penality){
 		 		    
-		  if(this.airspaceProfileES.keySet().contains(regulateSector))
+		  System.out.println("flight plan avant "+ airspaceProfileES);
+		  if(this.airspaceProfileES.values().contains(regulateSector))
 		  {
 			 //find current sector to regulate
 			 for (Entry <Date, Sector> entry : this.airspaceProfileES .entrySet())
@@ -154,7 +228,7 @@ public class FlightPlan {
 
 					 this.airspaceProfileES.replace(firstDate, firstSector);
 					
-					 NavigableMap<Date,Sector> planB = this.airspaceProfileES.subMap(firstDate, true, this.exitMap, true);
+					 NavigableMap<Date,Sector> planB = new TreeMap<Date,Sector>(this.airspaceProfileES.subMap(firstDate, true, this.exitMap, true));
 					 
 					 NavigableMap<Date,Sector> planC = new TreeMap<Date,Sector>();
 					 					 
@@ -173,7 +247,8 @@ public class FlightPlan {
 					 
 					 
 					//regulate planB 
-					 for(Entry <Date, Sector> rEntry : planB.entrySet())
+					 NavigableMap<Date,Sector> copyPlanB = new TreeMap<Date,Sector>(planB);
+					 for(Entry <Date, Sector> rEntry : copyPlanB.entrySet())
 					 {
 						 Date rDate = rEntry.getKey();
 						 Sector rSector = rEntry.getValue();
@@ -194,6 +269,7 @@ public class FlightPlan {
 					 regulateFlightPlan.putAll(planC);
 					 
 					 this.setAirspaceProfile(regulateFlightPlan);
+					 System.out.println("flight plan apres "+ airspaceProfileES);
 					 break;
 				 }
 			 }

@@ -15,7 +15,7 @@ public class Sector {
 	public String m_name;
 	//ArrayList<AirBlock> m_airBlocks;
 	ArrayList<String> m_airBlocksId;
-	private int normalCapacity=4;//15;
+	private int normalCapacity=5;//15;
 	private int capacity;
 	private Set<Sector> neighbors; //Attention not multiThread Safe
 	private String m_fatherId;
