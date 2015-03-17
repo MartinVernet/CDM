@@ -16,7 +16,6 @@ import javax.jws.WebService;
 import org.apache.commons.lang3.StringUtils;
 
 import com.thales.atm.seriousgame.Sector;
-import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
 @WebService
 //This class is use to map the xml file
