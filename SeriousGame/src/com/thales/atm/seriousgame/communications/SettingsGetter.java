@@ -11,7 +11,7 @@ import java.util.Date;
 
 import com.thales.atm.seriousgame.AOC;
 import com.thales.atm.seriousgame.AOCPlayer;
-import com.thales.atm.seriousgame.FMP;
+import com.thales.atm.seriousgame.FMPPLayer;
 import com.thales.atm.seriousgame.Game;
 import com.thales.atm.seriousgame.Settings;
 
@@ -236,9 +236,9 @@ public class SettingsGetter implements Runnable{
 							i+=1;
 						}
 						
-						FMP player=new FMP(name,0,playerAirspaces);
+						FMPPLayer player=new FMPPLayer(name,0,playerAirspaces);
 						if (player.isOK()){
-							game.addFMPPlayer(player);
+							game.addFMP(player);
 							player.setAirspaces(game.getBoard());
 							out.println("ply"+"$"+"ok");
 							out.flush();

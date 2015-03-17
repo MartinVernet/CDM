@@ -36,12 +36,12 @@ public class Test
 		m_game.loadAirspace();
 		System.out.print(m_game.m_board.m_sectorDictionary.get("GMMMOCE").m_name);
 		
-		FMP Arthur= new FMP("arthur",2,m_game.m_board);
+		FMPIA Arthur= new FMPIA("arthur",2,m_game.m_board);
 		Arthur.addAirspace("LFFFCTA");
 		Arthur.addAirspace("LFEECTA");
 		Arthur.setAirspaces(m_game.m_board);
 		
-		m_game.addFMPPlayer(Arthur);
+		m_game.addFMP(Arthur);
 		
 		
 		m_settings.setDelta(3);

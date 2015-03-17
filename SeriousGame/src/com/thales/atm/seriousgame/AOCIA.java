@@ -40,7 +40,7 @@ public class AOCIA extends AOC {
 			budgetRestant=budgetRestant-priority;
 		}
 	}
-	
+	/*
 	public String getType(){
 		return "AOC";
 	}
@@ -133,7 +133,7 @@ public class AOCIA extends AOC {
 		}
 		
 	}
-
+*/
 	public String getAOCType() {
 		return AOCType;
 	}

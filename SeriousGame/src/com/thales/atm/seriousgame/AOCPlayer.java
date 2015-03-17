@@ -67,7 +67,7 @@ public class AOCPlayer extends AOC {
 			newFlights.get(flightID).setPriority(p);
 		}
 	}
-	
+	/**
 	public String getType(){
 		return "AOC";
 	}
@@ -160,7 +160,7 @@ public class AOCPlayer extends AOC {
 		}
 		
 	}
-
+*/
 	public String getAOCType() {
 		return AOCType;
 	}

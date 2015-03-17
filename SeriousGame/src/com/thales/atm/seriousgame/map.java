@@ -558,6 +558,58 @@ public class map {
          subgraph.display();
          return rerouteChoices;
 	}
+	
+	Path getShortestPath(Sector A, Sector B, Sector I)// pour les FMP ia 
+	{
+		Path reroute = new Path();
+		SingleGraph subgraph = new SingleGraph("sub_ graph");
+		HashSet<String> nodeAlreadySet=new HashSet<String>();
+		HashSet<String> edgeAlreadySet=new HashSet<String>();
+
+		for (Sector neighbourA: A.getNeighbors())
+		{
+			subgraph.addNode(neighbourA.m_name);
+			nodeAlreadySet.add(neighbourA.m_name);
+		}
+
+		for (Sector neighbourB: B.getNeighbors())
+		{
+			if(!nodeAlreadySet.contains(neighbourB.m_name) && !neighbourB.m_name.equals(A.m_name))
+			{
+				subgraph.addNode(neighbourB.m_name);
+				nodeAlreadySet.add(neighbourB.m_name);
+			}
+		}
+		
+		for (Node node:subgraph)
+		{
+			for (Sector neighbor:m_sectorDictionary.get(node.getId()).getNeighbors())
+			{
+				if(!edgeAlreadySet.contains(neighbor.m_name) && nodeAlreadySet.contains(neighbor.m_name))
+				{
+					subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);;
+					
+				}
+			}
+			edgeAlreadySet.add(node.getId());
+		}
+		
+		 Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
+		 
+         // Compute the shortest paths in g from A to all nodes
+         dijkstra.init(subgraph);
+         dijkstra.setSource(subgraph.getNode(B.m_name));
+         dijkstra.compute();
+         reroute = dijkstra.getPath(subgraph.getNode(I.m_name));
+         for(Node node:subgraph)
+ 		{
+ 			node.addAttribute("ui.label", node.getId());
+ 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
+ 			
+ 		}
+         subgraph.display();
+         return reroute;
+	}
 
 	public int getPenality() {
 		return penality;

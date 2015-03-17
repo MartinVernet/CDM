@@ -14,6 +14,7 @@ public class Flight {
 	private int m_priority;
 	private int economicValue;
 	private String airline;
+	private int nbRegulations;
 	
 	public Flight(FlightPlan fp){
 		this.m_flightID=fp.getFlightId();
@@ -98,6 +99,20 @@ public class Flight {
 	public FlightPlan getFlightPlan()
 	{
 		return this.m_flightplan;
+	}
+
+
+	public int getNbRegulations() {
+		return nbRegulations;
+	}
+
+
+	public void setNbRegulations(int nbRegulations) {
+		this.nbRegulations = nbRegulations;
+	}
+	
+	public void addRegulations() {
+		this.nbRegulations+=1;
 	}
 	
 }

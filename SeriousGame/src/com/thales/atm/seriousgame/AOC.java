@@ -38,6 +38,7 @@ public class AOC extends Player {
 
 	public void play() 
 	{
+		/**
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		System.out.println(this.m_name);
@@ -75,6 +76,7 @@ public class AOC extends Player {
 			}
 			newFlights.get(flightID).setPriority(p);
 		}
+		*/
 	}
 	
 	public String getType(){
