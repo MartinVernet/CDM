@@ -2,21 +2,10 @@ package com.thales.atm.seriousgame.flightmodel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.NavigableMap;
-
-
-
-import com.thales.atm.seriousgame.AirSpace;
-import com.thales.atm.seriousgame.Sector;
-import com.thales.atm.seriousgame.map;
-import com.thales.atm.seriousgame.flightmodel.PrintingMap;
-import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -25,6 +14,9 @@ import java.io.IOException;
 import javax.jws.WebService;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.thales.atm.seriousgame.Sector;
+import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
 @WebService
 //This class is use to map the xml file
@@ -155,7 +147,6 @@ public class FlightPlan {
 					 dB = entry.getKey();
 				 }
 		  }
-		  Sector firstSector = regulateSector;
 		  NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, dA, false);
 			
 		  NavigableMap<Date,Sector> planB = new TreeMap<Date,Sector>(this.airspaceProfileES.subMap(dB, false, this.exitMap, true));
@@ -230,8 +221,6 @@ public class FlightPlan {
 	  public String toString() {
 	    return "[flightId=" + flightId + ", Airline=" + airline + ", aircraftType=" + aircraftType + ", EntryMap=" + entryMap + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
-	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
-
 
 }
 
