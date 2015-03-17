@@ -2,21 +2,10 @@ package com.thales.atm.seriousgame.flightmodel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.NavigableMap;
-
-
-
-import com.thales.atm.seriousgame.AirSpace;
-import com.thales.atm.seriousgame.Sector;
-import com.thales.atm.seriousgame.map;
-import com.thales.atm.seriousgame.flightmodel.PrintingMap;
-import com.thales.atm.seriousgame.flightmodel.EntryExitTime;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -25,6 +14,9 @@ import java.io.IOException;
 import javax.jws.WebService;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.thales.atm.seriousgame.Sector;
+import com.thales.atm.seriousgame.flightmodel.PrintingMap;
 
 @WebService
 //This class is use to map the xml file
@@ -145,7 +137,7 @@ public class FlightPlan {
 		  Date dA=new Date();
 		  Date dB= new Date();
 		  for (Entry <Date, Sector> entry : this.airspaceProfileES .entrySet())
-			 {
+		  {
 				 if(regulateSector.equals(entry.getValue()))
 				 {
 					 dA = entry.getKey();
@@ -154,8 +146,7 @@ public class FlightPlan {
 				 else if (newSectors.get(newSectors.size()-1).equals(entry.getValue())){
 					 dB = entry.getKey();
 				 }
-			 }
-		  Sector firstSector = regulateSector;
+		  }
 		  NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, dA, false);
 			
 		  NavigableMap<Date,Sector> planB = new TreeMap<Date,Sector>(this.airspaceProfileES.subMap(dB, false, this.exitMap, true));
@@ -188,92 +179,29 @@ public class FlightPlan {
 			  }
 		  }
 		  NavigableMap<Date,Sector> copyPlanB = new TreeMap<Date,Sector>(planB);
-			 for(Entry <Date, Sector> rEntry : copyPlanB.entrySet())
-			 {
-				 Date rDate = rEntry.getKey();
-				 Sector rSector = rEntry.getValue();
-				 planB.remove(rEntry.getKey(), rEntry.getValue());
+		  for(Entry <Date, Sector> rEntry : copyPlanB.entrySet())
+		  {
+			  Date rDate = rEntry.getKey();
+			  Sector rSector = rEntry.getValue();
+			  planB.remove(rEntry.getKey(), rEntry.getValue());
 				 
-				 Calendar local = Calendar.getInstance(); 
-				 local.setTime(rDate);
-				 local.add(Calendar.MINUTE, totalDelay);
-				 Date newDate=local.getTime();
+			  Calendar local = Calendar.getInstance(); 
+			  local.setTime(rDate);
+			  local.add(Calendar.MINUTE, totalDelay);
+			  Date newDate=local.getTime();
 				 
-				 planB.put(newDate, rSector);
-			 }	
+			  planB.put(newDate, rSector);
+		  }	
 			 //merge plans
-			 NavigableMap<Date, Sector> regulateFlightPlan= new TreeMap<Date, Sector>();
-			 regulateFlightPlan.putAll(planA);
-			 regulateFlightPlan.putAll(planC);
-			 regulateFlightPlan.putAll(planB);
+		  NavigableMap<Date, Sector> regulateFlightPlan= new TreeMap<Date, Sector>();
+		  regulateFlightPlan.putAll(planA);
+		  regulateFlightPlan.putAll(planC);
+		  regulateFlightPlan.putAll(planB);
 			 
-			 this.setAirspaceProfile(regulateFlightPlan);
-			 System.out.println("flight plan apres "+ airspaceProfileES);
+		  this.setAirspaceProfile(regulateFlightPlan);
+		  System.out.println("flight plan apres "+ airspaceProfileES);
 			 
 		 //find current sector to regulate
-	  }
-	  public void refreshFlightPlan(Sector regulateSector, ArrayList<Sector> newSectors, int penality){
-		 		    
-		  System.out.println("flight plan avant "+ airspaceProfileES);
-		  if(this.airspaceProfileES.values().contains(regulateSector))
-		  {
-			 //find current sector to regulate
-			 for (Entry <Date, Sector> entry : this.airspaceProfileES .entrySet())
-			 {
-				 if(regulateSector.equals(entry.getValue()))
-				 {
-					 Date firstDate = entry.getKey();
-					 Sector firstSector = regulateSector;
-					 NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, firstDate, false);
-
-					 this.airspaceProfileES.replace(firstDate, firstSector);
-					
-					 NavigableMap<Date,Sector> planB = new TreeMap<Date,Sector>(this.airspaceProfileES.subMap(firstDate, true, this.exitMap, true));
-					 
-					 NavigableMap<Date,Sector> planC = new TreeMap<Date,Sector>();
-					 					 
-					//new sectors
-					 int nb = 0;
-					 for (Sector rSector : newSectors)
-					 {
-						 nb++;
-						 Calendar cal = Calendar.getInstance(); 
-						 cal.setTime(firstDate);
-						 cal.add(Calendar.MINUTE, nb*penality);
-						 Date newDate=cal.getTime();
-						 
-						 planC.put(newDate, rSector);
- 					 }
-					 
-					 
-					//regulate planB 
-					 NavigableMap<Date,Sector> copyPlanB = new TreeMap<Date,Sector>(planB);
-					 for(Entry <Date, Sector> rEntry : copyPlanB.entrySet())
-					 {
-						 Date rDate = rEntry.getKey();
-						 Sector rSector = rEntry.getValue();
-						 planB.remove(rEntry.getKey(), rEntry.getValue());
-						 
-						 Calendar cal = Calendar.getInstance(); 
-						 cal.setTime(rDate);
-						 cal.add(Calendar.MINUTE, newSectors.size()*penality);
-						 Date newDate=cal.getTime();
-						 
-						 planB.put(newDate, rSector);
-					 }	
-					 
-					 //merge plans
-					 NavigableMap<Date, Sector> regulateFlightPlan= new TreeMap<Date, Sector>();
-					 regulateFlightPlan.putAll(planA);
-					 regulateFlightPlan.putAll(planB);
-					 regulateFlightPlan.putAll(planC);
-					 
-					 this.setAirspaceProfile(regulateFlightPlan);
-					 System.out.println("flight plan apres "+ airspaceProfileES);
-					 break;
-				 }
-			 }
-		 }
 	  }
 	  
 	  public Sector getSectorFromDate(Date date) {
@@ -293,8 +221,6 @@ public class FlightPlan {
 	  public String toString() {
 	    return "[flightId=" + flightId + ", Airline=" + airline + ", aircraftType=" + aircraftType + ", EntryMap=" + entryMap + ", ExitMap=" + exitMap + ", spaceProfile=" +  new PrintingMap<Date, Sector>(airspaceProfileES) +"]";
 	  }
-	  //new PrintingMap<EntryExitTime, String>(airspaceProfileES)
-
 
 }
 
