@@ -23,7 +23,7 @@ import com.thales.atm.seriousgame.Sector;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 /**
 
-This class parse the Flight Plan xml file
+This class parse the Flight Plan xml file by using StAx API
 
  */
 public class FlightPlanParser {	
@@ -42,10 +42,10 @@ public class FlightPlanParser {
 	String current_airspacetype=null;
 	
 	public List<FlightPlan> parseFlightPlan(String FlightPlanFile, HashMap<String,Sector> board, HashMap<String,Sector> reducedBoard) {
-		//This function is use to parse the xml file
-			//output : List of flights from xml file
-			//input : xml file and board / reduced board to be sure to only get elementary sectors
-		
+		/*This function is use to parse the xml file
+			*output : List of flights from xml file
+			*input : xml file and board / reduced board to be sure to only get elementary sectors
+		*/
 	   Sector outSector = new Sector("Out",null); // An Out sector is use to maintaining the flight plan continuity when flight go out of the map.
 	   outSector.setCapacity(10000);
 	   Sector exitSector = new Sector("Exit",null); // An Exit sector is use to know when the flight exit the map

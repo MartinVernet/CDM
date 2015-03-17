@@ -15,8 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.thales.atm.seriousgame.Sector;
 /**
-   This class is use to map the xml file in order to define all the flight plan
-   
+   *This class is use to map the xml file in order to define all the flight plan
+   *
 **/
 public class FlightPlan {
 	  private String flightId; 
@@ -27,14 +27,12 @@ public class FlightPlan {
 	  private NavigableMap<Date,Sector> airspaceProfileES;
 
 	  public FlightPlan (){
-
 		  airspaceProfileES=new TreeMap<Date,Sector>();
 	  }
 	  
 	  //Methods
 	  		//Get and Set 
 	  public NavigableMap<Date,Sector> getAirspaceProfile() {
-
 		  return airspaceProfileES;
 	  }
 	  
@@ -95,7 +93,6 @@ public class FlightPlan {
 			  {	
 				  // use semi comma as separator
 				  String [] obj= a.split(cvsSplitBy);
-					
 				  if(obj[0].equalsIgnoreCase(airlineID))
 				  {
 					  airline = obj[1];
@@ -123,10 +120,9 @@ public class FlightPlan {
 			  }	  
 	  }	  
 	  
-	  public void refreshFlightPlanV2(Sector regulateSector, ArrayList<Sector> newSectors, int penality)
+	  public void refreshFlightPlanV2(Sector regulateSector, ArrayList<Sector> newSectors, int penalty)
 	  {
-		  //This function is use to change the flight plan after a regulation
-		  
+		  //This function is use to change the flight plan after a regulation	  
 		  System.out.println("flight plan avant "+ airspaceProfileES);
 		  Date dA=new Date();
 		  Date dB= new Date();
@@ -134,8 +130,7 @@ public class FlightPlan {
 		  {
 				 if(regulateSector.equals(entry.getValue()))
 				 {
-					 dA = entry.getKey();
-					 
+					 dA = entry.getKey();	 
 				 }
 				 else if (newSectors.get(newSectors.size()-1).equals(entry.getValue())){
 					 dB = entry.getKey();
@@ -149,7 +144,7 @@ public class FlightPlan {
 		  NavigableMap<Date,Sector> planC = new TreeMap<Date,Sector>();
 		  
 		  int n=newSectors.size()-1;
-		  int totalDelay=n*penality;
+		  int totalDelay=n*penalty;
 		  Calendar cal = Calendar.getInstance(); 
 		  cal.setTime(dB);
 		  cal.add(Calendar.MINUTE,totalDelay);
@@ -174,7 +169,7 @@ public class FlightPlan {
 				  planC.put(dBnew, sector);
 			  }
 		  }
-		  //Set planB with time penality
+		  //Set planB with time penalty
 		  NavigableMap<Date,Sector> copyPlanB = new TreeMap<Date,Sector>(planB);
 		  for(Entry <Date, Sector> rEntry : copyPlanB.entrySet())
 		  {
@@ -185,8 +180,7 @@ public class FlightPlan {
 			  Calendar local = Calendar.getInstance(); 
 			  local.setTime(rDate);
 			  local.add(Calendar.MINUTE, totalDelay);
-			  Date newDate=local.getTime();
-				 
+			  Date newDate=local.getTime();			 
 			  planB.put(newDate, rSector);
 		  }	
 		  //merge flight plans
