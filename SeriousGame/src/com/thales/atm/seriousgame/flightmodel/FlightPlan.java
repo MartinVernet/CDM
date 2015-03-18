@@ -135,7 +135,7 @@ public class FlightPlan {
 				 else if (newSectors.get(newSectors.size()-1).equals(entry.getValue())){
 					 dB = entry.getKey();
 				 }
-		  }
+		  }	  
 		  //Flight plan behind the sector to regulate
 		  NavigableMap<Date,Sector> planA = this.airspaceProfileES.subMap(this.entryMap, true, dA, false);
 		  //Flight plan ahead of the sector to regulate
