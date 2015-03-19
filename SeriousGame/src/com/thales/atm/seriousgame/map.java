@@ -7,6 +7,7 @@ import com.vividsolutions.jts.geom.*;
 import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
 
 import java.io.FileNotFoundException;
@@ -20,18 +21,21 @@ import java.util.Random;
 
 import javax.jws.WebService;
 
-@WebService
+/**
+ * m_airspaceDictionary:map of the chosen airspaces based on a filename given in the settings
+ *m_sectorDictionary: sectors that correspond to the m_airspaceDictionary
+ *m_airBlockWithAlt: airblocks that correspond to the m_sectorDictionary
+ *penality: when a regulation occurs, an alternative flight plan will be given, penality is the number of minutes by sectors added to the original flightPlan
+ *graph:graph of the board, each node correspond to a sector, edge are added between sectors if they are neighbors
+ */
 public class map {
-	//HashMap <String,AirBlock> m_airBlockDictionary;
+	
 	HashMap <String,Sector> m_sectorDictionary;
 	HashMap <String,AirSpace> m_airSpaceDictionary;
 	HashMap <String,AirBlock> m_airBlockWithAltDic;
 	HashMap <String,Sector> m_completSectorDictionary;
 	private int penality =5 ;
 	Graph graph;
-
-
-	
 	
 	public map(String AirbFile, String SectorFile, String AirSPaceFile)
 	{
@@ -39,7 +43,6 @@ public class map {
 		m_sectorDictionary=InitSector(airBlockDictionaryTemp,SectorFile);
 		m_airSpaceDictionary=InitAiSpace(m_sectorDictionary, AirSPaceFile);
 		setFather();
-		
 	}
 	
 	public HashMap <String,AirBlock> GetAirBlocDictionary()
@@ -57,15 +60,15 @@ public class map {
 		return m_airSpaceDictionary;
 	}
 	
-	//init airBlock
+	/*init airBlock
+	 * read the airblock file with the given filename in the settings and create first Dictionary with no altitude
+	*/
 	HashMap <String ,AirBlock> InitAirBlock(String airbFile)
 	{
 		// First read the airblocks file and fill the airblock dictionnary
 		HashMap <String ,AirBlock> airblocksDictionary = new HashMap <String ,AirBlock>();
 		ArrayList<Point> points=new ArrayList<Point>();
-			
-		
-		String csvFile =airbFile;// "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar";
+		String csvFile =airbFile;
 		BufferedReader br = null;
 		String a="";
 		String name1=""; 
@@ -79,9 +82,6 @@ public class map {
 					
 	 		        // use semi comma as separator
 					String [] obj= a.split(cvsSplitBy);
-					
-				
-				
 					if(obj[0].equalsIgnoreCase("A"))
 					{
 						if(name1!="")
@@ -102,15 +102,10 @@ public class map {
 					{
 						Point p=new Point(Double.parseDouble(obj[1]),Double.parseDouble(obj[2]));
 						points.add(p);
-						
 					}
-				
 				}
 				AirBlock lastAirb= new  AirBlock(name1,points);
 				airblocksDictionary.put(name1,lastAirb);
-
-			
-	 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -124,40 +119,32 @@ public class map {
 				}
 			}
 		}
-	 
-		System.out.println("Done");
 		return airblocksDictionary;
 	  }
 	
 	
-	//init sector
+	/*init sectors
+	 * read the sector file with the given filename in the settings and create  SectorDictionary wand AirblockDictionary with their minimum and maximum altitude
+	*/
 	HashMap <String ,Sector> InitSector(HashMap<String ,AirBlock> airBlockDic, String SectorFile)
 	{
 		
 		HashMap <String ,Sector> SectorDictionary = new HashMap <String ,Sector>();
 		m_airBlockWithAltDic=new HashMap<String, AirBlock>();
-		//ArrayList<AirBlock> airBlockList=new ArrayList<AirBlock>();
 		ArrayList<String> airBlockListId=new ArrayList<String>();
 		
-		
-		
-		String csvFile = SectorFile;// "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl";
+		String csvFile = SectorFile;
 		BufferedReader br = null;
 		String a="";
 		String name1=""; 
 		String cvsSplitBy = ";";
 		
 		try {
-	 
 				br = new BufferedReader(new FileReader(csvFile));
 				while ((a = br.readLine()) != null) 
 				{
-					
 	 		        // use semi comma as separator
 					String [] obj= a.split(cvsSplitBy);
-					
-				
-				
 					if(obj[0].equalsIgnoreCase("S"))
 					{
 						if(name1!="")
@@ -184,16 +171,11 @@ public class map {
 						airb.SetAltMin(Double.parseDouble(obj[3]));
 						airb.SetAltMax(Double.parseDouble(obj[4]));
 						m_airBlockWithAltDic.put(nameWithAlt, airb);
-						//airBlockList.add(airb);
 						airBlockListId.add(nameWithAlt);
-						
 					}
-				
 				}
 				Sector lastSect= new  Sector(name1,airBlockListId);
 				SectorDictionary.put(name1,lastSect);
-				
-			
 	 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -208,36 +190,28 @@ public class map {
 				}
 			}
 		}
-
-		System.out.println("Done");
 		return SectorDictionary;
 	  }
-	//init AirBlock
+	/*init airspaces
+	 * read the airspace file with the given filename in the settings and create  airspaceDictionary 
+	*/
 	HashMap <String ,AirSpace> InitAiSpace(HashMap<String ,Sector> sectorDic, String AirSPaceFile)
 	{
 		// First read the airblocks file and fill the airblock dictionnary
 		HashMap <String ,AirSpace> airSpaceDictionary = new HashMap <String ,AirSpace>();
-		//ArrayList<Sector> SectorList=new ArrayList<Sector>();
 		ArrayList<String> SectorListId=new ArrayList<String>();
-		
-		
-		String csvFile =AirSPaceFile;// "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc";
+		String csvFile =AirSPaceFile;
 		BufferedReader br = null;
 		String a="";
 		String name1=""; 
 		String cvsSplitBy = ";";
 		
 		try {
-	 
 				br = new BufferedReader(new FileReader(csvFile));
 				while ((a = br.readLine()) != null) 
 				{
-					
 	 		        // use semi comma as separator
 					String [] obj= a.split(cvsSplitBy);
-					
-				
-				
 					if(obj[0].equalsIgnoreCase("A"))
 					{
 						if(name1!="")
@@ -258,19 +232,12 @@ public class map {
 					if(obj[0].equals("S"))
 					{
 						Sector sect=sectorDic.get((obj[1]));
-
 						sect.setFatherId(name1);
-
 						SectorListId.add(sect.m_name);
-						
 					}
-				
 				}
 				AirSpace lastAirSp= new  AirSpace(name1,SectorListId);
 				airSpaceDictionary.put(name1,lastAirSp);
-				
-			
-	 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -284,16 +251,11 @@ public class map {
 				}
 			}
 		}
-	 
-		System.out.println("Done");
 		return airSpaceDictionary;
 	  }
-
-	public ArrayList<AirSpace> checkOccupation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+	/*
+	 * actualize the father of each sector and airblock
+	 */
 	public void setFather()
 	{
 		for(String key : m_sectorDictionary.keySet())
@@ -309,64 +271,26 @@ public class map {
 		}
 	}
 	
-	private void setAirblockNeighbors()
-	{
-		Map<String,Polygon> AirBpolys=new HashMap<String,Polygon>();
-		for (String idAirB : m_airBlockWithAltDic.keySet())
-		{
-			Coordinate currentCoord[] = new Coordinate[m_airBlockWithAltDic.get(idAirB).GetCoord().size()];
-			
-			GeometryFactory GF = new GeometryFactory();
-			for (int i=0;i<m_airBlockWithAltDic.get(idAirB).GetCoord().size();i++){
-				double x=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetX();
-				double y=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetY();
-				
-				currentCoord[i]=new Coordinate(x,y);
-				
-
-			}
-			AirBpolys.put(idAirB,GF.createPolygon(currentCoord));
-		}
-		//To be optimised (on peut parcourir moins) 
-		for (String idAirB1 : m_airBlockWithAltDic.keySet()){
-			for (String idAirB2 : m_airBlockWithAltDic.keySet()){
-				if (!(idAirB1.equals(idAirB2)) && AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2))){
-					double zmin1 = m_airBlockWithAltDic.get(idAirB1).GetAltMin();
-					double zmin2 = m_airBlockWithAltDic.get(idAirB2).GetAltMin();
-					double zmax1 = m_airBlockWithAltDic.get(idAirB1).GetAltMax();
-					double zmax2 = m_airBlockWithAltDic.get(idAirB2).GetAltMax();
-					if(!(zmin2>zmax1 || zmax2<zmin1))
-					{
-						m_airBlockWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
-					}
-				}
-			}
-		}
-		
-	}
-	
+	//actualize the neighbors list of each sector 
 	public void setSectorNeighbors()
 	{
 		Map<String,Polygon> AirBpolys=new HashMap<String,Polygon>();
 		for (String idAirB : m_airBlockWithAltDic.keySet())
 		{
 			Coordinate currentCoord[] = new Coordinate[m_airBlockWithAltDic.get(idAirB).GetCoord().size()];
-			
 			GeometryFactory GF = new GeometryFactory();
 			for (int i=0;i<m_airBlockWithAltDic.get(idAirB).GetCoord().size();i++){
 				double x=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetX();
 				double y=m_airBlockWithAltDic.get(idAirB).GetCoord().get(i).GetY();
-				
 				currentCoord[i]=new Coordinate(x,y);
-				
-
 			}
 			AirBpolys.put(idAirB,GF.createPolygon(currentCoord));
 		}
 		//To be optimised (on peut parcourir moins) 
 		for (String idAirB1 : m_airBlockWithAltDic.keySet()){
 			for (String idAirB2 : m_airBlockWithAltDic.keySet()){
-				if (!(idAirB1.equals(idAirB2)) && AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2))){
+				if (!(idAirB1.equals(idAirB2)) && (AirBpolys.get(idAirB1).touches(AirBpolys.get(idAirB2)) ||AirBpolys.get(idAirB1).within(AirBpolys.get(idAirB2)) ||AirBpolys.get(idAirB2).within(AirBpolys.get(idAirB1)) ||AirBpolys.get(idAirB2).intersects(AirBpolys.get(idAirB1))|| AirBpolys.get(idAirB2).overlaps(AirBpolys.get(idAirB1)) ||AirBpolys.get(idAirB2).overlaps(AirBpolys.get(idAirB1)) || AirBpolys.get(idAirB2).crosses(AirBpolys.get(idAirB1)) ||AirBpolys.get(idAirB2).crosses(AirBpolys.get(idAirB1)) ))
+				{
 					double zmin1 = m_airBlockWithAltDic.get(idAirB1).GetAltMin();
 					double zmin2 = m_airBlockWithAltDic.get(idAirB2).GetAltMin();
 					double zmax1 = m_airBlockWithAltDic.get(idAirB1).GetAltMax();
@@ -378,15 +302,13 @@ public class map {
 						if(!idFather1.equals(idFather2))
 						{
 							m_sectorDictionary.get(idFather1).getNeighbors().add(m_sectorDictionary.get(idFather2));
-							//m_airBlckWithAltDic.get(idAirB1).getNeighbors().add(idAirB2);
-
 						}
 					}
 				}
 			}
 		}
-		
 	}
+	//update the different dictionary with a list of chosen airspace configure in the settings 
 	public void reduceMap(ArrayList<String> chosenAirSpaces)
 	{
 		HashMap<String, AirBlock>reduceAirBlockDictionary=new HashMap<String, AirBlock>();
@@ -406,7 +328,6 @@ public class map {
 		}
 		
 		m_completSectorDictionary = new HashMap <String ,Sector>(m_sectorDictionary);
-		//fm_completSectorDictionary. m_sectorDictionary;
 		m_sectorDictionary.clear();
 		m_airSpaceDictionary.clear();
 		m_airBlockWithAltDic.clear();
@@ -417,6 +338,9 @@ public class map {
 		
 		setSectorNeighbors();
 		
+		System.out.println(m_airBlockWithAltDic.get("204LF_345_999").getNeighbors());
+		System.out.println(m_airBlockWithAltDic.get("205LF_225_265").getNeighbors());
+		System.out.println(m_airBlockWithAltDic.get("206LF_265_345").getNeighbors());
 	}
 	
 	
@@ -444,7 +368,6 @@ public class map {
 			ArrayList<String> keys = new ArrayList<String>(m_sectorDictionary.keySet());
 			String randomKey = keys.get(random.nextInt(keys.size()));
 			Sector impactedSector = m_sectorDictionary.get(randomKey);
-			
 			impactedSector.degradation(0.5);
 			//prévenir AOC et FMP
 		}
@@ -454,16 +377,13 @@ public class map {
 			Random random = new Random();
 			ArrayList<String> keys = new ArrayList<String>(m_sectorDictionary.keySet());
 			String randomKey = keys.get(random.nextInt(keys.size()));
-			
 			Sector impactedSector = m_sectorDictionary.get(randomKey);
-			
 			double decrease = random.nextDouble();
-			
 			impactedSector.degradation(decrease);
 		}
 
 	}
-	
+	//create and display the graph (use of graphstream)
 	public void displaymap()
 	{		
 		 graph = new SingleGraph("Tutorial 1");
@@ -477,7 +397,6 @@ public class map {
 		{
 			node.addAttribute("ui.label", node.getId());
 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
-			
 		}
 		for (String sectorID: m_sectorDictionary.keySet())
 		{
@@ -486,18 +405,16 @@ public class map {
 				if(!alreadySet.contains(neighbor.m_name))
 				{
 					graph.addEdge(sectorID+neighbor.m_name, sectorID, neighbor.m_name);
-					
 				}
-				
 			}
 			alreadySet.add(sectorID);
-			//graph.addEdge(sectorID+neighbor, sectorID, neighbor);
 		}
-        
-
         graph.display();
 	}
-	
+	/*
+	 * use for FMP player only 
+	 *
+	 */
 	ArrayList<Path> getSetsOfShortestPath(Sector A, Sector B, Sector I)// pour les FMP joueurs 
 	{
 		ArrayList<Path> rerouteChoices= new ArrayList<Path>();
@@ -505,24 +422,67 @@ public class map {
 		 HashSet<String> nodeAlreadySet=new HashSet<String>();
 		 HashSet<String> edgeAlreadySet=new HashSet<String>();
 		 HashSet<String> nodeSources=new HashSet<String>();
-		//graph.addNode(B.m_name);
-		for (Sector neighbourA: A.getNeighbors())
-		{
-			subgraph.addNode(neighbourA.m_name);
-			nodeAlreadySet.add(neighbourA.m_name);
-			if(I.getNeighbors().contains(neighbourA))
-			{
-				nodeSources.add(neighbourA.m_name);
-			}
-		}
-		for (Sector neighbourB: B.getNeighbors())
-		{
-			if(!nodeAlreadySet.contains(neighbourB.m_name) && !neighbourB.m_name.equals(A.m_name))
-			{
-				subgraph.addNode(neighbourB.m_name);
-				nodeAlreadySet.add(neighbourB.m_name);
-			}
-		}
+		
+		 subgraph.addNode(I.m_name);
+		 nodeAlreadySet.add(I.m_name);
+		 subgraph.addNode(B.m_name);
+		 nodeAlreadySet.add(B.m_name);
+		 for (Sector neighbourA: A.getNeighbors())
+		 { 
+			 
+			 if (I.getNeighbors().contains(neighbourA))
+			 {
+				 if (B.getNeighbors().contains(neighbourA))
+				 {
+					 if (!nodeAlreadySet.contains(neighbourA.m_name)){
+						 subgraph.addNode(neighbourA.m_name);
+						 nodeAlreadySet.add(neighbourA.m_name);
+					 }
+					 if (!nodeSources.contains(neighbourA.m_name)){
+						 nodeSources.add(neighbourA.m_name);
+					 }
+				 }
+				 else{
+					 for (Sector neighbourSource: neighbourA.getNeighbors())
+					 {
+						 if (!nodeAlreadySet.contains(neighbourSource.m_name) && !neighbourSource.m_name.equals(A.m_name) && B.getNeighbors().contains(neighbourSource)){
+							 if (!nodeAlreadySet.contains(neighbourA.m_name)){
+								 subgraph.addNode(neighbourA.m_name);
+								 nodeAlreadySet.add(neighbourA.m_name);
+							 }
+							 if (!nodeSources.contains(neighbourA.m_name)){
+								 nodeSources.add(neighbourA.m_name);
+							 }
+							 subgraph.addNode(neighbourSource.m_name);
+							 nodeAlreadySet.add(neighbourSource.m_name);
+							 
+						 }
+						 {
+							 for (Sector newNeighbour: neighbourSource.getNeighbors()){
+								 if(!nodeAlreadySet.contains(newNeighbour.m_name) && !newNeighbour.m_name.equals(A.m_name) &&B.getNeighbors().contains(newNeighbour)){
+									 if (!nodeAlreadySet.contains(newNeighbour.m_name)){
+										 subgraph.addNode(newNeighbour.m_name);
+										 nodeAlreadySet.add(newNeighbour.m_name);
+									 }
+									 if (!nodeAlreadySet.contains(neighbourA.m_name)){
+										 subgraph.addNode(neighbourA.m_name);
+										 nodeAlreadySet.add(neighbourA.m_name);
+									 }
+									 if (!nodeSources.contains(neighbourA.m_name)){
+										 nodeSources.add(neighbourA.m_name);
+									 }
+									 if (!nodeAlreadySet.contains(neighbourSource.m_name) && !neighbourSource.m_name.equals(A.m_name)){
+										 subgraph.addNode(neighbourSource.m_name);
+										 nodeAlreadySet.add(neighbourSource.m_name);
+									 }
+								 }
+							 }
+						 }
+					 }
+				 }
+				 
+			 }
+		 }
 		
 		for (Node node:subgraph)
 		{
@@ -530,31 +490,94 @@ public class map {
 			{
 				if(!edgeAlreadySet.contains(neighbor.m_name) && nodeAlreadySet.contains(neighbor.m_name))
 				{
-					subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);;
+					if((node.getId().compareTo(neighbor.m_name))<=0)
+					{
+						subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);
+					}
+					else 
+					{
+						subgraph.addEdge(neighbor.m_name+node.getId(), node.getId(), neighbor.m_name).addAttribute("length", 1);
+					}
 					
 				}
 			}
 			edgeAlreadySet.add(node.getId());
 		}
 		
-		
-		
-		 Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
+		Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
 		 
-         // Compute the shortest paths in g from A to all nodes
-         dijkstra.init(subgraph);
-         dijkstra.setSource(subgraph.getNode(B.m_name));
-         dijkstra.compute();
-         for (String source: nodeSources)
-         {
-        	 rerouteChoices.add(dijkstra.getPath(subgraph.getNode(source)));
-         }
-         for(Node node:subgraph)
- 		{
- 			node.addAttribute("ui.label", node.getId());
- 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
+	     // Compute the shortest paths in g from I to all nodes
+	     dijkstra.init(subgraph);
+	     dijkstra.setSource(subgraph.getNode(B.m_name));
+	     dijkstra.compute();
+	     for (String source: nodeSources)
+	     {
+	    	 rerouteChoices.add(dijkstra.getPath(subgraph.getNode(source)));
+	     }
+	     subgraph.addNode(A.m_name);
+	     for(Sector neighbourA: A.getNeighbors())
+	     {
+	    	 if(nodeAlreadySet.contains(neighbourA.m_name))
+	    	 {
+	    	 if((A.m_name.compareTo(neighbourA.m_name))<=0)
+				{
+					subgraph.addEdge(A.m_name+neighbourA.m_name, A.m_name, neighbourA.m_name).addAttribute("length", 10);
+				}
+				else 
+				{
+					subgraph.addEdge(neighbourA.m_name+A.m_name,A.m_name, neighbourA.m_name).addAttribute("length", 10);
+				}
+	    	 }
+	     }
+	     //Coloring the graph
+	     
+	     for(Node node:subgraph)
+	     {
+ 			node.addAttribute("ui.label", node.getId()+" /"+m_sectorDictionary.get(node.getId()).getOccupation().size());
+ 			if (nodeSources.contains(node.getId()))
+ 			{
+ 				node.addAttribute("ui.style", "fill-color: rgb(204,51,51);shape: box; size: 30px,30px;");
+ 			}
+ 			else node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
  			
- 		}
+	     }
+	     for(Path path: rerouteChoices)
+	     {
+	    	 for (Edge edge : path.getEachEdge())
+	             edge.addAttribute("ui.style", "fill-color: rgb(255,153,102);size: 10px,10px;");
+	     }
+	     subgraph.getNode(A.m_name).addAttribute("ui.style", "fill-color: rgb(255,0,0);size: 30px,30px;");
+	     if(A.m_name.compareTo(I.m_name)<=0)
+	     {
+	    	 subgraph.getEdge(A.m_name+I.m_name).addAttribute("ui.style", "fill-color: rgb(255,0,0); size:5px; ");
+	     }
+	     else 
+	     {
+	    	 subgraph.getEdge(I.m_name+A.m_name).addAttribute("ui.style", "fill-color: rgb(255,0,0); size:5px;");
+	     }
+	     if(A.m_name.compareTo(B.m_name)<=0)
+	     {
+	    	 subgraph.getEdge(A.m_name+B.m_name).addAttribute("ui.style", "fill-color: rgb(255,0,0); size:5px;");
+	     }
+	     else 
+	     {
+	    	 subgraph.getEdge(B.m_name+A.m_name).addAttribute("ui.style", "fill-color: rgb(255,0,0); size:5px;");
+	     }
+	     subgraph.getNode(B.m_name).addAttribute("ui.style", "fill-color: rgb(51,153,102);size: 30px,30px;");
+	     
+	     subgraph.getNode(I.m_name).addAttribute("ui.style", "fill-color: rgb(0,0,0);size:30px,30px;");
+	     for (String source: nodeSources )
+	     {
+	    	if(I.m_name.compareTo(source)<=0)
+	    	{
+	    		subgraph.getEdge(I.m_name+source).addAttribute("ui.style", "fill-color: rgb(255,153,153);size: 9px,9px;");
+	    	}
+	    	else 
+	    	{
+	    		subgraph.getEdge(source+I.m_name).addAttribute("ui.style", "fill-color: rgb(255,153,153);size: 9px,9px;");
+	    	}
+	    	
+	     }
          subgraph.display();
          return rerouteChoices;
 	}
@@ -565,11 +588,15 @@ public class map {
 		SingleGraph subgraph = new SingleGraph("sub_ graph");
 		HashSet<String> nodeAlreadySet=new HashSet<String>();
 		HashSet<String> edgeAlreadySet=new HashSet<String>();
-
+		subgraph.addNode(B.m_name);
+		nodeAlreadySet.add(B.m_name);
 		for (Sector neighbourA: A.getNeighbors())
 		{
-			subgraph.addNode(neighbourA.m_name);
-			nodeAlreadySet.add(neighbourA.m_name);
+			if(!nodeAlreadySet.contains(neighbourA.m_name))
+			{
+				subgraph.addNode(neighbourA.m_name);
+				nodeAlreadySet.add(neighbourA.m_name);
+			}
 		}
 
 		for (Sector neighbourB: B.getNeighbors())
@@ -580,15 +607,13 @@ public class map {
 				nodeAlreadySet.add(neighbourB.m_name);
 			}
 		}
-		
 		for (Node node:subgraph)
 		{
 			for (Sector neighbor:m_sectorDictionary.get(node.getId()).getNeighbors())
 			{
 				if(!edgeAlreadySet.contains(neighbor.m_name) && nodeAlreadySet.contains(neighbor.m_name))
 				{
-					subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);;
-					
+					subgraph.addEdge(node.getId()+neighbor.m_name, node.getId(), neighbor.m_name).addAttribute("length", 1);	
 				}
 			}
 			edgeAlreadySet.add(node.getId());
@@ -597,30 +622,32 @@ public class map {
 		 Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
 		 
          // Compute the shortest paths in g from A to all nodes
+		 for(Node node:subgraph)
+	 		{
+	 			node.addAttribute("ui.label", node.getId()+" /"+m_sectorDictionary.get(node.getId()).getOccupation().size());
+	 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
+	 		}
+		 Viewer v=subgraph.display();
          dijkstra.init(subgraph);
          dijkstra.setSource(subgraph.getNode(B.m_name));
          dijkstra.compute();
          reroute = dijkstra.getPath(subgraph.getNode(I.m_name));
-         for(Node node:subgraph)
- 		{
- 			node.addAttribute("ui.label", node.getId());
- 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
- 			
- 		}
-         subgraph.display();
+        
+         
+         for (Edge edge : dijkstra.getTreeEdges())
+             edge.addAttribute("ui.style", "fill-color: red;");
          return reroute;
 	}
 
-	public int getPenality() {
+	public int getPenality()
+	{
 		return penality;
 	}
 
-	public void setPenality(int penality) {
+	public void setPenality(int penality)
+	{
 		this.penality = penality;
 	}
-	
-	
-
 }
 
 

@@ -159,6 +159,7 @@ public class FlightPlanParser {
 	            }
 	        }
 	      }
+
 	    } catch (FileNotFoundException e) {
 	      e.printStackTrace();
 	    } catch (XMLStreamException e) {

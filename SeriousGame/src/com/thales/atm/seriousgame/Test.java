@@ -50,8 +50,8 @@ public class Test
 		
 		
 		m_settings.setNbMaxTurn(20);
-		AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
-		m_game.addAOCPlayer(jeanPaul);
+		//AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
+		//m_game.addAOCPlayer(jeanPaul);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
 		cal.set(2014, 9, 15, 13, 13, 00);

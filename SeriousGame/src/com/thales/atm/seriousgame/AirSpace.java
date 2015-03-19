@@ -12,13 +12,18 @@ import java.util.Set;
 import javax.jws.WebService;
 
 @WebService
+/**
+ *m_name: id of the  airspace
+ *m_sectorId: list of names of the sectors that are in this airspace 
+ *m_needRegulation: true if this airspace cotains overloaded sectors 
+ *listOfFullSector: list of sectors that are overloaded 
+ */
 public class AirSpace {
 	
 	private String m_name;
-	//ArrayList<Sector> m_sector;
 	ArrayList<String> m_sectorId;
 	private boolean m_needRegulation;
-	Set<Sector> listOfFullSector; //Attention not multiThread Safe
+	Set<Sector> listOfFullSector;
 
 	public AirSpace(String name, ArrayList<String> sect)
 	{
@@ -44,17 +49,12 @@ public class AirSpace {
 	public void setNeedRegulation(boolean m_needRegulation) {
 		this.m_needRegulation = m_needRegulation;
 	}
-	
 	public void addFullSector(Sector sectorId)
 	{
-		//verifier s'il n'est pas deja dedans
 		listOfFullSector.add(sectorId);
 	}
 	public void removeFullSector(Sector sectorId)
 	{
-		//a optimiser
 		listOfFullSector.remove(sectorId);
 	}
-		
-
 }
