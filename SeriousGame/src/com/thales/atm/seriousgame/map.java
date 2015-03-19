@@ -627,7 +627,7 @@ public class map {
 	 			node.addAttribute("ui.label", node.getId()+" /"+m_sectorDictionary.get(node.getId()).getOccupation().size());
 	 			node.addAttribute("ui.style", "fill-color: rgb(0,100,255);shape: box; size: 30px,30px;");
 	 		}
-		 Viewer v=subgraph.display();
+		 //Viewer v=subgraph.display();
          dijkstra.init(subgraph);
          dijkstra.setSource(subgraph.getNode(B.m_name));
          dijkstra.compute();

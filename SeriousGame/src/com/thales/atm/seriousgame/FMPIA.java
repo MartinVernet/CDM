@@ -152,7 +152,7 @@ public class FMPIA extends FMP {
 					if(previousSector.m_name.equals("LFFFS"))
 					{
 						System.out.println("######### Sector do not exist ");
-						return null;
+						//return null;
 					}
 				}
 				
