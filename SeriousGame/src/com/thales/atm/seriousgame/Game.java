@@ -303,6 +303,8 @@ public class Game {
 	{
 		this.m_board = new map(this.m_settings.getAirBlockFile(),this.m_settings.getSectorFile(),this.m_settings.getAirspaceFile());
 		this.m_board.setPenality(m_settings.getDelayPerSector());
+		
+		
 	}
 	
 	

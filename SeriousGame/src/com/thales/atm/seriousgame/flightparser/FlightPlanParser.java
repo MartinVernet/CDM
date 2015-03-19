@@ -137,6 +137,7 @@ public class FlightPlanParser {
 	        					final_exitdate=current_exitdate;
 	        					flight.getAirspaceProfile().put(current_entrydate, reducedBoard.get(current_airspace));						        					
 	        					flight.setExitMap(final_exitdate);
+	        					
 								if(findEntry == false){
 	        						flight.setEntryMap(current_entrydate);
 									findEntry = true;
@@ -149,24 +150,27 @@ public class FlightPlanParser {
 	        						flight.getAirspaceProfile().put(current_entrydate, outSector);
 	        					}
 	        				}
-		           	 }
+		           	}
+	        		
 	        		
 	        		
 		        }
 	            if (event.asEndElement().getName().getLocalPart() == (FLIGHT) && flight.getExitMap() != null) { 
 	            	
-	            	flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
-	            	NavigableMap<Date,Sector> reducedmap = flight.getAirspaceProfile().subMap(flight.getEntryMap(), true, flight.getExitMap(), true);
-	            	
-	            	flight.setAirspaceProfile(reducedmap);
-	            	flight.setAirlineFromId();	            	
-	            	flights.add(flight);
-	            	findEntry = false;
+	            		
+		            	flight.getAirspaceProfile().put(flight.getExitMap(), exitSector);
+		            	NavigableMap<Date,Sector> reducedmap = flight.getAirspaceProfile().subMap(flight.getEntryMap(), true, flight.getExitMap(), true);
+		            	
+		            	flight.setAirspaceProfile(reducedmap);
+		            	flight.setAirlineFromId();	            	
+		            	flights.add(flight);
+		            	findEntry = false;
+	            	}
 
 	            }
 	        }
 
-	      }
+	      
 	    } catch (FileNotFoundException e) {
 	      e.printStackTrace();
 	    } catch (XMLStreamException e) {

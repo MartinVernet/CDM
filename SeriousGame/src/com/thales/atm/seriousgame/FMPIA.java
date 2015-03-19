@@ -139,6 +139,7 @@ public class FMPIA extends FMP {
 				else{
 					
 				}
+				
 				if (sector.m_name.equals(fp.getAirspaceProfile().firstEntry().getValue().m_name))
 				{
 					previousSector=null;
@@ -147,6 +148,12 @@ public class FMPIA extends FMP {
 				else
 				{
 					previousSector=fp.getAirspaceProfile().get(fp.getAirspaceProfile().lowerKey(d));
+					
+					if(previousSector.m_name.equals("LFFFS"))
+					{
+						System.out.println("######### Sector do not exist ");
+						return null;
+					}
 				}
 				
 			}
