@@ -91,6 +91,7 @@ public class FMPIA extends FMP {
 		for(Flight flight : allRegulations.keySet() ){
 			flight.getFlightPlan().refreshFlightPlanV2(flight.getCurrentSector(),allRegulations.get(flight),board.getPenality());
 			flight.refreshPositionAfterRegulation(allRegulations.get(flight).get(0));
+			flight.addRegulations();
 		}
 	}
 	

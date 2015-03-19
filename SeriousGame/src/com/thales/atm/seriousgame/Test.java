@@ -28,15 +28,14 @@ public class Test
 		Game m_game=new Game(m_settings);
 		//map m=new map(  "C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airblock.gar","C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl","C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
 		//System.out.print("valid");
-		//m_game.initiateNewGame();
-		m_settings.setAirspaceFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Airspace.spc");
-		m_settings.setSectorFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/Sector.gsl");
-		m_settings.setAirblockFile("C:/Users/arthur/Desktop/MS Centrale/PFE/map_ACC/AirBlock.gar");
+		m_settings.setAirspaceFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Airspace.spc");
+		m_settings.setSectorFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/Sector.gsl");
+		m_settings.setAirblockFile("C:/Users/Martin/Desktop/Cours 3A/Projet/Datas/map_ACC/AirBlock.gar");
 		
 		m_game.loadAirspace();
 		System.out.print(m_game.m_board.m_sectorDictionary.get("GMMMOCE").m_name);
 		
-		FMPIA Arthur= new FMPIA("arthur",2,m_game.m_board);
+		FMPIA Arthur= new FMPIA("arthur",4,m_game.m_board);
 		Arthur.addAirspace("LFFFCTA");
 		Arthur.addAirspace("LFEECTA");
 		Arthur.setAirspaces(m_game.m_board);
@@ -49,9 +48,9 @@ public class Test
 		m_settings.setLevel(1);
 		
 		
-		m_settings.setNbMaxTurn(20);
-		AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
-		m_game.addAOCPlayer(jeanPaul);
+		m_settings.setNbMaxTurn(2);
+		//AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
+		//m_game.addAOCPlayer(jeanPaul);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
 		cal.set(2014, 9, 15, 13, 13, 00);

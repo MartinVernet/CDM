@@ -15,6 +15,7 @@ public class Flight {
 	private int economicValue;
 	private String airline;
 	private int nbRegulations;
+	private AOC aoc;
 	
 	public Flight(FlightPlan fp){
 		this.m_flightID=fp.getFlightId();
@@ -113,6 +114,18 @@ public class Flight {
 	
 	public void addRegulations() {
 		this.nbRegulations+=1;
+		this.aoc.regulatedFlights.put(this.m_flightID,this);
+	}
+
+
+	public void setAOC(AOC aoc) {
+		// TODO Auto-generated method stub
+		this.aoc = aoc;
+	}
+	
+	public AOC getAOC() {
+		// TODO Auto-generated method stub
+		return aoc;
 	}
 	
 }

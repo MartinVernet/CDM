@@ -178,12 +178,6 @@ public class Settings {
 		return mySettings;
 	}
 
-	
-	public boolean checkIfReady() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
 	public void solveProblems() {
 		// TODO Auto-generated method stub
 		

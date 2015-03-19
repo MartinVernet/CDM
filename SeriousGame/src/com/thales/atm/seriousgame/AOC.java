@@ -16,6 +16,7 @@ public class AOC extends Player {
 	protected HashMap<String,Flight> newFlights;
 	protected HashMap<String,Flight> fligthsOnBoard;
 	protected HashMap<String,Flight> oldFlights;
+	protected HashMap<String,Flight> regulatedFlights;
 	
 	public AOC(){
 		super();
@@ -24,6 +25,7 @@ public class AOC extends Player {
 		newFlights= new HashMap<String,Flight>();
 		fligthsOnBoard= new HashMap<String,Flight>();
 		oldFlights= new HashMap<String,Flight>();
+		regulatedFlights = new HashMap<String,Flight>();
 	}
 	
 	public AOC(String name, int i) {
@@ -34,6 +36,7 @@ public class AOC extends Player {
 		newFlights= new HashMap<String,Flight>();
 		fligthsOnBoard= new HashMap<String,Flight>();
 		oldFlights= new HashMap<String,Flight>();
+		regulatedFlights = new HashMap<String,Flight>();
 	}
 
 	public void play() 
