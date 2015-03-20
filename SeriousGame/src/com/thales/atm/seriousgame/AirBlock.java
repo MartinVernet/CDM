@@ -7,6 +7,14 @@ import java.util.Map;
 
 import javax.jws.WebService;
 
+
+/**class Airblock
+ *  name : id of the airblock
+ *  m_Coords:list of points that create a 2D plan 
+ * altitudeMin and altitudeMax : the altitudes of the airblock. 
+ * m_father: pointer to the father sector
+ * neighbors: list of  names of neighbors airblocks
+ */
 @WebService
 public class AirBlock {
 
@@ -66,8 +74,6 @@ public class AirBlock {
 		this.m_altitudeMax=altMax;
 	}
 	
-
-
 	public String getFatherId() {
 		return m_fatherId;
 	}
@@ -95,6 +101,5 @@ public class AirBlock {
 		this.neighbors = neighbors;
 	}
 	
-
 }
 

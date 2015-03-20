@@ -317,6 +317,8 @@ public class Game {
 	{
 		this.m_board = new map(this.m_settings.getAirBlockFile(),this.m_settings.getSectorFile(),this.m_settings.getAirspaceFile());
 		this.m_board.setPenality(m_settings.getDelayPerSector());
+		
+		
 	}
 	
 	/**
@@ -329,6 +331,28 @@ public class Game {
 	    //Tests
 	    for (FlightPlan flight : parseFlightPlan) {
 	      System.out.println(flight);
+	    }
+	    ArrayList<FlightPlan> flightToRemove =new ArrayList<FlightPlan>();
+	    for (FlightPlan flight : parseFlightPlan)
+	    {
+	    	int i=flight.getAirspaceProfile().size()-1;
+	    	for (Date d : flight.getAirspaceProfile().keySet())
+	    	{
+	    		if(i>0 &&flight.getAirspaceProfile().get(d).getNeighbors().contains(flight.getAirspaceProfile().get(flight.getAirspaceProfile().higherKey(d)))==false )
+	    		{
+	    			if(!flight.getAirspaceProfile().get(flight.getAirspaceProfile().higherKey(d)).m_name.equalsIgnoreCase("Exit"))
+	    			{
+	    			System.out.println(flight.getAirspaceProfile().get(d).getNeighbors());
+	    			System.out.println(flight.getAirspaceProfile().higherKey(d));
+	    			flightToRemove.add(flight);
+	    			}
+	    		}
+	    		i=i-1;
+	    	}
+	    }
+	    for(FlightPlan fp:flightToRemove)
+	    {
+	    	parseFlightPlan.remove(fp);
 	    }
 	    //Create Tree Map
 	    entryDate2FlightPlan= new TreeMap<Date, ArrayList<FlightPlan>>();

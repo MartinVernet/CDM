@@ -47,8 +47,8 @@ public class Test
 		m_settings.setTurnLength(60);//multiple
 		m_settings.setLevel(1);
 		
-		
-		m_settings.setNbMaxTurn(2);
+		m_settings.setNbMaxTurn(20);
+
 		//AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
 		//m_game.addAOCPlayer(jeanPaul);
 		Calendar cal = Calendar.getInstance();

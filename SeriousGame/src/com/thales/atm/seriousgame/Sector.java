@@ -9,26 +9,29 @@ import javax.jws.WebService;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
-@WebService
 
+/**
+ * m_name: id of the sector
+ *m_airBlockId: list of names of airblock that are contained in the sector
+ *nomralCapacity: Maximum normal capacity of the sector
+ *capacity: maximum capacity if it has been updated by a problem on the sector (if normal capacity= normalCapacity)
+ *neighbors= list of names of neighbors sectors 
+ *m_fatherId: pointer to the airspace that contains this sector
+ *occupation: map of the flight contained in this sector
+ *needRegulation : if true this sector is overloaded (occupation.size() > capacity)
+ */
 public class Sector {
 	public String m_name;
-	//ArrayList<AirBlock> m_airBlocks;
 	ArrayList<String> m_airBlocksId;
 	private int normalCapacity=4;//15;
 	private int capacity;
-	private Set<Sector> neighbors; //Attention not multiThread Safe
+	private Set<Sector> neighbors;
 	private String m_fatherId;
 	private HashMap<String,Flight> occupation;
 	private AirSpace m_father;
 	private boolean needRegulation;
 	
 
-	/*public Sector(String name, ArrayList<AirBlock> airb)
-	{
-		this.m_name=name;
-		this.m_airBlocks=airb;
-	}*/
 	public Sector(String name, ArrayList<String> airb)
 	{
 		this.m_name=name;
@@ -36,7 +39,6 @@ public class Sector {
 		this.neighbors=new HashSet<Sector>();
 		this.capacity=normalCapacity;
 		this.occupation= new HashMap<String,Flight>();
-		
 	}
 	
 	public Sector()
@@ -82,7 +84,9 @@ public class Sector {
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
-	
+	/*
+	 * remove a flight from this sector 
+	 */
 	public void removeFlight(Flight flight)
 	{
 		occupation.remove(flight.getFlightID());
@@ -92,6 +96,9 @@ public class Sector {
 			m_father.removeFullSector(this);
 		}
 	}
+	/*
+	 * add a flight to this sector 
+	 */
 	public void addFlight(Flight flight)
 	{
 		occupation.put(flight.getFlightID(), flight);
@@ -100,7 +107,6 @@ public class Sector {
 			needRegulation= true;
 			m_father.addFullSector(this);
 		}
-
 	}
 
 	@Override
@@ -120,6 +126,4 @@ public class Sector {
 	{
 		normalCapacity=newCapa;
 	}
-	
-	
 }
