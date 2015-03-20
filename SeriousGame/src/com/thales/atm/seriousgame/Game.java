@@ -196,7 +196,7 @@ public class Game {
 			//log file to keep history of the game
 			ecrire("test.txt", "\r\n");
 			ecrire("test.txt", currentDate.toString()+"\r\n");
-			
+			/**
 			boolean regulation = true;
 			while (regulation){
 				
@@ -209,6 +209,11 @@ public class Game {
 				for (String as: m_board.m_airSpaceDictionary.keySet()){
 					regulation = regulation || m_board.m_airSpaceDictionary.get(as).getNeedRegulation();
 				}
+			*/
+			// *******IHM******* If the airspace of an FMP player need regulation, send him the possible regulations
+			// *******IHM******* Then receive the regulated flight and the chosen reroute
+			for ( String key : FMPplayers.keySet() ){
+				FMPplayers.get(key).play();
 			}
 			
 			
@@ -258,27 +263,27 @@ public class Game {
 				}
 				node.addAttribute("ui.label", node.getId()+" "+nbofFlight+"/ "+flights);
 			}
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==1 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==1 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(0,255,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==2 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==2 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(50,200,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==3 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==3 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(100,150,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==4 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==4 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(150,100,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==5 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==5 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(200,50,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==6 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==6 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(125,255,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==7 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==7 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(150,255,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==9 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==9 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(175,255,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==10 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==10 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(200,255,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==11 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()==11 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(225,255,0);");
-			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()>11 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<m_board.m_sectorDictionary.get(node.getId()).getCapacity())
+			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()>11 && m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()<=m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(255,255,0);");
 			if (m_board.m_sectorDictionary.get(node.getId()).getOccupation().size()>m_board.m_sectorDictionary.get(node.getId()).getCapacity())
 				node.setAttribute("ui.style", "fill-color: rgb(255,0,0);");//rouge
@@ -302,7 +307,7 @@ public class Game {
 				AOCplayers.put(L.get(i).getName(), (AOCPlayer) L.get(i));
 			}
 			else{
-				FMPplayers.put(L.get(i).getName(), (FMPPLayer) L.get(i));
+				FMPplayers.put(L.get(i).getName(), (FMPPlayer) L.get(i));
 			}
 		}
 	}
@@ -348,6 +353,9 @@ public class Game {
 	    			}
 	    		}
 	    		i=i-1;
+	    	}
+	    	if (flight.getFlightId().equals("SAS568") ||flight.getFlightId().equals("AFR166")){
+	    		flightToRemove.add(flight);
 	    	}
 	    }
 	    for(FlightPlan fp:flightToRemove)

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.thales.atm.seriousgame.AOC;
-import com.thales.atm.seriousgame.FMPPLayer;
+import com.thales.atm.seriousgame.FMPPlayer;
 
 public class SettingsInterface{
 	

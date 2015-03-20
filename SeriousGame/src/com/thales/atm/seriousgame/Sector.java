@@ -102,7 +102,7 @@ public class Sector {
 	public void addFlight(Flight flight)
 	{
 		occupation.put(flight.getFlightID(), flight);
-		if(capacity==occupation.size()+1)
+		if(capacity+1==occupation.size())
 		{
 			needRegulation= true;
 			m_father.addFullSector(this);

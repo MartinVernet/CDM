@@ -37,7 +37,7 @@ public class Test
 		
 		FMPIA Arthur= new FMPIA("arthur",4,m_game.m_board);
 		Arthur.addAirspace("LFFFCTA");
-		Arthur.addAirspace("LFEECTA");
+		Arthur.addAirspace("LFEECTA"); 
 		Arthur.setAirspaces(m_game.m_board);
 		
 		m_game.addFMP(Arthur);
@@ -47,7 +47,7 @@ public class Test
 		m_settings.setTurnLength(60);//multiple
 		m_settings.setLevel(1);
 		
-		m_settings.setNbMaxTurn(20);
+		m_settings.setNbMaxTurn(4);
 
 		//AOCPlayer jeanPaul =new AOCPlayer("ryan air",3);
 		//m_game.addAOCPlayer(jeanPaul);

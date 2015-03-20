@@ -15,42 +15,21 @@ import org.graphstream.graph.Path;
 import com.thales.atm.seriousgame.Player;
 import com.thales.atm.seriousgame.flightmodel.FlightPlan;
 
-public class FMPPLayer extends FMP {
+public class FMPPlayer extends FMP {
 	
-	public FMPPLayer(){
+	public FMPPlayer(){
 		super();
-		/**
-		m_airSpaces = new ArrayList<AirSpace>();
-		airspacesId = new ArrayList<String>();
-		*/
 	}
 	
-	public FMPPLayer(String name,int i, map board){
+	public FMPPlayer(String name,int i, map board){
 		super(name,i,board);
-		/**
-		m_airSpaces = new ArrayList<AirSpace>();
-		airspacesId = new ArrayList<String>();
-		
-		this.board = board;
-		*/
 	}
 	
-	public FMPPLayer(String name, int i, ArrayList<String> airspaces) {
+	public FMPPlayer(String name, int i, ArrayList<String> airspaces) {
 		// TODO Auto-generated constructor stub
 		super(name,i,airspaces);
-		/**
-		this.airspacesId=airspaces;
-		m_airSpaces = new ArrayList<AirSpace>();
-		*/
 	}
-	/**
-	public void setAirspaces(map board){
-		for (String id : airspacesId){
-			m_airSpaces.add(board.m_airSpaceDictionary.get(id));
-		}
 
-	}
-	*/
 	public void play(HashMap<Flight,FlightPlan> regulation){
 		
 	}
@@ -71,7 +50,6 @@ public class FMPPLayer extends FMP {
 				while (i<nbFlightToRegulate && choiceOfFlight.size()>0)
 				{
 					System.out.println(sector.m_name+" need regulation");//board.m_airSpaceDictionary.get(sector);//action mettre dans boite au lettre , regulation a faire sur ce airblock
-					System.out.println("choose flight ");
 					flightChosen = chooseFlightRegulated(sector,choiceOfFlight);
 					System.out.println("choose possible rerout ");
 					routeChosen = chooseReroute(sector,flightChosen);
